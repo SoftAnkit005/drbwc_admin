@@ -125,7 +125,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
         };
       case 'categories':
         return {
-          headings: ['Category Name', 'Status', 'Include In Menu'],
+          headings: ['Category Name', 'Status', 'Include In Menu','Action'],
           renderRow: (item) => (
             <>
               <td>{item.name}</td>
@@ -135,6 +135,12 @@ const TableListing = ({ pageName, tableData, changeData }) => {
                 </Badge>
               </td>
               <td>{(item.status !== 0) ? 'Yes' : 'No'}</td>
+              <td>
+                <div className='d-flex align-items-center'>
+                  <FaRegEdit className='text-dark cursor-pointer fs-5'/>
+                  <DeleteConfirmation caseType="categories" id={item.id} changed={changeData}/>
+                </div>
+              </td>
             </>
           ),
           renderAdd: () => (
