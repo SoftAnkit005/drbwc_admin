@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Input, Button, ListGroup, ListGroupItem, Row, Col } from 'reactstrap';
 import './filedropzone.scss';
 import { IoClose } from 'react-icons/io5';
 
-const FileDropZone = () => {
+const FileDropZone = ({prodImages}) => {
   const [images, setImages] = useState([]);
+  const [imagesBase64, setImagesBase64] = useState([]);
+
+  useEffect(() => {
+    prodImages(imagesBase64);
+  }, [imagesBase64])
+  
+
   const [isDragging, setIsDragging] = useState(false);
 
   // Simulate URL generation or mapping
@@ -22,17 +30,27 @@ const FileDropZone = () => {
       ['image/jpeg', 'image/png'].includes(file.type)
     );
 
-    // Create preview URLs for valid files
-    const filesWithPreview = validFiles.map(file => ({
-      id: URL.createObjectURL(file),  // Use Object URL as a unique identifier
-      file,
-      preview: URL.createObjectURL(file),
-      url: generateImageUrl(file.name)  // Generate your URL
-    }));
-
-    setImages(prevImages => [...prevImages, ...filesWithPreview]);
+    validFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        setImagesBase64(prevBase64 => [
+          ...prevBase64,base64String
+        ])
+        setImages(prevImages => [
+          ...prevImages,
+          {
+            id: URL.createObjectURL(file),  // Use Object URL as a unique identifier
+            file,
+            preview: URL.createObjectURL(file),
+            base64: base64String,  // Store the base64 string
+            url: generateImageUrl(file.name)  // Generate your URL
+          }
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
   };
-  // console.log(images);
 
   // Handle file input change
   const handleFileChange = (e) => {
@@ -133,6 +151,10 @@ const FileDropZone = () => {
       </Row>
     </div>
   );
+};
+
+FileDropZone.propTypes = {
+  prodImages: PropTypes.func.isRequired
 };
 
 export default FileDropZone;

@@ -1,23 +1,14 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle } from 'reactstrap';
 import ComponentCard from '../ComponentCard';
 import CKEditorComponent from '../editor/CKEditorComponent';
 import './modalstyle.scss';
 import FileDropZone from '../uploader/FileDropZone';
-import { addProduct } from '../../store/products/productSlice';
 
-function AddEditProduct({changed}) {
+function AddEditProduct_backup() {
   const [modal, setModal] = useState(false);
   const [productState, setProductState] = useState(true);
   const toggle = () => setModal(!modal);
-
-  const dispatch = useDispatch();
-
-  
-
-  
 
   const [formData, setFormData] = useState({
     product_name: '',
@@ -26,24 +17,31 @@ function AddEditProduct({changed}) {
     image_urls: [],
     qty: '',
     category_id: '',
-
-    subcategory_id: 1,
-    attribute_id: 2,
-    variant_id: 3,
-    
     video_link: '',
     amazon_link: '',
     flipkart_link: '',
-    status: 'active',
-    visibility: 'public',
+    status: '',
+    visibility: '',
+    
+    
+    use_for: '',
+    power_source: '',
+    material: '',
+    item_weight: '',
+    brand: '',
+    color: '',
+    about_item: '',
+    tax_class: '',
+    stock_available: true,
+    size: '',
+    color_attr: '',
+    url_key: '',
+    meta_title: '',
+    meta_keywords: '',
+    meta_description: '',
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(addProduct(formData));
-    changed(true);
-    toggle()
-  };
+  // console.log(formData);
 
 
   
@@ -62,23 +60,19 @@ function AddEditProduct({changed}) {
     });
   };
 
-  const handleStatusChange = () => {
-    console.log(productState);
+  const handleStockChange = (e) => {
     setFormData({
       ...formData,
-      status: productState !== true ? 'active' : 'inactive'
+      stock_available: e.target.value === 'true'
     });
   };
-  console.log(formData);
 
-  // const handleStockChange = (e) => {
-  //   setFormData({
-  //     ...formData,
-  //     stock_available: e.target.value === 'true'
-  //   });
-  // };
-
-  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    console.log('Form submitted:', formData);
+    toggle(); // Close modal after submission
+  };
 
   const prodImages = (e) => {
     console.log(e);
@@ -102,12 +96,9 @@ function AddEditProduct({changed}) {
                 <CardTitle className="border-bottom">
                   <div className="d-flex justify-content-between align-items-center px-4 py-3">
                     <h4 className='m-0 fw-semibold'>General</h4>
-                    <div className='d-flex align-items-center'>
-                      <Label className="m-0 me-2">Status</Label>
-                      <FormGroup switch>
-                        <Input type="switch" defaultChecked={productState} onClick={() => { setProductState(!productState); handleStatusChange(!productState) }} />
-                      </FormGroup>
-                    </div>
+                    <FormGroup switch>
+                      <Input type="switch" defaultChecked={productState} onClick={() => { setProductState(!productState); }} />
+                    </FormGroup>
                   </div>
                 </CardTitle>
                 <CardBody>
@@ -127,43 +118,43 @@ function AddEditProduct({changed}) {
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="use_for">Use For</Label>
-                        <Input type="text" id="use_for" name="use_for" placeholder="Use For"/>
+                        <Input type="text" id="use_for" name="use_for" placeholder="Use For" value={formData.use_for} onChange={handleChange} />
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="power_source">Power Source</Label>
-                        <Input type="text" id="power_source" name="power_source" placeholder="Power Source"/>
+                        <Input type="text" id="power_source" name="power_source" placeholder="Power Source" value={formData.power_source} onChange={handleChange} />
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="material">Material</Label>
-                        <Input type="text" id="material" name="material" placeholder="Material"/>
+                        <Input type="text" id="material" name="material" placeholder="Material" value={formData.material} onChange={handleChange} />
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="item_weight">Item Weight</Label>
-                        <Input type="text" id="item_weight" name="item_weight" placeholder="Item Weight" />
+                        <Input type="text" id="item_weight" name="item_weight" placeholder="Item Weight" value={formData.item_weight} onChange={handleChange} />
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="brand">Brand</Label>
-                        <Input type="text" id="brand" name="brand" placeholder="Brand" />
+                        <Input type="text" id="brand" name="brand" placeholder="Brand" value={formData.brand} onChange={handleChange} />
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="color">Color</Label>
-                        <Input type="text" id="color" name="color" placeholder="Color"/>
+                        <Input type="text" id="color" name="color" placeholder="Color" value={formData.color} onChange={handleChange} />
                       </FormGroup>
                     </Col>
                     <Col className="py-1">
                       <FormGroup>
                         <Label htmlFor="about_item">About this item</Label>
-                        <Input type="textarea" id="about_item" name="about_item" placeholder="About this item"/>
+                        <Input type="textarea" id="about_item" name="about_item" placeholder="About this item" value={formData.about_item} onChange={handleChange} />
                       </FormGroup>
                     </Col>
                     <Col className="py-1" xs="12">
@@ -189,24 +180,24 @@ function AddEditProduct({changed}) {
                         <Label htmlFor="category">Category</Label>
                         <Input type="select" id="category" name="category_id" value={formData.category_id} onChange={handleChange}>
                           <option>Select...</option>
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
-                          <option>5</option>
+                          <option>One</option>
+                          <option>Two</option>
+                          <option>Three</option>
+                          <option>Four</option>
+                          <option>Five</option>
                         </Input>
                       </FormGroup>
                     </Col>
                     <Col className="py-1" xs="12">
                       <FormGroup>
                         <Label htmlFor="tax_class">Tax Class</Label>
-                        <Input type="select" id="tax_class" name="tax_class">
+                        <Input type="select" id="tax_class" name="tax_class" value={formData.tax_class} onChange={handleChange}>
                           <option>Select...</option>
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
-                          <option>5</option>
+                          <option>One</option>
+                          <option>Two</option>
+                          <option>Three</option>
+                          <option>Four</option>
+                          <option>Five</option>
                         </Input>
                       </FormGroup>
                     </Col>
@@ -221,11 +212,25 @@ function AddEditProduct({changed}) {
                             <Label>Stock Availability</Label>
                             <FormGroup className="d-flex align-items-center">
                                 <FormGroup check className="me-2">
-                                    <Input type="radio" id="stock1" name="stock" value="true" />
+                                    <Input
+                                    type="radio"
+                                    id="stock1"
+                                    name="stock"
+                                    value="true"
+                                    checked={formData.stock_available === true}
+                                    onChange={handleStockChange}
+                                    />
                                     <Label htmlFor="stock1" check>Yes</Label>
                                 </FormGroup>
                                 <FormGroup check>
-                                    <Input type="radio" id="stock0" name="stock" value="false" />
+                                    <Input
+                                    type="radio"
+                                    id="stock0"
+                                    name="stock"
+                                    value="false"
+                                    checked={formData.stock_available === false}
+                                    onChange={handleStockChange}
+                                    />
                                     <Label htmlFor="stock0" check>No</Label>
                                 </FormGroup>
                             </FormGroup>
@@ -259,26 +264,26 @@ function AddEditProduct({changed}) {
                   <Col className="py-1" md="6" lg="4" xl="3">
                     <FormGroup>
                       <Label htmlFor="size">Size</Label>
-                      <Input type="select" id="size" name="size">
+                      <Input type="select" id="size" name="size" value={formData.size} onChange={handleChange}>
                         <option>Select...</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                        <option>One</option>
+                        <option>Two</option>
+                        <option>Three</option>
+                        <option>Four</option>
+                        <option>Five</option>
                       </Input>
                     </FormGroup>
                   </Col>
                   <Col className="py-1" md="6" lg="4" xl="3">
                     <FormGroup>
                       <Label htmlFor="color_attr">Color</Label>
-                      <Input type="select" id="color_attr" name="color_attr">
+                      <Input type="select" id="color_attr" name="color_attr" value={formData.color_attr} onChange={handleChange}>
                         <option>Select...</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                        <option>One</option>
+                        <option>Two</option>
+                        <option>Three</option>
+                        <option>Four</option>
+                        <option>Five</option>
                       </Input>
                     </FormGroup>
                   </Col>
@@ -293,25 +298,25 @@ function AddEditProduct({changed}) {
                   <Col className="py-1" xs="12">
                     <FormGroup>
                       <Label htmlFor="url_key">Url Key</Label>
-                      <Input type="text" id="url_key" name="url_key" placeholder="Url Key"/>
+                      <Input type="text" id="url_key" name="url_key" placeholder="Url Key" value={formData.url_key} onChange={handleChange} />
                     </FormGroup>
                   </Col>
                   <Col className="py-1" md="6" lg="4">
                     <FormGroup>
                       <Label htmlFor="meta_title">Meta title</Label>
-                      <Input type="text" id="meta_title" name="meta_title" placeholder="Meta title" />
+                      <Input type="text" id="meta_title" name="meta_title" placeholder="Meta title" value={formData.meta_title} onChange={handleChange} />
                     </FormGroup>
                   </Col>
                   <Col className="py-1" md="6" lg="4">
                     <FormGroup>
                       <Label htmlFor="meta_keywords">Meta keywords</Label>
-                      <Input type="text" id="meta_keywords" name="meta_keywords" placeholder="Meta keywords" />
+                      <Input type="text" id="meta_keywords" name="meta_keywords" placeholder="Meta keywords" value={formData.meta_keywords} onChange={handleChange} />
                     </FormGroup>
                   </Col>
                   <Col className="py-1" md="6" lg="4">
                     <FormGroup>
                       <Label htmlFor="meta_description">Meta description</Label>
-                      <Input type="text" id="meta_description" name="meta_description" placeholder="Meta description" />
+                      <Input type="text" id="meta_description" name="meta_description" placeholder="Meta description" value={formData.meta_description} onChange={handleChange} />
                     </FormGroup>
                   </Col>
                 </Row>
@@ -332,7 +337,4 @@ function AddEditProduct({changed}) {
   );
 }
 
-AddEditProduct.propTypes = {
-  changed: PropTypes.func,
-};
-export default AddEditProduct;
+export default AddEditProduct_backup;

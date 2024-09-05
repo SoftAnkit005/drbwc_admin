@@ -36,6 +36,7 @@ export const fetchProducts = createAsyncThunk( 'products/fetchProducts', async (
 
 // Create an async thunk for adding a product
 export const addProduct = createAsyncThunk( 'products/addProduct', async (productData, { rejectWithValue }) => {
+  console.log(productData);
     try {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", token);

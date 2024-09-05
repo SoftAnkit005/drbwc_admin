@@ -6,6 +6,7 @@ import loginReducer from './auth/loginSlice';
 import registerReducer from './auth/registerSlice';
 import productReducer  from './products/productSlice';
 import categoryReducer from './category/categorySlice';
+import attributeReducer from './attributes/attributeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     register: registerReducer,
     products: productReducer ,
     categories: categoryReducer,
+    attribute: attributeReducer,
 
 
 

@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table, UncontrolledTooltip, Input, Button, Badge } from 'reactstrap';
+import { FaRegEdit } from "react-icons/fa";
 import { fetchTickets, DeleteTicket, SearchTicket } from '../../store/apps/ticket/TicketSlice';
 import './table-style.scss';
 import AddEditProduct from '../modal/AddEditProduct';
 import AddEditCategory from '../modal/AddEditCategory';
 import AddEditTags from '../modal/AddEditTags';
 import AddEditReviews from '../modal/AddEditReviews';
+import AddAttributes from '../modal/AddAttributes';
+import DeleteConfirmation from '../modal/DeleteConfirmation';
 
-const TableListing = ({ pageName, tableData }) => {
+const TableListing = ({ pageName, tableData, changeData }) => {
   const dispatch = useDispatch();
   const [selectedTickets, setSelectedTickets] = useState([]);
 
@@ -104,7 +107,7 @@ const TableListing = ({ pageName, tableData }) => {
               <td>{item.id}</td>
               <td>{item.qty}</td>
               <td>
-                <Badge color={item.status === 'In Stock' ? 'success' : 'danger'}>
+                <Badge color={item.status === 'active' ? 'success' : 'danger'} className="text-capitalize">
                   {item.status}
                 </Badge>
               </td>
@@ -138,26 +141,20 @@ const TableListing = ({ pageName, tableData }) => {
         };
       case 'attributes':
         return {
-          headings: ['Attribute Name', 'Groups', 'Type', 'Is Required', 'Is Filterable', 'Actions'],
+          headings: ['Attribute Name', 'Actions'],
           renderRow: (item) => (
             <>
-              <td>{item.no}</td>
-              <td>{item.coupon_code}</td>
-              <td>{item.discount}</td>
-              <td>{item.expiration_date}</td>
+              <td>{item.name}</td>
               <td>
-                <Badge color={item.status === 'Valid' ? 'success' : 'danger'}>
-                  {item.status}
-                </Badge>
-              </td>
-              <td>
-                <Button color="primary">Edit</Button>
-                <Button color="danger" onClick={() => dispatch(DeleteTicket(item.id))}> Delete </Button>
+                <div className='d-flex align-items-center'>
+                  <FaRegEdit className='text-dark cursor-pointer fs-5'/>
+                  <DeleteConfirmation id={item.id} changed={changeData}/>
+                </div>
               </td>
             </>
           ),
           renderAdd: () => (
-            <></>
+            <AddAttributes changed={changeData}/>
           ),
         };
       case 'tags':
@@ -249,11 +246,7 @@ const TableListing = ({ pageName, tableData }) => {
           {tableData?.map((item) => (
             <tr key={item.id}>
               <td>
-                <Input
-                  type="checkbox"
-                  onChange={() => handleCheckboxChange(item.id)}
-                  checked={selectedTickets.includes(item.id)}
-                />
+                <Input type="checkbox" onChange={() => handleCheckboxChange(item.id)} checked={selectedTickets.includes(item.id)} />
               </td>
               {tableConfig.renderRow(item)}
             </tr>
@@ -267,7 +260,8 @@ const TableListing = ({ pageName, tableData }) => {
 // Add prop validation for pageName
 TableListing.propTypes = {
   pageName: PropTypes.string.isRequired,
-  tableData: PropTypes.array
+  tableData: PropTypes.array,
+  changeData: PropTypes.func,
 };
 
 export default TableListing;
