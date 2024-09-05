@@ -118,7 +118,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
             </>
           ),
           renderAdd: () => (
-            <AddEditProduct changed={changeData}/>
+            <AddEditProduct changed={changeData} />
           ),
         };
       case 'categories':
@@ -136,7 +136,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
             </>
           ),
           renderAdd: () => (
-            <AddEditCategory />
+            <AddEditCategory changed={changeData} />
           ),
         };
       case 'attributes':
@@ -147,14 +147,14 @@ const TableListing = ({ pageName, tableData, changeData }) => {
               <td>{item.name}</td>
               <td>
                 <div className='d-flex align-items-center'>
-                  <FaRegEdit className='text-dark cursor-pointer fs-5'/>
-                  <DeleteConfirmation id={item.id} changed={changeData}/>
+                  <FaRegEdit className='text-dark cursor-pointer fs-5' />
+                  <DeleteConfirmation id={item.id} changed={changeData} />
                 </div>
               </td>
             </>
           ),
           renderAdd: () => (
-            <AddAttributes changed={changeData}/>
+            <AddAttributes changed={changeData} />
           ),
         };
       case 'tags':
