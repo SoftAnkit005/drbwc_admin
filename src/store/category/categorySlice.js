@@ -45,6 +45,27 @@ export const createCategory = createAsyncThunk(
   }
 );
 
+export const deleteCategory = createAsyncThunk(
+  'categories/deleteCategory',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/categories/delete-category/${id}`, {
+        method: 'DELETE',
+        headers: myHeaders,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete category');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Create the category slice
 const categorySlice = createSlice({
   name: 'categories',
@@ -84,6 +105,21 @@ const categorySlice = createSlice({
         state.categories = action.payload; // Store newly created category
       })
       .addCase(createCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+
+    builder
+      .addCase(deleteCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = action.payload; // Store newly created category
+      })
+      .addCase(deleteCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
