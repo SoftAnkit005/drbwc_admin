@@ -77,7 +77,7 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.products = Array.isArray(action.payload.products) ? action.payload : [];
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
@@ -90,7 +90,7 @@ const productSlice = createSlice({
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = [...state.products, action.payload]; // Add the new product to the list
+        state.products = [...state.products, action.payload];
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;

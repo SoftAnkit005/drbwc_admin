@@ -118,7 +118,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
             </>
           ),
           renderAdd: () => (
-            <AddEditProduct />
+            <AddEditProduct changed={changeData}/>
           ),
         };
       case 'categories':

@@ -63,13 +63,11 @@ function AddEditProduct({changed}) {
   };
 
   const handleStatusChange = () => {
-    console.log(productState);
     setFormData({
       ...formData,
       status: productState !== true ? 'active' : 'inactive'
     });
   };
-  console.log(formData);
 
   // const handleStockChange = (e) => {
   //   setFormData({

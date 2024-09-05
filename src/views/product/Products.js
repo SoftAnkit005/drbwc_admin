@@ -11,16 +11,20 @@ const Products = () => {
   const [productsData, setproductsData] = useState([]);
   const [prodAddCheck, setprodAddCheck] = useState(false);
 
-  const attrChanged = (e) => {
+  const prodChanged = (e) => {
     setprodAddCheck(e);
-    console.log(e);
   };
 
   useEffect(() => {
     dispatch(fetchProducts());
-    setproductsData(products?.products);
     setprodAddCheck(false);
-  }, [products?.success, prodAddCheck]);
+  }, [dispatch, prodAddCheck]);
+  
+  useEffect(() => {
+    if (products?.success) {
+      setproductsData(products?.products);
+    }
+  }, [products]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -29,7 +33,7 @@ const Products = () => {
     <>
       <Card>
         <CardBody>
-          <TableListing pageName="products" tableData={productsData} changeData={attrChanged}/>
+          <TableListing pageName="products" tableData={productsData} changeData={prodChanged}/>
         </CardBody>
       </Card>
     </>
