@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle } from 'reactstrap';
 import './modalstyle.scss';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import { createCategory } from '../../store/category/categorySlice';
 
-function AddEditCategory() {
+function AddEditCategory({ changed }) {
     const [modal, setModal] = useState(false);
     const [productState, setProductState] = useState(true);
     // const [categories, setCategories] = useState([]); // State to store categories fetched from API
@@ -17,6 +18,7 @@ function AddEditCategory() {
         description: '',
         position: '1',
         status: 'active',
+
     });
 
     const handleChange = (e) => {
@@ -30,6 +32,8 @@ function AddEditCategory() {
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(createCategory(formData));
+        changed(true);
+        toggle();
     };
 
     return (
@@ -119,5 +123,9 @@ function AddEditCategory() {
         </div>
     );
 }
+
+AddEditCategory.propTypes = {
+    changed: PropTypes.func,
+};
 
 export default AddEditCategory;

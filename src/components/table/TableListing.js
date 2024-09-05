@@ -156,7 +156,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
             </>
           ),
           renderAdd: () => (
-            <AddAttributes changed={changeData}/>
+            <AddAttributes changed={changeData} />
           ),
         };
       case 'tags':

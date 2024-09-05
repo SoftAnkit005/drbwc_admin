@@ -9,12 +9,22 @@ const Categories = () => {
   const dispatch = useDispatch();
   const { categories, loading, error } = useSelector((state) => state.categories);
   const [categoryData, setcategoryData] = useState([]);
+  const [categorycheck, setcategoryCheck] = useState(false);
+
+  const cateChanged = (e) => {
+    setcategoryCheck(e);
+  };
 
   useEffect(() => {
     dispatch(fetchCategories());
-    setcategoryData(categories?.categories);
-    console.log(categories);
-  }, [categories?.success]);
+    setcategoryCheck(false);
+  }, [dispatch, categorycheck]);
+
+  useEffect(() => {
+    if (categories?.success) {
+      setcategoryData(categories?.categories);
+    };
+  }, [categories]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -22,7 +32,7 @@ const Categories = () => {
   return (
     <Card>
       <CardBody>
-        <TableListing pageName="categories" tableData={categoryData}/>
+        <TableListing pageName="categories" tableData={categoryData} changeData={cateChanged} />
       </CardBody>
     </Card>
   );

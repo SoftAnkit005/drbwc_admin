@@ -81,8 +81,7 @@ const categorySlice = createSlice({
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.loading = false;
-        state.newCategory = action.payload; // Store newly created category
-        state.categories.push(action.payload); // Optionally add the new category to the list
+        state.categories = action.payload; // Store newly created category
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.loading = false;
