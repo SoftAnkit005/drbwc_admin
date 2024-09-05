@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { Table, UncontrolledTooltip, Input, Button, Badge } from 'reactstrap';
+import { Table, Input, Button, Badge } from 'reactstrap';
 import { FaRegEdit } from "react-icons/fa";
 import { fetchTickets, DeleteTicket, SearchTicket } from '../../store/apps/ticket/TicketSlice';
 import './table-style.scss';
@@ -112,13 +112,15 @@ const TableListing = ({ pageName, tableData, changeData }) => {
                 </Badge>
               </td>
               <td>
-                <i className="bi bi-trash cursor-pointer" id={`delete-${item.id}`} onClick={() => dispatch(DeleteTicket(item.id))} />
-                <UncontrolledTooltip placement="left" target={`delete-${item.id}`}> Delete </UncontrolledTooltip>
+                <div className='d-flex align-items-center'>
+                  <AddEditProduct prodtype="edit" changed={changeData} data={item}/>
+                  <DeleteConfirmation caseType="products" id={item.id} changed={changeData}/>
+                </div>
               </td>
             </>
           ),
           renderAdd: () => (
-            <AddEditProduct changed={changeData}/>
+            <AddEditProduct prodtype="add" changed={changeData}/>
           ),
         };
       case 'categories':
@@ -136,7 +138,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
             </>
           ),
           renderAdd: () => (
-            <AddEditCategory />
+            <AddEditCategory changed={changeData}/>
           ),
         };
       case 'attributes':
@@ -148,7 +150,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
               <td>
                 <div className='d-flex align-items-center'>
                   <FaRegEdit className='text-dark cursor-pointer fs-5'/>
-                  <DeleteConfirmation id={item.id} changed={changeData}/>
+                  <DeleteConfirmation caseType="attributes" id={item.id} changed={changeData}/>
                 </div>
               </td>
             </>

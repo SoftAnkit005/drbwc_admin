@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle } from 'reactstrap';
+import { FaRegEdit } from 'react-icons/fa';
 import ComponentCard from '../ComponentCard';
 import CKEditorComponent from '../editor/CKEditorComponent';
 import './modalstyle.scss';
 import FileDropZone from '../uploader/FileDropZone';
 import { addProduct } from '../../store/products/productSlice';
 
-function AddEditProduct({changed}) {
+function AddEditProduct({changed, prodtype, data}) {
   const [modal, setModal] = useState(false);
   const [productState, setProductState] = useState(true);
   const toggle = () => setModal(!modal);
 
   const dispatch = useDispatch();
-
-  
-
-  
 
   const [formData, setFormData] = useState({
     product_name: '',
@@ -37,6 +34,18 @@ function AddEditProduct({changed}) {
     status: 'active',
     visibility: 'public',
   });
+
+  useEffect(() => {
+    if (prodtype === "edit") {
+      setFormData({
+        ...formData,
+        ...data,
+      });
+      setProductState(data.status === 'active');
+    }
+  }, [prodtype, data]);
+
+  console.log(formData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -88,11 +97,15 @@ function AddEditProduct({changed}) {
 
   return (
     <div>
-      <Button color="primary" className="mb-4 w-fit" onClick={toggle}>
-        Add Product
-      </Button>
+      {prodtype === 'add'?
+        <Button color="primary" className="mb-4 w-fit" onClick={toggle}>
+          Add Product
+        </Button>
+        :
+        <FaRegEdit className='text-dark cursor-pointer fs-5' onClick={toggle}/>
+      }
       <Modal isOpen={modal} toggle={toggle} fullscreen>
-        <ModalHeader className="bg-primary text-white px-xl-5" toggle={toggle}>Add Product</ModalHeader>
+        <ModalHeader className="bg-primary text-white px-xl-5" toggle={toggle}>{prodtype === 'add'?'Add':'Edit'} Product</ModalHeader>
         <ModalBody>
           <Row>
             <Col md="12">
@@ -125,31 +138,25 @@ function AddEditProduct({changed}) {
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="use_for">Use For</Label>
-                        <Input type="text" id="use_for" name="use_for" placeholder="Use For"/>
+                        <Input type="text" id="use_for" name="use_for" placeholder="Use For" value={formData.use_for} onChange={handleChange}/>
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="power_source">Power Source</Label>
-                        <Input type="text" id="power_source" name="power_source" placeholder="Power Source"/>
+                        <Input type="text" id="power_source" name="power_source" placeholder="Power Source" value={formData.power_source} onChange={handleChange}/>
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="material">Material</Label>
-                        <Input type="text" id="material" name="material" placeholder="Material"/>
+                        <Input type="text" id="material" name="material" placeholder="Material" value={formData.material} onChange={handleChange}/>
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
                       <FormGroup>
                         <Label htmlFor="item_weight">Item Weight</Label>
-                        <Input type="text" id="item_weight" name="item_weight" placeholder="Item Weight" />
-                      </FormGroup>
-                    </Col>
-                    <Col className="py-1" md="6" lg="4" xl="3">
-                      <FormGroup>
-                        <Label htmlFor="brand">Brand</Label>
-                        <Input type="text" id="brand" name="brand" placeholder="Brand" />
+                        <Input type="text" id="item_weight" name="item_weight" placeholder="Item Weight" value={formData.item_weight} onChange={handleChange}/>
                       </FormGroup>
                     </Col>
                     <Col className="py-1" md="6" lg="4" xl="3">
@@ -161,7 +168,7 @@ function AddEditProduct({changed}) {
                     <Col className="py-1">
                       <FormGroup>
                         <Label htmlFor="about_item">About this item</Label>
-                        <Input type="textarea" id="about_item" name="about_item" placeholder="About this item"/>
+                        <Input type="textarea" id="about_item" name="about_item" placeholder="About this item" value={formData.about_item} onChange={handleChange}/>
                       </FormGroup>
                     </Col>
                     <Col className="py-1" xs="12">
@@ -332,5 +339,7 @@ function AddEditProduct({changed}) {
 
 AddEditProduct.propTypes = {
   changed: PropTypes.func,
+  data: PropTypes.object,
+  prodtype: PropTypes.string,
 };
 export default AddEditProduct;

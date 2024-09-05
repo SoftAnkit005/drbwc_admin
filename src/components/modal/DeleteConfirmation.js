@@ -3,15 +3,26 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { deleteAttribute } from '../../store/attributes/attributeSlice';
+import { deleteProduct } from '../../store/products/productSlice';
 
-function DeleteConfirmation({id, changed}) {
+function DeleteConfirmation({id, changed, caseType}) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const dispatch = useDispatch();
 
   const handleDelete = () => {
     console.log(id);
-    dispatch(deleteAttribute(id));
+    switch (caseType) {
+      case 'attributes':
+        dispatch(deleteAttribute(id));
+        break;
+      case 'products':
+        dispatch(deleteProduct(id));
+        break;
+    
+      default:
+        break;
+    }
     changed(true);
     toggle(); // Close the modal after deleting
   };
@@ -40,6 +51,7 @@ function DeleteConfirmation({id, changed}) {
 DeleteConfirmation.propTypes = {
     id: PropTypes.number.isRequired,
     changed: PropTypes.func,
+    caseType: PropTypes.string,
 };
 
 export default DeleteConfirmation;

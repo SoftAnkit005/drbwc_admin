@@ -41,13 +41,7 @@ export const addProduct = createAsyncThunk( 'products/addProduct', async (produc
       const myHeaders = new Headers();
       myHeaders.append("Authorization", token);
       myHeaders.append("Content-Type", "application/json");
-
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(productData),
-        redirect: "follow"
-      };
+      const requestOptions = { method: "POST", headers: myHeaders, body: JSON.stringify(productData), redirect: "follow" };
 
       const response = await fetch(`${apiUrl}/api/product/create`, requestOptions);
 
@@ -58,6 +52,30 @@ export const addProduct = createAsyncThunk( 'products/addProduct', async (produc
       const data = await response.json();
       return data;
       
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Create an async thunk for deleting a product
+export const deleteProduct = createAsyncThunk(
+  'products/deleteProduct',
+  async (productId, { rejectWithValue }) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", token);
+      const formdata = new FormData(); // If you need to send any form data
+      const requestOptions = { method: "DELETE", headers: myHeaders, body: formdata, redirect: "follow" };
+      const response = await fetch(`${apiUrl}/api/product/delete/${productId}`, requestOptions);
+
+      if (!response.ok) {
+        throw new Error('Failed to delete product');
+      }
+
+      const data = await response.text();
+      return { productId, data }; // Return productId to filter it out from the state
+
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -93,6 +111,21 @@ const productSlice = createSlice({
         state.products = [...state.products, action.payload];
       })
       .addCase(addProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Delete Product
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        // Filter out the deleted product from the state
+        state.products = state.products.filter(product => product.id !== action.payload.productId);
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
