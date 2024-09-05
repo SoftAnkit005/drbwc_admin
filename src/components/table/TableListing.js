@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Table, Input, Button, Badge } from 'reactstrap';
 import { FaRegEdit } from "react-icons/fa";
 import { fetchTickets, DeleteTicket, SearchTicket } from '../../store/apps/ticket/TicketSlice';
@@ -14,82 +14,81 @@ import DeleteConfirmation from '../modal/DeleteConfirmation';
 
 const TableListing = ({ pageName, tableData, changeData }) => {
   const dispatch = useDispatch();
-  const [selectedTickets, setSelectedTickets] = useState([]);
 
   useEffect(() => {
     dispatch(fetchTickets());
   }, [dispatch]);
 
-  const getVisibleTickets = (tickets, filter, ticketSearch) => {
-    switch (filter) {
-      case 'total_tickets':
-        return tickets.filter(
-          (c) => !c.deleted && c.ticketTitle.toLowerCase().includes(ticketSearch)
-        );
+  // const getVisibleTickets = (tickets, filter, ticketSearch) => {
+  //   switch (filter) {
+  //     case 'total_tickets':
+  //       return tickets.filter(
+  //         (c) => !c.deleted && c.ticketTitle.toLowerCase().includes(ticketSearch)
+  //       );
 
-      case 'Pending':
-        return tickets.filter(
-          (c) =>
-            !c.deleted &&
-            c.Status === 'Pending' &&
-            c.ticketTitle.toLowerCase().includes(ticketSearch)
-        );
+  //     case 'Pending':
+  //       return tickets.filter(
+  //         (c) =>
+  //           !c.deleted &&
+  //           c.Status === 'Pending' &&
+  //           c.ticketTitle.toLowerCase().includes(ticketSearch)
+  //       );
 
-      case 'Closed':
-        return tickets.filter(
-          (c) =>
-            !c.deleted &&
-            c.Status === 'Closed' &&
-            c.ticketTitle.toLowerCase().includes(ticketSearch)
-        );
+  //     case 'Closed':
+  //       return tickets.filter(
+  //         (c) =>
+  //           !c.deleted &&
+  //           c.Status === 'Closed' &&
+  //           c.ticketTitle.toLowerCase().includes(ticketSearch)
+  //       );
 
-      case 'Open':
-        return tickets.filter(
-          (c) =>
-            !c.deleted &&
-            c.Status === 'Open' &&
-            c.ticketTitle.toLowerCase().includes(ticketSearch)
-        );
+  //     case 'Open':
+  //       return tickets.filter(
+  //         (c) =>
+  //           !c.deleted &&
+  //           c.Status === 'Open' &&
+  //           c.ticketTitle.toLowerCase().includes(ticketSearch)
+  //       );
 
-      default:
-        throw new Error(`Unknown filter: ${filter}`);
-    }
-  };
+  //     default:
+  //       throw new Error(`Unknown filter: ${filter}`);
+  //   }
+  // };
 
-  const tickets = useSelector((state) =>
-    getVisibleTickets(
-      state.ticketReducer.tickets,
-      state.ticketReducer.currentFilter,
-      state.ticketReducer.ticketSearch
-    )
-  );
+  // const tickets = useSelector((state) =>
+  //   getVisibleTickets(
+  //     state.ticketReducer.tickets,
+  //     state.ticketReducer.currentFilter,
+  //     state.ticketReducer.ticketSearch
+  //   )
+  // );
 
   // Handle checkbox change for individual ticket
-  const handleCheckboxChange = (ticketId) => {
-    if (selectedTickets.includes(ticketId)) {
-      setSelectedTickets(selectedTickets.filter((id) => id !== ticketId));
-    } else {
-      setSelectedTickets([...selectedTickets, ticketId]);
-    }
-  };
+  // const handleCheckboxChange = (ticketId) => {
+  //   if (selectedTickets.includes(ticketId)) {
+  //     setSelectedTickets(selectedTickets.filter((id) => id !== ticketId));
+  //   } else {
+  //     setSelectedTickets([...selectedTickets, ticketId]);
+  //   }
+  // };
 
   // Handle delete selected tickets
-  const handleDeleteSelected = () => {
-    selectedTickets.forEach((ticketId) => {
-      dispatch(DeleteTicket(ticketId));
-    });
-    setSelectedTickets([]); // Clear selected tickets after deletion
-  };
+  // const handleDeleteSelected = () => {
+  //   selectedTickets.forEach((ticketId) => {
+  //     dispatch(DeleteTicket(ticketId));
+  //   });
+  //   setSelectedTickets([]); // Clear selected tickets after deletion
+  // };
 
   // Handle select/deselect all
-  const handleSelectAll = (event) => {
-    if (event.target.checked) {
-      const allTicketIds = tickets.map((ticket) => ticket.Id);
-      setSelectedTickets(allTicketIds);
-    } else {
-      setSelectedTickets([]);
-    }
-  };
+  // const handleSelectAll = (event) => {
+  //   if (event.target.checked) {
+  //     const allTicketIds = tickets.map((ticket) => ticket.Id);
+  //     setSelectedTickets(allTicketIds);
+  //   } else {
+  //     setSelectedTickets([]);
+  //   }
+  // };
 
   // Determine table headings and row data based on pageName
   const tableConfig = (() => {
@@ -97,6 +96,8 @@ const TableListing = ({ pageName, tableData, changeData }) => {
       case 'products':
         return {
           headings: ['Thumbnail', 'Name', 'Price', 'Product Id', 'Stock', 'Status', 'Action'],
+
+
           renderRow: (item) => (
             <>
               <td>
@@ -114,7 +115,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
               <td>
                 <div className='d-flex align-items-center'>
                   <AddEditProduct prodtype="edit" changed={changeData} data={item}/>
-                  <DeleteConfirmation caseType="products" id={item.id} changed={changeData}/>
+                  <DeleteConfirmation caseType="products" id={item.id} title={item.product_name} changed={changeData}/>
                 </div>
               </td>
             </>
@@ -138,7 +139,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
               <td>
                 <div className='d-flex align-items-center'>
                   <FaRegEdit className='text-dark cursor-pointer fs-5'/>
-                  <DeleteConfirmation caseType="categories" id={item.id} changed={changeData}/>
+                  <DeleteConfirmation caseType="categories" id={item.id} title={item.name} changed={changeData}/>
                 </div>
               </td>
             </>
@@ -156,7 +157,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
               <td>
                 <div className='d-flex align-items-center'>
                   <FaRegEdit className='text-dark cursor-pointer fs-5'/>
-                  <DeleteConfirmation caseType="attributes" id={item.id} changed={changeData}/>
+                  <DeleteConfirmation caseType="attributes" id={item.id} title={item.name} changed={changeData}/>
                 </div>
               </td>
             </>
@@ -231,19 +232,19 @@ const TableListing = ({ pageName, tableData, changeData }) => {
         <Input className="w-fit mb-4" type="text" onChange={(e) => dispatch(SearchTicket(e.target.value))} placeholder="Search Ticket..." />
         {tableConfig.renderAdd()}
       </div>
-      <Button color="danger" className={`mb-3 ${selectedTickets.length === 0 ? 'd-none' : ''}`} onClick={handleDeleteSelected} >
+      {/* <Button color="danger" className={`mb-3 ${selectedTickets.length === 0 ? 'd-none' : ''}`} onClick={handleDeleteSelected} >
         Delete Selected
-      </Button>
+      </Button> */}
       <Table className="align-middle">
         <thead>
           <tr>
-            <th>
+            {/* <th>
               <Input
                 type="checkbox"
                 onChange={handleSelectAll}
                 checked={selectedTickets.length === tickets.length && tickets.length > 0}
               />
-            </th>
+            </th> */}
 
             {tableConfig.headings.map((heading, index) => (
               <th key={index}>{heading}</th>
@@ -253,9 +254,9 @@ const TableListing = ({ pageName, tableData, changeData }) => {
         <tbody>
           {tableData?.map((item) => (
             <tr key={item.id}>
-              <td>
+              {/* <td>
                 <Input type="checkbox" onChange={() => handleCheckboxChange(item.id)} checked={selectedTickets.includes(item.id)} />
-              </td>
+              </td> */}
               {tableConfig.renderRow(item)}
             </tr>
           ))}

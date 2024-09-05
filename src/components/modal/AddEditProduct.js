@@ -1,20 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle, Table } from 'reactstrap';
 import { FaRegEdit } from 'react-icons/fa';
 import ComponentCard from '../ComponentCard';
 import CKEditorComponent from '../editor/CKEditorComponent';
 import './modalstyle.scss';
 import FileDropZone from '../uploader/FileDropZone';
-import { addProduct } from '../../store/products/productSlice';
+import { addProduct, updateProduct } from '../../store/products/productSlice';
+import { fetchCategories } from '../../store/category/categorySlice';
 
 function AddEditProduct({changed, prodtype, data}) {
+  const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [productState, setProductState] = useState(true);
   const toggle = () => setModal(!modal);
+  const [varientImage, setvarientImage] = useState('');
+  const [varientColor, setvarientColor] = useState('');
+  const [allVarients, setallVarients] = useState([]);
+  const [allCategories, setallCategories] = useState([])
+  const { categories } = useSelector((state) => state.categories);
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (categories?.success) {
+      setallCategories(categories?.categories);
+    }
+  }, [categories]);
+  
 
   const [formData, setFormData] = useState({
     product_name: '',
@@ -23,17 +39,22 @@ function AddEditProduct({changed, prodtype, data}) {
     image_urls: [],
     qty: '',
     category_id: '',
-
     subcategory_id: 1,
     attribute_id: 2,
     variant_id: 3,
-    
+    use_for: '',
+    power_source: '',
+    material: '',
+    item_weight: '',
+    about_item: '',
     video_link: '',
     amazon_link: '',
     flipkart_link: '',
     status: 'active',
     visibility: 'public',
   });
+
+  console.log(formData);
 
   useEffect(() => {
     if (prodtype === "edit") {
@@ -45,11 +66,13 @@ function AddEditProduct({changed, prodtype, data}) {
     }
   }, [prodtype, data]);
 
-  console.log(formData);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addProduct(formData));
+    if(prodtype === 'add'){
+      dispatch(addProduct(formData));
+    }else{
+      dispatch(updateProduct(formData));
+    }
     changed(true);
     toggle()
   };
@@ -94,6 +117,37 @@ function AddEditProduct({changed, prodtype, data}) {
       image_urls: e
     });
   }
+
+  const handleAddVariant = () => {
+    setallVarients([
+      ...allVarients,
+      { url: varientImage, variant: varientColor }
+    ]);
+    setFormData({
+      ...formData,
+      variant_image_urls: [
+        ...allVarients,
+        { url: varientImage, variant: varientColor }
+      ]
+    });
+
+    // Clear the input fields
+    // setvarientImage('');
+    // setvarientColor('');
+  };
+  const handleImageChange = (e) => {
+    // Assuming you want to handle the file, you might need to use FileReader to get the file URL or handle the file upload
+    const file = e.target.files[0];
+    if (file) {
+      const fileURL = URL.createObjectURL(file); // Create a local URL for the file
+      setvarientImage(fileURL);
+    }
+  };
+
+  const handleDeleteVariant = (indexToDelete) => {
+    setallVarients(allVarients.filter((_, index) => index !== indexToDelete));
+  };
+
 
   return (
     <div>
@@ -165,6 +219,12 @@ function AddEditProduct({changed, prodtype, data}) {
                         <Input type="text" id="color" name="color" placeholder="Color"/>
                       </FormGroup>
                     </Col>
+                    <Col className="py-1" md="6" lg="4" xl="3">
+                      <FormGroup>
+                        <Label htmlFor="color">Size</Label>
+                        <Input type="text" id="color" name="size" placeholder="Size"/>
+                      </FormGroup>
+                    </Col>
                     <Col className="py-1">
                       <FormGroup>
                         <Label htmlFor="about_item">About this item</Label>
@@ -189,20 +249,20 @@ function AddEditProduct({changed, prodtype, data}) {
                         <Input type="text" id="flipkart_link" name="flipkart_link" placeholder="Flipkart Link" value={formData.flipkart_link} onChange={handleChange} />
                       </FormGroup>
                     </Col>
-                    <Col className="py-1" xs="12">
+                    <Col className="py-1" md="6">
                       <FormGroup>
                         <Label htmlFor="category">Category</Label>
                         <Input type="select" id="category" name="category_id" value={formData.category_id} onChange={handleChange}>
                           <option>Select...</option>
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
-                          <option>5</option>
+                          {allCategories?.map((category) => (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          ))}
                         </Input>
                       </FormGroup>
                     </Col>
-                    <Col className="py-1" xs="12">
+                    <Col className="py-1" md="6">
                       <FormGroup>
                         <Label htmlFor="tax_class">Tax Class</Label>
                         <Input type="select" id="tax_class" name="tax_class">
@@ -234,9 +294,9 @@ function AddEditProduct({changed, prodtype, data}) {
                                     <Label htmlFor="stock0" check>No</Label>
                                 </FormGroup>
                             </FormGroup>
-                        <FormGroup>
-                          <Input type="text" id="qty" name="qty" placeholder="Quantity" value={formData.qty} onChange={handleChange} />
-                        </FormGroup>
+                            <FormGroup>
+                              <Input type="text" id="qty" name="qty" placeholder="Quantity" value={formData.qty} onChange={handleChange} />
+                            </FormGroup>
                       </FormGroup>
                     </Col>
                   </Row>
@@ -259,39 +319,52 @@ function AddEditProduct({changed, prodtype, data}) {
           </Row>
           <Row>
             <Col md="12">
-              <ComponentCard title="Attributes">
+              <ComponentCard title="Varients">
                 <Row>
-                  <Col className="py-1" md="6" lg="4" xl="3">
+                  <Col className="px-lg-3 border-end" lg="4">
                     <FormGroup>
-                      <Label htmlFor="size">Size</Label>
-                      <Input type="select" id="size" name="size">
-                        <option>Select...</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </Input>
+                        <Label htmlFor="stock1" check>Image</Label>
+                        <Input type="file" className="custom-file-input mb-3" id="customFile3" onChange={handleImageChange}/>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="stock1" check>Color</Label>
+                        <Input type="text" id="color" name="color" placeholder="Color" onChange={(e) => setvarientColor(e.target.value)}/>
+                    </FormGroup>
+                    <FormGroup>
+                      <Button color="info" onClick={handleAddVariant}>Add</Button>
                     </FormGroup>
                   </Col>
-                  <Col className="py-1" md="6" lg="4" xl="3">
-                    <FormGroup>
-                      <Label htmlFor="color_attr">Color</Label>
-                      <Input type="select" id="color_attr" name="color_attr">
-                        <option>Select...</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </Input>
-                    </FormGroup>
+                  <Col className="px-lg-3" lg="8">
+                    <Table className={allVarients?.length === 0 ? 'd-none' : ''} variant="light" responsive>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Image</th>
+                          <th>Color</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allVarients?.map((varient, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>
+                              <img src={varient.url} alt={`Variant ${index}`} width="50" height="50" />
+                            </td>
+                            <td>{varient.variant}</td>
+                            <td>
+                              <i className="bi bi-trash cursor-pointer ms-2 text-danger fs-5" onClick={() => handleDeleteVariant(index)} />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
                   </Col>
                 </Row>
               </ComponentCard>
             </Col>
           </Row>              
-          <Row>
+          {/* <Row>
             <Col md="12">
               <ComponentCard title="Search Engine Optimization">
                 <Row>
@@ -322,14 +395,14 @@ function AddEditProduct({changed, prodtype, data}) {
                 </Row>
               </ComponentCard>
             </Col>
-          </Row>
+          </Row> */}
         </ModalBody>
         <ModalFooter className="px-5">
           <Button color="dark" onClick={toggle}>
             Cancel
           </Button>
           <Button color="success" onClick={handleSubmit}>
-            Save
+            {prodtype === 'add'?'Add':'Edit'}
           </Button>
         </ModalFooter>
       </Modal>

@@ -82,6 +82,35 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const updateProduct = createAsyncThunk(
+  'products/updateProduct',
+  async (productData, { rejectWithValue }) => {
+    try {
+      // Define headers and request options
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", token);
+
+      // Construct the request body
+      const raw = JSON.stringify(productData);
+
+      const requestOptions = { method: "POST", headers: myHeaders, body: raw, redirect: "follow" };
+
+      // Perform the fetch request
+      const response = await fetch(`${apiUrl}/api/product/update/${productData.id}`, requestOptions);
+
+      if (!response.ok) {
+        throw new Error('Failed to update product');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Create a slice
 const productSlice = createSlice({
   name: 'products',
@@ -126,6 +155,20 @@ const productSlice = createSlice({
         state.products = state.products.filter(product => product.id !== action.payload.productId);
       })
       .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Update Product
+      .addCase(updateProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = state.products.map(product => product.id === action.payload.id ? action.payload : product);
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
