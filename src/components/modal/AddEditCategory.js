@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle } from 'reactstrap';
 import './modalstyle.scss';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createCategory } from '../../store/category/categorySlice';
 
 function AddEditCategory() {
     const [modal, setModal] = useState(false);
     const [productState, setProductState] = useState(true);
-    const [categories, setCategories] = useState([]); // State to store categories fetched from API
+    // const [categories, setCategories] = useState([]); // State to store categories fetched from API
     const toggle = () => setModal(!modal);
     const dispatch = useDispatch();
-    const { category, loading, error } = useSelector((state) => state.categories);
+    // const { category, loading, error } = useSelector((state) => state.categories);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -73,12 +73,12 @@ function AddEditCategory() {
                                                     value={formData.p_category}
                                                     onChange={handleChange}
                                                 >
-                                                    <option value="">Select...</option>
+                                                    {/* <option value="">Select...</option>
                                                     {categories.map((category) => (
                                                         <option value={category.id}>{category.name}</option>
                                                         
-                                                    ))}
-                                                 
+                                                    ))} */}
+
                                                 </Input>
                                             </FormGroup>
                                         </Col>
