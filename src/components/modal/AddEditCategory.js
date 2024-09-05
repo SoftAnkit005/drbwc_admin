@@ -4,7 +4,7 @@ import './modalstyle.scss';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { createCategory } from '../../store/category/categorySlice';
-import { createSubcategory } from '../../store/subcategory/subcategorySlice';
+
 
 function AddEditCategory({ changed, allCategories }) {
     const [modal, setModal] = useState(false);
