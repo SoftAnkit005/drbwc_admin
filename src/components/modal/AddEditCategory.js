@@ -42,6 +42,7 @@ function AddEditCategory({ changed, allCategories, field, catType, data }) {
                 ...subCatformData,
                 ...data,
             })
+            setProductState(data?.status === 'active');
         }
     }, [catType, data]);
 
