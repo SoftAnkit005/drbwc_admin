@@ -1,34 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle, Form } from 'reactstrap';
 import './modalstyle.scss';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { createCategory } from '../../store/category/categorySlice';
 
-
 function AddEditCategory({ changed, allCategories }) {
     const [modal, setModal] = useState(false);
     const [productState, setProductState] = useState(true);
-    // const [categories, setCategories] = useState([]); // State to store categories fetched from API
-    const toggle = () => setModal(!modal);
     const dispatch = useDispatch();
+    console.log(allCategories);
 
-    useEffect(() => {
-
-    })
-
-
-    console.log(allCategories)
-
-
-
+    const toggle = () => setModal(!modal);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         position: '1',
         status: 'active',
-
+        p_category: '',
+        s_category: '',
     });
+
+
+
+
+    // useEffect(() => {
+    //     setFormData((prevState) => ({
+    //         ...prevState,
+    //         p_category: allCategories[0]?.name,
+    //         s_category: allCategories[0]?.parentCategory,
+    //     }));
+    // }, [allCategories]);
+
+
+
+    // useEffect(() => {
+    //     if (formData.name) {
+    //         const parentCategory = allCategories.find((category) => category.name === formData.name);
+    //         if (parentCategory && parentCategory.parentCategory) {
+    //             setFormData((prevState) => ({
+    //                 ...prevState,
+    //                 parentCategory: parentCategory.name,
+    //                 subCategory: parentCategory.parentCategory,
+    //             }));
+    //         } else {
+    //             setFormData((prevState) => ({
+    //                 ...prevState,
+    //                 parentCategory: '',
+    //                 subCategory: '',
+    //             }));
+    //         }
+    //     }
+    // }, [formData.name, allCategories])
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,11 +65,12 @@ function AddEditCategory({ changed, allCategories }) {
     const handleSubmit = () => {
         dispatch(createCategory(formData));
         changed(true);
-        toggle();
+        toggle(); // 
     };
 
     return (
         <div>
+
             <Button color="primary" className="mb-4 w-fit" onClick={toggle}>
                 Add Category
             </Button>
@@ -74,7 +99,6 @@ function AddEditCategory({ changed, allCategories }) {
                                                         value={formData.name}
                                                         onChange={handleChange}
                                                         required
-
                                                     />
                                                 </FormGroup>
                                             </Col>
@@ -94,18 +118,17 @@ function AddEditCategory({ changed, allCategories }) {
                                                                 {category.name}
                                                             </option>
                                                         ))}
-
                                                     </Input>
                                                 </FormGroup>
                                             </Col>
-                                            <Col className="py-1" xs="12">
+                                            <Col className={`py-1 ${formData.p_category !== '' ? 'd-none' : ''}`} xs="12">
                                                 <FormGroup>
                                                     <Label htmlFor="position">Position</Label>
                                                     <Input
                                                         type="select"
-                                                        id="s_category"
+                                                        id="position"
                                                         name="position"
-                                                        value={formData.s_category}
+                                                        value={formData.position}
                                                         onChange={handleChange}
                                                     >
                                                         <option value="">Select...</option>
