@@ -7,6 +7,8 @@ import registerReducer from './auth/registerSlice';
 import productReducer  from './products/productSlice';
 import categoryReducer from './category/categorySlice';
 import attributeReducer from './attributes/attributeSlice';
+import bannerReducer from './banner/bannerSlice';
+import ordersReducer from './orders/ordersSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +17,8 @@ export const store = configureStore({
     products: productReducer ,
     categories: categoryReducer,
     attribute: attributeReducer,
+    banner: bannerReducer,
+    orders: ordersReducer,
 
 
 

@@ -11,6 +11,7 @@ import AddEditTags from '../modal/AddEditTags';
 import AddEditReviews from '../modal/AddEditReviews';
 import AddAttributes from '../modal/AddAttributes';
 import DeleteConfirmation from '../modal/DeleteConfirmation';
+import AddEditBanner from '../modal/AddEditBanner';
 
 const TableListing = ({ pageName, tableData, changeData }) => {
   const dispatch = useDispatch();
@@ -96,8 +97,6 @@ const TableListing = ({ pageName, tableData, changeData }) => {
       case 'products':
         return {
           headings: ['Thumbnail', 'Name', 'Price', 'Product Id', 'Stock', 'Status', 'Action'],
-
-
           renderRow: (item) => (
             <>
               <td>
@@ -146,6 +145,30 @@ const TableListing = ({ pageName, tableData, changeData }) => {
           ),
           renderAdd: () => (
             <AddEditCategory changed={changeData}/>
+          ),
+        };
+      case 'banner':
+        return {
+          headings: ['Banner Name','Image', 'Status','Action'],
+          renderRow: (item) => (
+            <>
+              <td>{item.title}</td>
+              <td><img src={item.image_url} alt={item.image_name} width="50" height="50" /></td>
+              <td>
+                <Badge color={item.status === 'active' ? 'success' : 'danger'}>
+                  {(item.status === 'active') ? 'Active' : 'InActice'}
+                </Badge>
+              </td>
+              <td>
+                <div className='d-flex align-items-center'>
+                  <FaRegEdit className='text-dark cursor-pointer fs-5'/>
+                  <DeleteConfirmation caseType="banner" id={item.id} title={item.title} changed={changeData}/>
+                </div>
+              </td>
+            </>
+          ),
+          renderAdd: () => (
+            <AddEditBanner changed={changeData}/>
           ),
         };
       case 'attributes':
@@ -203,6 +226,31 @@ const TableListing = ({ pageName, tableData, changeData }) => {
               <td>
                 <Button color="primary">Edit</Button>
                 <Button color="danger" onClick={() => dispatch(DeleteTicket(item.id))}> Delete </Button>
+              </td>
+            </>
+          ),
+          renderAdd: () => (
+            <AddEditReviews />
+          ),
+        };
+      case 'orders':
+        return {
+          headings: ['Order Number','Date','Customer Email', 'Shipment Status','Payment Status','Total Amount','Actions'],
+          renderRow: (item) => (
+            <>
+              <td>{item.order_prefix}</td>
+              <td>{item.order_date}</td>
+              <td>-</td>
+              <td>-</td>
+              <td>
+                <Badge color={item.status === 'success' ? 'success' : 'danger'}> {item.status} </Badge>
+              </td>
+              <td>{item.total_amount}</td>
+              <td>
+                <div className='d-flex align-items-center'>
+                  <FaRegEdit className='text-dark cursor-pointer fs-5'/>
+                  <DeleteConfirmation caseType="attributes" id={item.id} title={item.name} changed={changeData}/>
+                </div>
               </td>
             </>
           ),

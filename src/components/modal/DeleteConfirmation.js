@@ -5,6 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { deleteAttribute } from '../../store/attributes/attributeSlice';
 import { deleteProduct } from '../../store/products/productSlice';
 import { deleteCategory } from '../../store/category/categorySlice';
+import { deleteBanner } from '../../store/banner/bannerSlice';
 
 function DeleteConfirmation({id, changed, caseType, title}) {
   const [modal, setModal] = useState(false);
@@ -20,9 +21,11 @@ function DeleteConfirmation({id, changed, caseType, title}) {
       case 'products':
         dispatch(deleteProduct(id));
         break;
-
       case 'categories':
         dispatch(deleteCategory(id));
+        break;
+      case 'banner':
+        dispatch(deleteBanner(id));
         break;
     
       default:

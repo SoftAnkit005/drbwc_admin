@@ -16,6 +16,7 @@ import Orders from '../views/orders/Orders';
 import Customers from '../views/customers/Customers';
 import Coupons from '../views/prmotion/Coupons';
 import Setting from '../views/setting/Setting';
+import Banner from '../views/banner/Banner';
 
 /****Layouts*****/
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
@@ -42,6 +43,8 @@ const ThemeRoutes = [
       { path: '/dashboard', name: 'Dashboard', exact: true, element: <ProtectedRoute component={Dashboard} /> },
       { path: '/add-product', name: 'Add Products', exact: true, element: <ProtectedRoute component={AddProducts} /> },
       { path: '/add-coupon', name: 'Add Coupon', exact: true, element: <ProtectedRoute component={AddCoupon} /> },
+
+      { path: '/banner', name: 'Banner', exact: true, element: <Banner component={Banner} /> },
       { path: '/products', name: 'Products', exact: true, element: <ProtectedRoute component={Products} /> },
       { path: '/categories', name: 'Categories', exact: true, element: <ProtectedRoute component={Categories} /> },
       { path: '/attributes', name: 'Attributes', exact: true, element: <ProtectedRoute component={Attributes} /> },
