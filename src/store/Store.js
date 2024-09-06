@@ -9,6 +9,7 @@ import categoryReducer from './category/categorySlice';
 import attributeReducer from './attributes/attributeSlice';
 import bannerReducer from './banner/bannerSlice';
 import ordersReducer from './orders/ordersSlice';
+import subcategoryReducer from './subcategory/subcategorySlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     attribute: attributeReducer,
     banner: bannerReducer,
     orders: ordersReducer,
+    subcategories: subcategoryReducer,
 
 
 

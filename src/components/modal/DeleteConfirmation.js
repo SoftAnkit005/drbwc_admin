@@ -6,6 +6,7 @@ import { deleteAttribute } from '../../store/attributes/attributeSlice';
 import { deleteProduct } from '../../store/products/productSlice';
 import { deleteCategory } from '../../store/category/categorySlice';
 import { deleteBanner } from '../../store/banner/bannerSlice';
+import { deleteSubCategory } from '../../store/subcategory/subcategorySlice';
 
 function DeleteConfirmation({id, changed, caseType, title}) {
   const [modal, setModal] = useState(false);
@@ -13,7 +14,6 @@ function DeleteConfirmation({id, changed, caseType, title}) {
   const dispatch = useDispatch();
 
   const handleDelete = () => {
-    console.log(id);
     switch (caseType) {
       case 'attributes':
         dispatch(deleteAttribute(id));
@@ -23,6 +23,9 @@ function DeleteConfirmation({id, changed, caseType, title}) {
         break;
       case 'categories':
         dispatch(deleteCategory(id));
+        break;
+      case 'sub_categoreis':
+        dispatch(deleteSubCategory(id));
         break;
       case 'banner':
         dispatch(deleteBanner(id));
@@ -57,7 +60,7 @@ function DeleteConfirmation({id, changed, caseType, title}) {
 }
 
 DeleteConfirmation.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
     changed: PropTypes.func,
     caseType: PropTypes.string,
     title: PropTypes.string,

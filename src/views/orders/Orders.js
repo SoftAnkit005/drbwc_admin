@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody } from 'reactstrap';
-import TableListing from '../../components/table/TableListing';
 import { getOrders } from '../../store/orders/ordersSlice';
+import DataTableListing from '../../components/table/DataTableListing';
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const Orders = () => {
   return (
     <Card>
       <CardBody>
-        <TableListing pageName="orders" tableData={ordersData} changeData={attrChanged}/>
+        <DataTableListing pageName="orders" tableData={ordersData} changeData={attrChanged}/>
       </CardBody>
     </Card>
   );

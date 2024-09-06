@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody } from 'reactstrap';
-import TableListing from '../../components/table/TableListing';
+import DataTableListing from '../../components/table/DataTableListing';
 import { getBanners } from '../../store/banner/bannerSlice';
 
 const Banner = () => {
@@ -32,7 +32,7 @@ const Banner = () => {
   return (
     <Card>
       <CardBody>
-        <TableListing pageName="banner" tableData={bannerData} changeData={bannerChanged}/>
+        <DataTableListing pageName="banner" tableData={bannerData} changeData={bannerChanged}/>
       </CardBody>
     </Card>
   );

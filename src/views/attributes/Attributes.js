@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody } from 'reactstrap';
 import './attributes.scss';
-import TableListing from '../../components/table/TableListing';
+import DataTableListing from '../../components/table/DataTableListing';
 import { fetchAttributes } from '../../store/attributes/attributeSlice';
 
 const Attributes = () => {
@@ -37,7 +37,7 @@ const Attributes = () => {
   return (
     <Card>
       <CardBody>
-        <TableListing pageName="attributes" tableData={attributesData} changeData={attrChanged} />
+        <DataTableListing pageName="attributes" tableData={attributesData} changeData={attrChanged} />
       </CardBody>
     </Card>
   );

@@ -66,6 +66,28 @@ export const deleteCategory = createAsyncThunk(
   }
 );
 
+export const updateCategory = createAsyncThunk(
+  'categories/updateCategory',
+  async (categoryData, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/categories/update-category/${categoryData.id}`, {
+        method: 'POST',
+        headers: myHeaders,
+        body: JSON.stringify(categoryData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update category');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  } 
+);
+
 // Create the category slice
 const categorySlice = createSlice({
   name: 'categories',
@@ -120,6 +142,21 @@ const categorySlice = createSlice({
         state.categories = action.payload; // Store newly created category
       })
       .addCase(deleteCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+
+    builder
+      .addCase(updateCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = action.payload; // Store newly created category
+      })
+      .addCase(updateCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

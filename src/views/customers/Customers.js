@@ -1,11 +1,11 @@
 import { Card, CardBody } from 'reactstrap';
-import TableListing from '../../components/table/TableListing';
+import DataTableListing from '../../components/table/DataTableListing';
 
 const Customers = () => {
   return (
     <Card>
       <CardBody>
-        <TableListing />
+        <DataTableListing />
       </CardBody>
     </Card>
   );

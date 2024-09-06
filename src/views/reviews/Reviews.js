@@ -1,12 +1,12 @@
 import { Card, CardBody } from 'reactstrap';
 import './reviews.scss';
-import TableListing from '../../components/table/TableListing';
+import DataTableListing from '../../components/table/DataTableListing';
 
 const Reviews = () => {
   return (
     <Card>
       <CardBody>
-        <TableListing pageName="reviews"/>
+        <DataTableListing pageName="reviews"/>
       </CardBody>
     </Card>
   );

@@ -125,16 +125,16 @@ const TableListing = ({ pageName, tableData, changeData }) => {
         };
       case 'categories':
         return {
-          headings: ['Category Name', 'Status', 'Include In Menu','Action'],
+          headings: ['Category Name', 'Status', 'Action'],
           renderRow: (item) => (
             <>
+            {console.log(item)}
               <td>{item.name}</td>
               <td>
-                <Badge color={item.status === '1' ? 'success' : 'danger'}>
-                  {(item.status !== 0) ? 'Acive' : 'InActice'}
+                <Badge color={item.status !== 'inactive' ? 'success' : 'danger'}>
+                  {(item.status !== 'inactive') ? 'Acive' : 'InActice'}
                 </Badge>
               </td>
-              <td>{(item.status !== 0) ? 'Yes' : 'No'}</td>
               <td>
                 <div className='d-flex align-items-center'>
                   <FaRegEdit className='text-dark cursor-pointer fs-5'/>
@@ -144,7 +144,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
             </>
           ),
           renderAdd: () => (
-            <AddEditCategory changed={changeData}/>
+            <AddEditCategory changed={changeData} allCategories={tableData} />
           ),
         };
       case 'banner':
@@ -276,6 +276,7 @@ const TableListing = ({ pageName, tableData, changeData }) => {
 
   return (
     <div>
+      <h4 className='text-capitalize mb-4 fw-semibold'>{pageName}</h4>
       <div className="d-md-flex justify-content-between align-items-center">
         <Input className="w-fit mb-4" type="text" onChange={(e) => dispatch(SearchTicket(e.target.value))} placeholder="Search Ticket..." />
         {tableConfig.renderAdd()}

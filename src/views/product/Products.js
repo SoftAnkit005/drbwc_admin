@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {CardBody, Card } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import TableListing from '../../components/table/TableListing';
+import DataTableListing from '../../components/table/DataTableListing';
 import './product-style.scss'
 import { fetchProducts } from '../../store/products/productSlice';
 
@@ -33,7 +33,7 @@ const Products = () => {
     <>
       <Card>
         <CardBody>
-          <TableListing pageName="products" tableData={productsData} changeData={prodChanged}/>
+          <DataTableListing pageName="products" tableData={productsData} changeData={prodChanged}/>
         </CardBody>
       </Card>
     </>
