@@ -34,12 +34,12 @@ const SubCatDataTableListing = ({ tableData = [], changeData, parentData = [] })
 
   // Table columns configuration
   const columns = [
+    { name: 'Sub Category Name', selector: row => row.name, sortable: true },
     {
       name: 'Parent Name',
       selector: row => getParentName(row.category_id),
       sortable: true
     },
-    { name: 'Sub Category Name', selector: row => row.name, sortable: true },
     {
       name: 'Status',
       selector: row => (

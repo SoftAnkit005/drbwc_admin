@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle, Table } from 'reactstrap';
@@ -9,6 +9,7 @@ import './modalstyle.scss';
 import FileDropZone from '../uploader/FileDropZone';
 import { addProduct, updateProduct } from '../../store/products/productSlice';
 import { fetchCategories } from '../../store/category/categorySlice';
+import { uploadImages } from '../../store/fileupload/fileUploadSlice';
 
 function AddEditProduct({changed, prodtype, data}) {
   const dispatch = useDispatch();
@@ -20,7 +21,9 @@ function AddEditProduct({changed, prodtype, data}) {
   const [allVarients, setallVarients] = useState([]);
   const [allCategories, setallCategories] = useState([])
   const { categories } = useSelector((state) => state.categories);
+  const { uploadedFilesUrls } = useSelector((state) => state.fileUpload);
 
+  console.log(uploadedFilesUrls);
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
@@ -36,7 +39,7 @@ function AddEditProduct({changed, prodtype, data}) {
     product_name: '',
     product_description: '',
     price: '',
-    image_urls: [],
+    image_urls: ["https://drbwc.com/assets/catalog/3688/4400/1-single.jpeg", "https://drbwc.com/assets/catalog/3540/7366/ganesha-vector-icon-design-illustration-4287050-single.jpg"],
     qty: '',
     category_id: '',
     subcategory_id: 1,
@@ -54,7 +57,7 @@ function AddEditProduct({changed, prodtype, data}) {
     visibility: 'public',
   });
 
-  console.log(formData);
+  console.log('formData.category_id: ', formData.category_id);
 
   useEffect(() => {
     if (prodtype === "edit") {
@@ -109,14 +112,13 @@ function AddEditProduct({changed, prodtype, data}) {
   // };
 
   
-
-  const prodImages = (e) => {
-    console.log(e);
-    setFormData({
-      ...formData,
-      image_urls: e
-    });
-  }
+  // const prodImagesChange = (e) => {
+  //   setprodImages(e);
+  //   // console.log(prodImages);
+  // }
+  const prodImagesChange = useCallback((images) => {
+    dispatch(uploadImages(images));
+  }, []);
 
   const handleAddVariant = () => {
     setallVarients([
@@ -130,10 +132,6 @@ function AddEditProduct({changed, prodtype, data}) {
         { url: varientImage, variant: varientColor }
       ]
     });
-
-    // Clear the input fields
-    // setvarientImage('');
-    // setvarientColor('');
   };
   const handleImageChange = (e) => {
     // Assuming you want to handle the file, you might need to use FileReader to get the file URL or handle the file upload
@@ -310,7 +308,8 @@ function AddEditProduct({changed, prodtype, data}) {
                 <Row>
                   <Col className="py-1" xs="12">
                     <FormGroup>
-                      <FileDropZone prodImages={prodImages}/>
+                      <FileDropZone prodImages={prodImagesChange}/>
+                      {/* <TestUploader/> */}
                     </FormGroup>
                   </Col>
                 </Row>

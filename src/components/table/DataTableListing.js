@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import DataTable from 'react-data-table-component';
-import { Badge, Button, Input } from 'reactstrap';
+import { Badge, Input } from 'reactstrap';
 import { FaRegEdit } from "react-icons/fa";
-import { DeleteTicket } from '../../store/apps/ticket/TicketSlice';
 import './table-style.scss';
 import AddEditProduct from '../modal/AddEditProduct';
 import AddEditCategory from '../modal/AddEditCategory';
@@ -15,7 +13,6 @@ import DeleteConfirmation from '../modal/DeleteConfirmation';
 import AddEditBanner from '../modal/AddEditBanner';
 
 const DataTableListing = ({ pageName, tableData = [], changeData }) => {
-  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(tableData);
 
@@ -33,6 +30,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
     }
   }, [searchTerm, tableData]);
 
+  console.log(tableData);
   // Determine table columns based on pageName
   const tableConfig = (() => {
     switch (pageName) {
@@ -41,7 +39,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
           columns: [
             {
               name: 'Thumbnail',
-              selector: row => <img src={row.thumbnail} alt={row.product_name} width={50} />,
+              selector: row => <img className='my-2 rounded shadow-sm' src={JSON.parse(row.image_urls)[0]} alt={row.product_name} width={50} />,
             },
             { name: 'Name', selector: row => row.product_name, sortable: true },
             { name: 'Price', selector: row => row.price, sortable: true },
@@ -135,28 +133,19 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
       case 'tags':
         return {
           columns: [
-            { name: 'Name', selector: row => row.name },
-            { name: 'Products', selector: row => row.products },
-            { name: 'Description', selector: row => row.description },
-            {
-              name: 'Status',
-              selector: row => (
-                <Badge color={row.status === 'Active' ? 'success' : 'danger'}>
-                  {row.status}
-                </Badge>
-              ),
-            },
+            { name: 'Name', selector: row => row.tags },
+            { name: 'Products', selector: row => row.product_id },
             {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <Button color="primary">Edit</Button>
-                  <Button color="danger" onClick={() => dispatch(DeleteTicket(row.id))}> Delete </Button>
+                  <AddEditTags tagType="edit" changed={changeData} data={row}/>
+                  <DeleteConfirmation caseType="tags" id={row.id} title={row.tags} changed={changeData}/>
                 </div>
               ),
             },
           ],
-          renderAdd: () => <AddEditTags />,
+          renderAdd: () => <AddEditTags tagType="add" changed={changeData}/>,
         };
       case 'reviews':
         return {
@@ -167,13 +156,13 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <Button color="primary">Edit</Button>
-                  <Button color="danger" onClick={() => dispatch(DeleteTicket(row.id))}> Delete </Button>
+                  <AddEditReviews reviewType="edit" changed={changeData} data={row}/>
+                  <DeleteConfirmation caseType="reviews" id={row.id} title={row.name} changed={changeData}/>
                 </div>
               ),
             },
           ],
-          renderAdd: () => <AddEditReviews />,
+          renderAdd: () => <AddEditReviews reviewType="add" changed={changeData}/>,
         };
       case 'orders':
         return {

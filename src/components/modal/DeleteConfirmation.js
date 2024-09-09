@@ -7,6 +7,8 @@ import { deleteProduct } from '../../store/products/productSlice';
 import { deleteCategory } from '../../store/category/categorySlice';
 import { deleteBanner } from '../../store/banner/bannerSlice';
 import { deleteSubCategory } from '../../store/subcategory/subcategorySlice';
+import { deleteTags } from '../../store/tags/tagsSlice';
+import { deleteReviews } from '../../store/reviews/reviewsSlice';
 
 function DeleteConfirmation({id, changed, caseType, title}) {
   const [modal, setModal] = useState(false);
@@ -29,6 +31,12 @@ function DeleteConfirmation({id, changed, caseType, title}) {
         break;
       case 'banner':
         dispatch(deleteBanner(id));
+        break;
+      case 'tags':
+        dispatch(deleteTags(id));
+        break;
+      case 'reviews':
+        dispatch(deleteReviews(id));
         break;
     
       default:
