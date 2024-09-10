@@ -18,9 +18,6 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   const [variantImageFile, setVariantImageFile] = useState(null);
   const toggle = () => setModal(!modal);
 
-  console.log('images: ', images);
-  console.log('alldata: ', alldata);
-
   useEffect(() => {
     if (prodtype === 'edit' && alldata?.color_image_urls) {
       const parsedData = JSON.parse(alldata.color_image_urls);
@@ -34,44 +31,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
       });
       setAllVarients(variantArray);
     }
-  }, [prodtype, alldata]);
-
-  // useEffect(() => {
-  //   if (prodtype === 'edit' && alldata?.image_urls) {
-  //     const parsedData = JSON.parse(alldata.image_urls);
-  //     const imageArray = Object.keys(parsedData).map((url, index) => {
-  //       return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
-  //     });
-  //     setImages(imageArray);
-  //   }
-  // }, [alldata])
-  const urlToFile = async (url, filename) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new File([blob], filename, { type: blob.type });
-  };
-
-  useEffect(() => {
-    if (prodtype === 'edit' && alldata?.image_urls) {
-      const imageUrls = JSON.parse(alldata.image_urls);
-      
-      const convertUrlsToFiles = async () => {
-        // Create an array of promises for the URL to File conversions
-        const filePromises = imageUrls.map((url, index) => 
-          urlToFile(url, `image-${index}.jpg`)
-        );
-        
-        // Wait for all promises to resolve
-        const files = await Promise.all(filePromises);
-        
-        // Update state with the array of File objects
-        console.log('files: ',files);
-      };
-  
-      convertUrlsToFiles();
-    }
-  }, [prodtype, alldata]);
-  
+  }, [prodtype, alldata]);  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -129,7 +89,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   };
   
   const handleImageChange = (e) => {
-    console.log(e);
+    // console.log(e);
     const file = e.target.files;
     if (file) {
       setVariantImageFile(file);
@@ -150,7 +110,6 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   
   
   const handleDescriptionChange = (data) => {
-    console.log(data.data);
     setDescription(data.data);
   };
 

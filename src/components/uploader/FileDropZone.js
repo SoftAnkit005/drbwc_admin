@@ -10,27 +10,43 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
   const [isDragging, setIsDragging] = useState(false);
   const { error, uploadedFilesUrls } = useSelector((state) => state.fileUpload);
 
-  // Initialize images from initialImages, only set if not already present
+  // Helper function to convert URL to File
+  const urlToFile = async (url, filename) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+  };
+
+  // Initialize images from initialImages
   useEffect(() => {
-    if (initialImages.length && images.length === 0) {
-      const initialImagesArray = Array.isArray(initialImages) 
-        ? initialImages 
-        : JSON.parse(initialImages || '[]');
+    const initializeImages = async () => {
+      if (initialImages.length && images.length === 0) {
+        const imageUrlsArray = Array.isArray(initialImages) 
+          ? initialImages 
+          : JSON.parse(initialImages || '[]');
 
-      const initialImagesWithPreview = initialImagesArray.map(url => ({
-        id: url,
-        preview: url,
-      }));
+        const files = await Promise.all(imageUrlsArray.map(async (url, index) => {
+          const filename = `image-${index}.jpg`; // You might need a different logic to get the filename
+          const file = await urlToFile(url, filename);
+          return {
+            id: URL.createObjectURL(file),
+            file,
+            preview: URL.createObjectURL(file),
+          };
+        }));
 
-      setImages(initialImagesWithPreview);
-    }
-  }, [initialImages]);
+        setImages(files);
+        prodImages(files.map(image => image.file));
+      }
+    };
+
+    initializeImages();
+  }, [initialImages, images, prodImages]);
 
   // Update prodImages prop with current images (but only if images actually change)
   useEffect(() => {
     prodImages(images.map(image => image.file || image.preview)); 
   }, [images, prodImages]);
-  
 
   const handleFile = (files) => {
     const selectedFiles = Array.from(files);
@@ -94,7 +110,6 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
       });
     };
   }, [images]);
-  
 
   return (
     <div 
@@ -107,7 +122,7 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
       <Row>
         <Col lg="6">
           <Input type="file" multiple onChange={handleFileChange} className="d-none" id="fileInput" accept=".jpg,.png" />
-          <label htmlFor="fileInput" className="file-drag my-0" >
+          <label htmlFor="fileInput" className="file-drag my-0">
             Select files to upload <br />OR <br />Drag files into this box
           </label>
         </Col>
