@@ -32,7 +32,7 @@ const Banner = () => {
   return (
     <Card>
       <CardBody>
-        <DataTableListing pageName="banner" tableData={bannerData} changeData={bannerChanged}/>
+        <DataTableListing pageName="banner" tableData={bannerData} changeData={bannerChanged} />
       </CardBody>
     </Card>
   );

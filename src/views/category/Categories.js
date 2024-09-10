@@ -34,7 +34,7 @@ const Categories = () => {
     if (subcategories?.success) {
       setsubCategoryData(subcategories?.subcategories);
     };
-  }, [categories,subcategories]);
+  }, [categories, subcategories]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -48,7 +48,7 @@ const Categories = () => {
       </Card>
       <Card>
         <CardBody>
-          <SubCatDataTableListing pageName="sub categories" tableData={subCategoryData} parentData={categoryData} changeData={cateChanged}/>
+          <SubCatDataTableListing pageName="sub categories" tableData={subCategoryData} parentData={categoryData} changeData={cateChanged} />
         </CardBody>
       </Card>
     </>

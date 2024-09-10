@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createAttribute } from '../../store/attributes/attributeSlice';
 
 
-function AddAttributes({changed}) {
+function AddAttributes({ changed }) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
 
@@ -31,32 +31,32 @@ function AddAttributes({changed}) {
       </Button>
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader className="bg-primary text-white" toggle={toggle}>Add Attribute</ModalHeader>
-            <ModalBody>
-                <Row>
-                    <Col md="12">
-                        <Card>
-                            <CardBody className="p-0">
-                                <Row>
-                                    <Col className="py-1" xs="12">
-                                        <FormGroup>
-                                            <Label htmlFor="name">Name</Label>
-                                            <Input type="text" id="name" placeholder="Enter Name" onChange={(e) => setAttributeName(e.target.value)}/>
-                                        </FormGroup>
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
+        <ModalBody>
+          <Row>
+            <Col md="12">
+              <Card>
+                <CardBody className="p-0">
+                  <Row>
+                    <Col className="py-1" xs="12">
+                      <FormGroup>
+                        <Label htmlFor="name">Name</Label>
+                        <Input type="text" id="name" placeholder="Enter Name" onChange={(e) => setAttributeName(e.target.value)} />
+                      </FormGroup>
                     </Col>
-                </Row>
-            </ModalBody>
-            <ModalFooter>
-                <Button color="dark" onClick={toggle}>
-                    Cancel
-                </Button>
-                <Button color="success"  disabled={loading} onClick={handleSubmit}>
-                    Save
-                </Button>
-            </ModalFooter>
+                  </Row>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="dark" onClick={toggle}>
+            Cancel
+          </Button>
+          <Button color="success" disabled={loading} onClick={handleSubmit}>
+            Save
+          </Button>
+        </ModalFooter>
       </Modal>
     </div>
   );
@@ -64,7 +64,7 @@ function AddAttributes({changed}) {
 
 // Add prop validation for pageName
 AddAttributes.propTypes = {
-    changed: PropTypes.func,
+  changed: PropTypes.func,
 };
 
 export default AddAttributes;
