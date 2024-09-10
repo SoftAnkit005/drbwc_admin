@@ -17,6 +17,7 @@ import Customers from '../views/customers/Customers';
 import Coupons from '../views/prmotion/Coupons';
 import Setting from '../views/setting/Setting';
 import Banner from '../views/banner/Banner';
+import FeaturedProduct from '../views/featuredproduct/FeaturedProduct';
 
 /****Layouts*****/
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
@@ -48,6 +49,7 @@ const ThemeRoutes = [
       { path: '/products', name: 'Products', exact: true, element: <ProtectedRoute component={Products} /> },
       { path: '/categories', name: 'Categories', exact: true, element: <ProtectedRoute component={Categories} /> },
       { path: '/attributes', name: 'Attributes', exact: true, element: <ProtectedRoute component={Attributes} /> },
+      { path: '/featured-product', name: 'Featured Product', exact: true, element: <FeaturedProduct component={FeaturedProduct} /> },
       { path: '/tags', name: 'Tags', exact: true, element: <ProtectedRoute component={Tags} /> },
       { path: '/reviews', name: 'Reviews', exact: true, element: <ProtectedRoute component={Reviews} /> },
       { path: '/orders', name: 'Orders', exact: true, element: <ProtectedRoute component={Orders} /> },

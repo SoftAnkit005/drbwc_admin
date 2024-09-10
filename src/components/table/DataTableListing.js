@@ -11,6 +11,7 @@ import AddEditReviews from '../modal/AddEditReviews';
 import AddAttributes from '../modal/AddAttributes';
 import DeleteConfirmation from '../modal/DeleteConfirmation';
 import AddEditBanner from '../modal/AddEditBanner';
+import AddEditFeaturedProduct from '../modal/AddEditFeaturedProduct';
 
 const DataTableListing = ({ pageName, tableData = [], changeData }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,7 +23,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
       setFilteredData(
         tableData.filter((item) => {
           return Object.values(item)
-            .some(value => 
+            .some(value =>
               value && value.toString().toLowerCase().includes(lowercasedSearchTerm)
             );
         })
@@ -57,13 +58,13 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Action',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <AddEditProduct prodtype="edit" changed={changeData} data={row}/>
-                  <DeleteConfirmation caseType="products" id={row.id} title={row.product_name} changed={changeData}/>
+                  <AddEditProduct prodtype="edit" changed={changeData} alldata={row} />
+                  <DeleteConfirmation caseType="products" id={row.id} title={row.product_name} changed={changeData} />
                 </div>
               ),
             },
           ],
-          renderAdd: () => <AddEditProduct prodtype="add" changed={changeData}/>,
+          renderAdd: () => <AddEditProduct prodtype="add" changed={changeData} />,
         };
       case 'categories':
         return {
@@ -81,13 +82,13 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Action',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <AddEditCategory field="category" catType="edit" changed={changeData} allCategories={tableData} data={row}/>
-                  <DeleteConfirmation caseType="categories" id={row.id} title={row.name} changed={changeData}/>
+                  <AddEditCategory field="category" catType="edit" changed={changeData} allCategories={tableData} data={row} />
+                  <DeleteConfirmation caseType="categories" id={row.id} title={row.name} changed={changeData} />
                 </div>
               ),
             },
           ],
-          renderAdd: () => <AddEditCategory catType="add" changed={changeData} allCategories={tableData}/>,
+          renderAdd: () => <AddEditCategory catType="add" changed={changeData} allCategories={tableData} />,
         };
       case 'banner':
         return {
@@ -106,14 +107,46 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Action',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <FaRegEdit className='text-dark cursor-pointer fs-5'/>
-                  <DeleteConfirmation caseType="banner" id={row.id} title={row.title} changed={changeData}/>
+                  <FaRegEdit className='text-dark cursor-pointer fs-5' />
+                  <DeleteConfirmation caseType="banner" id={row.id} title={row.title} changed={changeData} />
                 </div>
               ),
             },
           ],
-          renderAdd: () => <AddEditBanner changed={changeData}/>,
+          renderAdd: () => <AddEditBanner changed={changeData} />,
         };
+      case 'featuredproduct':
+        return {
+          columns: [
+            {
+              name: 'Name',
+              selector: row => row.type
+            },
+            {
+              name: 'Description',
+              selector: row => row.description
+            },
+            {
+              name: 'Image', selector: row => <img src={row.image} alt='' width="50" height="50" />
+            },
+            {
+              name: 'Actions',
+              cell: row => (
+                <div className='d-flex align-items-center'>
+                  <AddEditFeaturedProduct featureproductType="edit" changed={changeData} data={row} />
+                  <DeleteConfirmation
+                    caseType="featuredproduct"
+                    id={row.id}
+                    title={row.type}
+                    changed={changeData}
+                  />
+                </div>
+              ),
+            },
+          ],
+          renderAdd: () => <AddEditFeaturedProduct changed={changeData} />,
+        };
+
       case 'attributes':
         return {
           columns: [
@@ -122,8 +155,8 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <FaRegEdit className='text-dark cursor-pointer fs-5'/>
-                  <DeleteConfirmation caseType="attributes" id={row.id} title={row.name} changed={changeData}/>
+                  <AddEditFeaturedProduct featureproductType="edit" changed={changeData} data={row} />
+                  <DeleteConfirmation caseType="attributes" id={row.id} title={row.name} changed={changeData} />
                 </div>
               ),
             },
@@ -139,13 +172,13 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <AddEditTags tagType="edit" changed={changeData} data={row}/>
-                  <DeleteConfirmation caseType="tags" id={row.id} title={row.tags} changed={changeData}/>
+                  <AddEditTags tagType="edit" changed={changeData} data={row} />
+                  <DeleteConfirmation caseType="tags" id={row.id} title={row.tags} changed={changeData} />
                 </div>
               ),
             },
           ],
-          renderAdd: () => <AddEditTags tagType="add" changed={changeData}/>,
+          renderAdd: () => <AddEditTags tagType="add" changed={changeData} />,
         };
       case 'reviews':
         return {
@@ -156,13 +189,13 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <AddEditReviews reviewType="edit" changed={changeData} data={row}/>
-                  <DeleteConfirmation caseType="reviews" id={row.id} title={row.name} changed={changeData}/>
+                  <AddEditReviews reviewType="edit" changed={changeData} data={row} />
+                  <DeleteConfirmation caseType="reviews" id={row.id} title={row.name} changed={changeData} />
                 </div>
               ),
             },
           ],
-          renderAdd: () => <AddEditReviews reviewType="add" changed={changeData}/>,
+          renderAdd: () => <AddEditReviews reviewType="add" changed={changeData} />,
         };
       case 'orders':
         return {
@@ -177,8 +210,8 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <FaRegEdit className='text-dark cursor-pointer fs-5'/>
-                  <DeleteConfirmation caseType="orders" id={row.id} title={row.id} changed={changeData}/>
+                  <FaRegEdit className='text-dark cursor-pointer fs-5' />
+                  <DeleteConfirmation caseType="orders" id={row.id} title={row.id} changed={changeData} />
                 </div>
               ),
             },

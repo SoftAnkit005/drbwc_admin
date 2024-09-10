@@ -9,8 +9,9 @@ import { deleteBanner } from '../../store/banner/bannerSlice';
 import { deleteSubCategory } from '../../store/subcategory/subcategorySlice';
 import { deleteTags } from '../../store/tags/tagsSlice';
 import { deleteReviews } from '../../store/reviews/reviewsSlice';
+import { deleteSection } from '../../store/featuredproduct/featuredProductSlice';
 
-function DeleteConfirmation({id, changed, caseType, title}) {
+function DeleteConfirmation({ id, changed, caseType, title }) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const dispatch = useDispatch();
@@ -38,7 +39,10 @@ function DeleteConfirmation({id, changed, caseType, title}) {
       case 'reviews':
         dispatch(deleteReviews(id));
         break;
-    
+      case 'featuredproduct':
+        dispatch(deleteSection(id));
+        break;
+
       default:
         break;
     }
@@ -48,7 +52,7 @@ function DeleteConfirmation({id, changed, caseType, title}) {
 
   return (
     <div>
-      <i className="bi bi-trash cursor-pointer ms-2 text-danger fs-5" onClick={toggle}/>
+      <i className="bi bi-trash cursor-pointer ms-2 text-danger fs-5" onClick={toggle} />
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Delete Confirmation</ModalHeader>
         <ModalBody>
@@ -68,10 +72,10 @@ function DeleteConfirmation({id, changed, caseType, title}) {
 }
 
 DeleteConfirmation.propTypes = {
-    id: PropTypes.number,
-    changed: PropTypes.func,
-    caseType: PropTypes.string,
-    title: PropTypes.string,
+  id: PropTypes.number,
+  changed: PropTypes.func,
+  caseType: PropTypes.string,
+  title: PropTypes.string,
 };
 
 
