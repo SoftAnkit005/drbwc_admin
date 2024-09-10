@@ -35,23 +35,27 @@ export const fetchProducts = createAsyncThunk( 'products/fetchProducts', async (
 );
 
 // Create an async thunk for adding a product
-export const addProduct = createAsyncThunk( 'products/addProduct', async (productData, { rejectWithValue }) => {
-  console.log(productData);
+// Define the async thunk
+export const addProduct = createAsyncThunk(
+  'products/createProduct',
+  async (formData, { rejectWithValue }) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formData,
+      redirect: "follow"
+    };
+
     try {
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", token);
-      myHeaders.append("Content-Type", "application/json");
-      const requestOptions = { method: "POST", headers: myHeaders, body: JSON.stringify(productData), redirect: "follow" };
-
       const response = await fetch(`${apiUrl}/api/product/create`, requestOptions);
-
       if (!response.ok) {
-        throw new Error('Failed to add product');
+        throw new Error('Network response was not ok');
       }
-
-      const data = await response.json();
-      return data;
-      
+      const result = await response.text();
+      return result;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -85,26 +89,23 @@ export const deleteProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async (productData, { rejectWithValue }) => {
+    const { formData, productId } = productData;
+
     try {
-      // Define headers and request options
       const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", token);
-
-      // Construct the request body
-      const raw = JSON.stringify(productData);
-
-      const requestOptions = { method: "POST", headers: myHeaders, body: raw, redirect: "follow" };
-
-      // Perform the fetch request
-      const response = await fetch(`${apiUrl}/api/product/update/${productData.id}`, requestOptions);
+      myHeaders.append("Authorization", `Bearer ${token}`);
+      const response = await fetch(`${apiUrl}/api/product/update/${productId}`, {
+        method: 'POST',
+        headers: myHeaders,
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error('Failed to update product');
       }
 
-      const data = await response.json();
-      return data;
+      const result = await response.text();
+      return result;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -132,15 +133,14 @@ const productSlice = createSlice({
       })
 
       .addCase(addProduct.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.status = 'loading';
       })
       .addCase(addProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.products = [...state.products, action.payload];
+        state.status = 'succeeded';
+        state.products = action.payload;
       })
       .addCase(addProduct.rejected, (state, action) => {
-        state.loading = false;
+        state.status = 'failed';
         state.error = action.payload;
       })
 
@@ -161,15 +161,15 @@ const productSlice = createSlice({
 
       // Update Product
       .addCase(updateProduct.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.status = 'loading';
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.products = state.products.map(product => product.id === action.payload.id ? action.payload : product);
+        state.status = 'succeeded';
+        // handle the response as needed
+        console.log(action.payload);
       })
       .addCase(updateProduct.rejected, (state, action) => {
-        state.loading = false;
+        state.status = 'failed';
         state.error = action.payload;
       });
   }

@@ -4,7 +4,8 @@ import { Global, css } from "@emotion/react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-const CKEditorComponent = ({getDescription}) => {
+const CKEditorComponent = ({ getDescription, value }) => {
+  console.log('value: ', value);
   const editorRef = useRef(null); 
 
   const ckWrapperStyle = css`
@@ -61,7 +62,7 @@ const CKEditorComponent = ({getDescription}) => {
       />
       <CKEditor
         editor={ClassicEditor}
-        data=""
+        data={value || ""}
         config={{
           placeholder: "Enter your content here...",
           toolbar: [
@@ -102,6 +103,7 @@ const CKEditorComponent = ({getDescription}) => {
 // Add prop validation for pageName
 CKEditorComponent.propTypes = {
   getDescription: PropTypes.func.isRequired,
+  value: PropTypes.string,
 };
 
 export default CKEditorComponent;
