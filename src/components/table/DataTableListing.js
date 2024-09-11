@@ -97,31 +97,32 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
           ],
           renderAdd: () => <AddEditCategory catType="add" changed={changeData} allCategories={tableData} />,
         };
-      case 'banner':
-        return {
-          columns: [
-            { name: 'Banner Name', selector: row => row.title },
-            { name: 'Image', selector: row => <img src={row.image_url} alt={row.image_name} width="50" height="50" /> },
-            {
-              name: 'Status',
-              selector: row => (
-                <Badge color={row.status === 'active' ? 'success' : 'danger'}>
-                  {row.status === 'active' ? 'Active' : 'Inactive'}
-                </Badge>
-              ),
-            },
-            {
-              name: 'Action',
-              cell: row => (
-                <div className='d-flex align-items-center'>
-                  <FaRegEdit className='text-dark cursor-pointer fs-5' />
-                  <DeleteConfirmation caseType="banner" id={row.id} title={row.title} changed={changeData} />
-                </div>
-              ),
-            },
-          ],
-          renderAdd: () => <AddEditBanner changed={changeData} />,
-        };
+        case 'banner':
+          return {
+            columns: [
+              { name: 'Banner Name', selector: row => row.title },
+              { name: 'description', selector: row => row.description },
+              { name: 'Image', selector: row => <img src={row.image_url} alt='' width="50" height="50" className='m-2' /> },
+              {
+                name: 'Status',
+                selector: row => (
+                  <Badge color={row.status === 'active' ? 'success' : 'danger'}>
+                    {row.status === 'active' ? 'Active' : 'Inactive'}
+                  </Badge>
+                ),
+              },
+              {
+                name: 'Action',
+                cell: row => (
+                  <div className='d-flex align-items-center'>
+                    <AddEditBanner bannerType="edit" changed={changeData} data={row} />
+                    <DeleteConfirmation caseType="banner" id={row.id} title={row.title} changed={changeData} />
+                  </div>
+                ),
+              },
+            ],
+            renderAdd: () => <AddEditBanner changed={changeData} />,
+          };
       case 'featuredproduct':
         return {
           columns: [
