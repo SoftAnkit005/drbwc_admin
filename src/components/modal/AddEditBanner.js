@@ -1,91 +1,153 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody } from 'reactstrap';
-import './modalstyle.scss'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, Form } from 'reactstrap';
+import './modalstyle.scss';
+import { FaRegEdit } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { createAttribute } from '../../store/attributes/attributeSlice';
+import { createBanner, updateBanner } from '../../store/banner/bannerSlice';
 
+function AddEditBanner({ changed, bannerType, data }) {
+    const [modal, setModal] = useState(false);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null); // State for image preview
+    const [status, setStatus] = useState("active");
+    const dispatch = useDispatch();
+    const { loading } = useSelector((state) => state.banners);
 
-function AddEditBanner({changed}) {
-  const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
+    const toggle = () => setModal(!modal);
 
-  const [attributeName, setAttributeName] = useState('');
-  const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
-  const [image, setimage] = useState('');
-  const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.attribute);
+    useEffect(() => {
+        if (bannerType === "edit" && data) {
+            setTitle(data.title);
+            setDescription(data.description);
+            setStatus(data.status);
+            setImagePreview(data.image_url);
+        }
+    }, [bannerType, data]);
 
-  console.log(image, title, desc);
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (attributeName.trim()) {
-      dispatch(createAttribute({ name: attributeName }));
-      setAttributeName('');
-      changed(true);
-    }
-    toggle()
-  };
+        const bannerData = {
+            title,
+            description,
+            image,
+            status
+        };
 
-  return (
-    <div>
-      <Button color="primary" className="mb-4 w-fit" onClick={toggle}>
-        Add Banner
-      </Button>
-      <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader className="bg-primary text-white" toggle={toggle}>Add Banner</ModalHeader>
-            <ModalBody>
-                <Row>
-                    <Col md="12">
-                        <Card>
-                            <CardBody className="p-0">
-                                <Row>
-                                    <Col className="py-1" xs="12">
-                                        <FormGroup>
-                                            <Label htmlFor="name">Title</Label>
-                                            <Input type="text" id="name" placeholder="Enter Title" onChange={(e) => setTitle(e.target.value)}/>
-                                        </FormGroup>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col className="py-1" xs="12">
-                                        <FormGroup>
-                                            <Label htmlFor="name">Description</Label>
-                                            <Input type="textarea" id="name" placeholder="Enter Description" onChange={(e) => setDesc(e.target.value)}/>
-                                        </FormGroup>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col className="py-1" xs="12">
-                                        <FormGroup>
-                                            <Label htmlFor="name">Select Image</Label>
-                                            <Input type="file" id="name" onChange={(e) => setimage(e.target.value)}/>                                            
-                                        </FormGroup>
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </ModalBody>
-            <ModalFooter>
-                <Button color="dark" onClick={toggle}>
-                    Cancel
-                </Button>
-                <Button color="success"  disabled={loading} onClick={handleSubmit}>
-                    Save
-                </Button>
-            </ModalFooter>
-      </Modal>
-    </div>
-  );
+        if (bannerType === "edit" && data) {
+            dispatch(updateBanner({ id: data.id, bannerData }));
+        } else {
+            dispatch(createBanner(bannerData));
+        }
+
+        changed(true);
+        toggle();
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImage(file);
+
+        // Create a preview URL for the selected image
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
+
+    return (
+        <div>
+            {bannerType !== "edit" ?
+                <Button color="primary" className="mb-4 w-fit" onClick={toggle}>
+                    Add Banner
+                </Button> :
+                <FaRegEdit className='text-dark cursor-pointer fs-5' onClick={toggle} />
+            }
+            <Modal isOpen={modal} toggle={toggle}>
+                <ModalHeader className="bg-primary text-white" toggle={toggle}>
+                    {bannerType === "edit" ? "Edit Banner" : "Add Banner"}
+                </ModalHeader>
+                <Form onSubmit={handleSubmit} autoComplete="off">
+                    <ModalBody>
+                        <Row>
+                            <Col md="12">
+                                <Card>
+                                    <CardBody className="p-0">
+                                        <Row>
+                                            <Col className="py-1" xs="12">
+                                                <FormGroup>
+                                                    <Label htmlFor="title">Title</Label>
+                                                    <Input
+                                                        type="text"
+                                                        id="title"
+                                                        placeholder="Enter Title"
+                                                        value={title}
+                                                        onChange={(e) => setTitle(e.target.value)}
+                                                        required
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col className="py-1" xs="12">
+                                                <FormGroup>
+                                                    <Label htmlFor="description">Description</Label>
+                                                    <Input
+                                                        type="textarea"
+                                                        id="description"
+                                                        placeholder="Enter Description"
+                                                        value={description}
+                                                        onChange={(e) => setDescription(e.target.value)}
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col className="py-1" xs="12">
+                                                <FormGroup>
+                                                    <Label htmlFor="image">Select Image</Label>
+                                                    <Input type="file" id="image" onChange={handleImageChange} />
+                                                </FormGroup>
+                                                {imagePreview && (
+                                                    <div className="image-preview">
+                                                        <img
+                                                            src={imagePreview}
+                                                            alt="Preview"
+                                                            style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </Col>
+                                        </Row>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="dark" onClick={toggle}>
+                            Cancel
+                        </Button>
+                        <Button color="success" disabled={loading}>
+                            {bannerType === "edit" ? "Update" : "Save"}
+                        </Button>
+                    </ModalFooter>
+                </Form>
+            </Modal>
+        </div>
+    );
 }
 
-// Add prop validation for pageName
 AddEditBanner.propTypes = {
     changed: PropTypes.func,
+    bannerType: PropTypes.string,
+    data: PropTypes.object,
 };
 
 export default AddEditBanner;
