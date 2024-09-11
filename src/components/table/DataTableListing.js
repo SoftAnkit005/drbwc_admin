@@ -12,6 +12,7 @@ import AddAttributes from '../modal/AddAttributes';
 import DeleteConfirmation from '../modal/DeleteConfirmation';
 import AddEditBanner from '../modal/AddEditBanner';
 import AddEditFeaturedProduct from '../modal/AddEditFeaturedProduct';
+import AddEditCouons from '../modal/AddEditCoupons';
 
 const DataTableListing = ({ pageName, tableData = [], changeData }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -31,7 +32,13 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
     }
   }, [searchTerm, tableData]);
 
-  console.log(tableData);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0'); // Day with leading zero
+    const month = date.toLocaleString('en-US', { month: 'short' }); // Short month name (Aug)
+    const year = date.getFullYear(); // Year in YYYY format
+    return `${day}-${month}-${year}`;
+  };
   // Determine table columns based on pageName
   const tableConfig = (() => {
     switch (pageName) {
@@ -145,6 +152,54 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             },
           ],
           renderAdd: () => <AddEditFeaturedProduct changed={changeData} />,
+        };
+
+      case 'coupons':
+        return {
+          columns: [
+            {
+              name: 'Coupon Code',
+              selector: row => row.offer_code
+            },
+            {
+              name: 'Coupon Heading',
+              selector: row => row.offer_name
+            },
+            {
+              name: 'Discount Type',
+              selector: row => row.discount_type
+            },
+            {
+              name: 'Start Date',
+              selector: row => formatDate(row.start_date)
+            },
+            {
+              name: 'End Date',
+              selector: row => formatDate(row.end_date)
+            },
+            {
+              name: 'Status',
+              selector: row => (
+                <Badge color={row.status === 'active' ? 'success' : 'danger'}>
+                  {row.status === 'active' ? 'Active' : 'Inactive'}
+                </Badge>
+              ),
+            },
+            {
+              name: 'Product Id',
+              selector: row => row.product_id
+            },
+            {
+              name: 'Actions',
+              cell: row => (
+                <div className='d-flex align-items-center'>
+                  <AddEditCouons couponType="edit" changed={changeData} data={row}/>
+                  <DeleteConfirmation caseType="coupons" id={row.id} title={row.offer_name} changed={changeData} />
+                </div>
+              ),
+            },
+          ],
+          renderAdd: () => <AddEditCouons couponType="add" changed={changeData} />,
         };
 
       case 'attributes':

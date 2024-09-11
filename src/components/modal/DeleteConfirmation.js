@@ -10,6 +10,7 @@ import { deleteSubCategory } from '../../store/subcategory/subcategorySlice';
 import { deleteTags } from '../../store/tags/tagsSlice';
 import { deleteReviews } from '../../store/reviews/reviewsSlice';
 import { deleteSection } from '../../store/featuredproduct/featuredProductSlice';
+import { deleteOffers } from '../../store/coupons/couponSlice';
 
 function DeleteConfirmation({ id, changed, caseType, title }) {
   const [modal, setModal] = useState(false);
@@ -41,6 +42,9 @@ function DeleteConfirmation({ id, changed, caseType, title }) {
         break;
       case 'featuredproduct':
         dispatch(deleteSection(id));
+        break;
+      case 'coupons':
+        dispatch(deleteOffers(id));
         break;
 
       default:

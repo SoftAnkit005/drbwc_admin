@@ -6,7 +6,7 @@ import ProtectedRoute from './ProtectedRoute'; // Import your ProtectedRoute com
 /***** Pages ****/
 import Dashboard from '../views/dashboards/Dashboard';
 import AddProducts from '../views/product/AddProducts';
-import AddCoupon from '../views/coupon/AddCoupon';
+import Coupon from '../views/coupon/Coupons';
 import Categories from '../views/category/Categories';
 import Products from '../views/product/Products';
 import Attributes from '../views/attributes/Attributes';
@@ -43,13 +43,13 @@ const ThemeRoutes = [
       { path: '/', name: 'Home', element: <Navigate to={isUserLoggedIn ? "/dashboard" : "/auth/login"} /> },
       { path: '/dashboard', name: 'Dashboard', exact: true, element: <ProtectedRoute component={Dashboard} /> },
       { path: '/add-product', name: 'Add Products', exact: true, element: <ProtectedRoute component={AddProducts} /> },
-      { path: '/add-coupon', name: 'Add Coupon', exact: true, element: <ProtectedRoute component={AddCoupon} /> },
-
+      
       { path: '/banner', name: 'Banner', exact: true, element: <Banner component={Banner} /> },
       { path: '/products', name: 'Products', exact: true, element: <ProtectedRoute component={Products} /> },
       { path: '/categories', name: 'Categories', exact: true, element: <ProtectedRoute component={Categories} /> },
       { path: '/attributes', name: 'Attributes', exact: true, element: <ProtectedRoute component={Attributes} /> },
       { path: '/featured-product', name: 'Featured Product', exact: true, element: <FeaturedProduct component={FeaturedProduct} /> },
+      { path: '/coupons', name: 'Coupons', exact: true, element: <ProtectedRoute component={Coupon} /> },
       { path: '/tags', name: 'Tags', exact: true, element: <ProtectedRoute component={Tags} /> },
       { path: '/reviews', name: 'Reviews', exact: true, element: <ProtectedRoute component={Reviews} /> },
       { path: '/orders', name: 'Orders', exact: true, element: <ProtectedRoute component={Orders} /> },
