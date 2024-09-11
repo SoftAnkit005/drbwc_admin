@@ -6,7 +6,7 @@ import { getBanners } from '../../store/banner/bannerSlice';
 
 const Banner = () => {
   const dispatch = useDispatch();
-  const { banners, loading, error } = useSelector(state => state.banner);
+  const { banners, loading, error } = useSelector(state => state.banners);
   const [bannerData, setbannerData] = useState([]);
   const [bannerChange, setbannerChange] = useState(false);
 

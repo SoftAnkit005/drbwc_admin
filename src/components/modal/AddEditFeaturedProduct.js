@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FaRegEdit } from 'react-icons/fa';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, Form } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSection, updateSection } from '../../store/featuredproduct/featuredProductSlice';
 
@@ -92,25 +92,27 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                 <ModalHeader className="bg-primary text-white" toggle={toggle}>
                     {featureproductType === "edit" ? "Edit Feature Product" : "Add Feature Product"}
                 </ModalHeader>
-                <ModalBody>
-                    <Row>
-                        <Col md="12">
-                            <Card>
-                                <CardBody className="p-0">
-                                    <Row>
-                                        <Col className="py-1" xs="12">
-                                            <FormGroup>
-                                                <Label htmlFor="type">Title</Label>
-                                                <Input
-                                                    type="text"
-                                                    name="type"
-                                                    value={formData.type}
-                                                    onChange={handleChange}
-                                                    placeholder="Enter Type"
-                                                />
-                                            </FormGroup>
-                                        </Col>
-                                        <Col className="py-1" xs="12">
+                <Form onSubmit={handleSubmit} autoComplete="off">
+                    <ModalBody>
+                        <Row>
+                            <Col md="12">
+                                <Card>
+                                    <CardBody className="p-0">
+                                        <Row>
+                                            <Col className="py-1" xs="12">
+                                                <FormGroup>
+                                                    <Label htmlFor="type">Title</Label>
+                                                    <Input
+                                                        type="text"
+                                                        name="type"
+                                                        value={formData.type}
+                                                        onChange={handleChange}
+                                                        placeholder="Enter Type"
+                                                        required
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                            {/* <Col className="py-1" xs="12">
                                             <FormGroup>
                                                 <Label htmlFor="product_id">Product ID</Label>
                                                 <Input
@@ -119,49 +121,50 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                                                     value={formData.product_id}
                                                     onChange={handleChange}
                                                     placeholder="Enter Product ID"
-                                                />
-                                            </FormGroup>
-                                        </Col>
-                                        <Col className="py-1" xs="12">
-                                            <FormGroup>
-                                                <Label htmlFor="image">Image</Label>
-                                                <Input type="file" name="image" onChange={handleChange} />
-                                                {formData.preview && (
-                                                    <img
-                                                        src={formData.preview}
-                                                        alt="Preview"
-                                                        className="mt-2"
-                                                        style={{ width: "100px", height: "100px" }}
                                                     />
-                                                )}
-                                            </FormGroup>
-                                        </Col>
-                                        <Col className="py-1" xs="12">
-                                            <FormGroup>
-                                                <Label htmlFor="description">Description</Label>
-                                                <Input
-                                                    type="textarea"
-                                                    name="description"
-                                                    value={formData.description}
-                                                    onChange={handleChange}
-                                                    placeholder="Enter Description"
-                                                />
-                                            </FormGroup>
-                                        </Col>
-                                    </Row>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="dark" onClick={toggle}>
-                        Cancel
-                    </Button>
-                    <Button color="success" disabled={loading} onClick={handleSubmit}>
-                        Save
-                    </Button>
-                </ModalFooter>
+                                                    </FormGroup>
+                                                    </Col> */}
+                                            <Col className="py-1" xs="12">
+                                                <FormGroup>
+                                                    <Label htmlFor="description">Description</Label>
+                                                    <Input
+                                                        type="textarea"
+                                                        name="description"
+                                                        value={formData.description}
+                                                        onChange={handleChange}
+                                                        placeholder="Enter Description"
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                            <Col className="py-1" xs="12">
+                                                <FormGroup>
+                                                    <Label htmlFor="image">Image</Label>
+                                                    <Input type="file" name="image" onChange={handleChange} />
+                                                    {formData.preview && (
+                                                        <img
+                                                            src={formData.preview}
+                                                            alt="Preview"
+                                                            className="mt-4"
+                                                            height={100}
+                                                        />
+                                                    )}
+                                                </FormGroup>
+                                            </Col>
+                                        </Row>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="dark" onClick={toggle}>
+                            Cancel
+                        </Button>
+                        <Button color="success" disabled={loading} >
+                            Save
+                        </Button>
+                    </ModalFooter>
+                </Form>
             </Modal>
         </div>
     );
