@@ -32,13 +32,16 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
     }
   }, [searchTerm, tableData]);
 
+  // console.log(tableData);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0'); // Day with leading zero
-    const month = date.toLocaleString('en-US', { month: 'short' }); // Short month name (Aug)
-    const year = date.getFullYear(); // Year in YYYY format
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = date.toLocaleString('en-US', { month: 'short' });
+    const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   };
+
   // Determine table columns based on pageName
   const tableConfig = (() => {
     switch (pageName) {
@@ -252,6 +255,24 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             },
           ],
           renderAdd: () => <AddEditReviews reviewType="add" changed={changeData} />,
+        };
+      case 'users':
+        return {
+          columns: [
+            { name: 'Name', selector: row => row.full_name },
+            { name: 'Email', selector: row => row.email },
+            { name: 'Role', selector: row => row.user_role },
+            { name: 'Joined', selector: row => formatDate(row.createdAt) },
+            {
+              name: 'Actions',
+              cell: row => (
+                <div className='d-flex align-items-center'>
+                  <AddEditReviews reviewType="edit" changed={changeData} data={row} />
+                </div>
+              ),
+            },
+          ],
+          renderAdd: () => <></>,
         };
       case 'orders':
         return {

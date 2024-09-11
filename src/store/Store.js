@@ -15,6 +15,7 @@ import reviewsReducer from './reviews/reviewsSlice';
 import fileUploadReducer from './fileupload/fileUploadSlice';
 import featuredproductReducer from './featuredproduct/featuredProductSlice';
 import couponReducer from './coupons/couponSlice';
+import userReducer from './users/userSlice';
 
 export const store = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ export const store = configureStore({
     fileUpload: fileUploadReducer,
     featuredproduct: featuredproductReducer,
     coupons: couponReducer,
+    users: userReducer,
 
 
 

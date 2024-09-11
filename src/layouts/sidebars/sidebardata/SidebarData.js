@@ -1,4 +1,4 @@
-import { MdAddLink, MdFormatListBulletedAdd, MdOutlineCategory, MdOutlineReviews, MdSettingsInputComponent } from 'react-icons/md';
+import { MdAddLink, MdOutlineCategory, MdOutlineReviews, MdSettingsInputComponent } from 'react-icons/md';
 import { RiCoupon3Line, RiListOrdered2 } from 'react-icons/ri';
 import { LuTags, LuUsers2 } from "react-icons/lu";
 import { HiOutlineInboxStack } from "react-icons/hi2";
@@ -46,7 +46,6 @@ const SidebarData = [
   // },
   { caption: 'Quick Links' },
   { title: 'Dashboard', href: '/dashboard', icon: <IoHomeOutline className='fs-3' />, id: 1.1, collapisble: false, },
-  { title: 'Add Products', href: '/add-product', icon: <MdFormatListBulletedAdd className='fs-3' />, id: 1.2, collapisble: false, },
   
   { caption: 'Catalog' },
   { title: 'Products', href: '/products', icon: <HiOutlineInboxStack className='fs-3' />, id: 2.1, collapisble: false, },

@@ -5,7 +5,6 @@ import ProtectedRoute from './ProtectedRoute'; // Import your ProtectedRoute com
 
 /***** Pages ****/
 import Dashboard from '../views/dashboards/Dashboard';
-import AddProducts from '../views/product/AddProducts';
 import Coupon from '../views/coupon/Coupons';
 import Categories from '../views/category/Categories';
 import Products from '../views/product/Products';
@@ -42,7 +41,6 @@ const ThemeRoutes = [
     children: [
       { path: '/', name: 'Home', element: <Navigate to={isUserLoggedIn ? "/dashboard" : "/auth/login"} /> },
       { path: '/dashboard', name: 'Dashboard', exact: true, element: <ProtectedRoute component={Dashboard} /> },
-      { path: '/add-product', name: 'Add Products', exact: true, element: <ProtectedRoute component={AddProducts} /> },
       
       { path: '/banner', name: 'Banner', exact: true, element: <Banner component={Banner} /> },
       { path: '/products', name: 'Products', exact: true, element: <ProtectedRoute component={Products} /> },
