@@ -5,7 +5,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const CKEditorComponent = ({ getDescription, value }) => {
-  console.log('value: ', value);
+  // console.log('value: ', value);
   const editorRef = useRef(null); 
 
   const ckWrapperStyle = css`

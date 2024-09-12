@@ -15,6 +15,8 @@ const Products = () => {
     setprodAddCheck(e);
   };
 
+  console.log(prodAddCheck);
+
   useEffect(() => {
     dispatch(fetchProducts());
     setprodAddCheck(false);

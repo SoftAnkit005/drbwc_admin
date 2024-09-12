@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle, Table, Form } from 'reactstrap';
 import { FaRegEdit } from 'react-icons/fa';
@@ -7,15 +7,26 @@ import ComponentCard from '../ComponentCard';
 import CKEditorComponent from '../editor/CKEditorComponent';
 import FileDropZone from '../uploader/FileDropZone';
 import { addProduct, updateProduct } from '../../store/products/productSlice';
+import { fetchCategories } from '../../store/category/categorySlice';
+import { getsubcategories } from '../../store/subcategory/subcategorySlice';
 
 function AddEditProduct({ changed, prodtype, alldata }) {
-  const [modal, setModal] = useState(false);
   const dispatch = useDispatch();
+  
+  const [modal, setModal] = useState(false);
   const [allVarients, setAllVarients] = useState([]);
   const [varientColor, setVarientColor] = useState('');
+  const [categoryData, setcategoryData] = useState([]);
+  const [subCategoryData, setsubCategoryData] = useState([]);
   const [images, setImages] = useState([]);
   const [description, setDescription] = useState(alldata ? alldata.product_description : '');
   const [variantImageFile, setVariantImageFile] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [productState, setProductState] = useState(true);
+
+  const { categories } = useSelector((state) => state.categories);
+  const { subcategories } = useSelector((state) => state.subcategories);
+
   const toggle = () => setModal(!modal);
 
   useEffect(() => {
@@ -30,8 +41,32 @@ function AddEditProduct({ changed, prodtype, alldata }) {
         };
       });
       setAllVarients(variantArray);
+      setSelectedCategory(alldata.category_id);
+      setProductState(alldata.status === 'active');
     }
   }, [prodtype, alldata]);  
+
+  console.log('productState: ', productState);
+  useEffect(() => {
+    dispatch(fetchCategories());
+    dispatch(getsubcategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (categories?.success) {
+      setcategoryData(categories?.categories);
+    }
+  
+    if (subcategories?.success && Array.isArray(subcategories?.subcategories)) {
+      const filteredSubCategories = subcategories.subcategories.filter(
+        (subCategory) => subCategory.category_id === parseInt(selectedCategory, 10)
+      );
+      setsubCategoryData(filteredSubCategories);
+    }
+  }, [categories, subcategories, selectedCategory]);
+  
+
+  // console.log(categoryData, subCategoryData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,7 +77,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     // Append general product data
     formData.append('product_name', e.target.product_name.value);
     formData.append('price', e.target.price.value);
-    formData.append('status', e.target.checked);
+    formData.append('status', productState?'Active':'Inactive');
     formData.append('use_for', e.target.use_for.value);
     formData.append('power_source', e.target.power_source.value);
     formData.append('material', e.target.material.value);
@@ -139,7 +174,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                     <div className="d-flex justify-content-between px-4 py-3">
                       <h4 className="m-0 fw-semibold">General</h4>
                       <FormGroup switch>
-                        <Input type="switch" name="status" defaultChecked={prodtype === 'edit' ? alldata.status : true} />
+                        <Input type="switch" defaultChecked={productState} onClick={() => { setProductState(!productState)}} />
                       </FormGroup>
                     </div>
                   </CardTitle>
@@ -215,18 +250,22 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                       <Col md="6" lg="4">
                         <FormGroup>
                           <Label htmlFor="category">Category</Label>
-                          <Input type="select" id="category" name="category_id">
+                          <Input type="select" id="category" name="category_id" onChange={(e) => setSelectedCategory(e.target.value)} defaultValue={prodtype === 'edit' ? alldata.category_id : ''}>
                             <option>Select...</option>
-                            {/* Categories map */}
+                            {categoryData?.map((item) => (
+                              <option key={item.id} value={item.id}>{item.name}</option>
+                            ))}
                           </Input>
                         </FormGroup>
                       </Col>
                       <Col md="6" lg="4">
                         <FormGroup>
                           <Label htmlFor="subcategory">Sub Category</Label>
-                          <Input type="select" id="subcategory" name="subcategory_id">
+                          <Input type="select" id="subcategory" name="subcategory_id" defaultValue={prodtype === 'edit' ? alldata.subcategory_id : ''}>
                             <option>Select...</option>
-                            {/* Categories map */}
+                            {subCategoryData?.map((item) => (
+                                <option key={item.id} value={item.id}>{item.name}</option>
+                            ))}
                           </Input>
                         </FormGroup>
                       </Col>
