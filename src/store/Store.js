@@ -16,6 +16,7 @@ import fileUploadReducer from './fileupload/fileUploadSlice';
 import featuredproductReducer from './featuredproduct/featuredProductSlice';
 import couponReducer from './coupons/couponSlice';
 import userReducer from './users/userSlice';
+import taxsettingsReducer from './settings/taxsettings/taxsettingsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -33,6 +34,7 @@ export const store = configureStore({
     featuredproduct: featuredproductReducer,
     coupons: couponReducer,
     users: userReducer,
+    taxes: taxsettingsReducer,
 
 
 

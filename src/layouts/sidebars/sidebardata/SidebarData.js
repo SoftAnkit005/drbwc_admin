@@ -46,7 +46,7 @@ const SidebarData = [
   // },
   { caption: 'Quick Links' },
   { title: 'Dashboard', href: '/dashboard', icon: <IoHomeOutline className='fs-3' />, id: 1.1, collapisble: false, },
-  
+
   { caption: 'Catalog' },
   { title: 'Products', href: '/products', icon: <HiOutlineInboxStack className='fs-3' />, id: 2.1, collapisble: false, },
   { title: 'Banner', href: '/banner', icon: <IoImagesOutline className='fs-3' />, id: 2.2, collapisble: false, },

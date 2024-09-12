@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Card,CardBody, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
+import { Card, CardBody, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import './settings.scss'
 import StoreSetting from './settingtabs/StoreSetting';
 import PaymentSetting from './settingtabs/PaymentSetting';
 import ShippingSetting from './settingtabs/ShippingSetting';
+import TaxSetting from './settingtabs/TaxSettings';
 
 const Setting = () => {
   const [activeTab, setActiveTab] = useState('1'); // Step 1: State for active tab
@@ -33,20 +34,16 @@ const Setting = () => {
         </Nav>
         <TabContent activeTab={activeTab}>
           <TabPane tabId="1">
-            <StoreSetting/>
+            <StoreSetting />
           </TabPane>
           <TabPane tabId="2">
-            <PaymentSetting/>
+            <PaymentSetting />
           </TabPane>
           <TabPane tabId="3">
-            <ShippingSetting/>
+            <ShippingSetting />
           </TabPane>
           <TabPane tabId="4">
-            <Row>
-              <Col sm="12">
-                <h4>Tab 2 Contents</h4>
-              </Col>
-            </Row>
+            <TaxSetting pageName="tax" />
           </TabPane>
         </TabContent>
       </CardBody>

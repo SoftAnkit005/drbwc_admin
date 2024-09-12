@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, Form } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, Form, CardTitle } from 'reactstrap';
 import './modalstyle.scss';
 import { FaRegEdit } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
@@ -78,6 +78,11 @@ function AddEditBanner({ changed, bannerType, data }) {
                         <Row>
                             <Col md="12">
                                 <Card>
+                                    <CardTitle className="d-flex justify-content-end">
+                                        <FormGroup switch>
+                                            <Input type="switch" defaultChecked={status === "active"} onChange={(e) => setStatus(e.target.checked ? "active" : "inactive")} />
+                                        </FormGroup>
+                                    </CardTitle>
                                     <CardBody className="p-0">
                                         <Row>
                                             <Col className="py-1" xs="12">
