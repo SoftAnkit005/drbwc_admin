@@ -11,6 +11,7 @@ import { deleteTags } from '../../store/tags/tagsSlice';
 import { deleteReviews } from '../../store/reviews/reviewsSlice';
 import { deleteSection } from '../../store/featuredproduct/featuredProductSlice';
 import { deleteOffers } from '../../store/coupons/couponSlice';
+import { deleteTax } from '../../store/settings/taxsettings/taxsettingsSlice';
 
 function DeleteConfirmation({ id, changed, caseType, title }) {
   const [modal, setModal] = useState(false);
@@ -46,6 +47,9 @@ function DeleteConfirmation({ id, changed, caseType, title }) {
       case 'coupons':
         dispatch(deleteOffers(id));
         break;
+        case 'tax':
+          dispatch(deleteTax(id));
+          break;
 
       default:
         break;

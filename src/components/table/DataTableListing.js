@@ -13,6 +13,7 @@ import DeleteConfirmation from '../modal/DeleteConfirmation';
 import AddEditBanner from '../modal/AddEditBanner';
 import AddEditFeaturedProduct from '../modal/AddEditFeaturedProduct';
 import AddEditCouons from '../modal/AddEditCoupons';
+import AddEditTaxSettings from '../modal/settingmodals/AddEditTaxSettings';
 
 const DataTableListing = ({ pageName, tableData = [], changeData }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,7 +60,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             {
               name: 'Status',
               selector: row => (
-                <Badge color={row.status === 'active' ? 'success' : 'danger'}>
+                <Badge className='text-capitalize' color={row.status === 'active' ? 'success' : 'danger'}>
                   {row.status}
                 </Badge>
               ),
@@ -100,32 +101,32 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
           ],
           renderAdd: () => <AddEditCategory catType="add" changed={changeData} allCategories={tableData} />,
         };
-        case 'banner':
-          return {
-            columns: [
-              { name: 'Banner Name', selector: row => row.title },
-              { name: 'description', selector: row => row.description },
-              { name: 'Image', selector: row => <img src={row.image_url} alt='' width="50" height="50" className='m-2' /> },
-              {
-                name: 'Status',
-                selector: row => (
-                  <Badge color={row.status === 'active' ? 'success' : 'danger'}>
-                    {row.status === 'active' ? 'Active' : 'Inactive'}
-                  </Badge>
-                ),
-              },
-              {
-                name: 'Action',
-                cell: row => (
-                  <div className='d-flex align-items-center'>
-                    <AddEditBanner bannerType="edit" changed={changeData} data={row} />
-                    <DeleteConfirmation caseType="banner" id={row.id} title={row.title} changed={changeData} />
-                  </div>
-                ),
-              },
-            ],
-            renderAdd: () => <AddEditBanner changed={changeData} />,
-          };
+      case 'banner':
+        return {
+          columns: [
+            { name: 'Banner Name', selector: row => row.title },
+            { name: 'description', selector: row => row.description },
+            { name: 'Image', selector: row => <img src={row.image_url} alt='' width="50" height="50" className='m-2' /> },
+            {
+              name: 'Status',
+              selector: row => (
+                <Badge color={row.status === 'active' ? 'success' : 'danger'}>
+                  {row.status === 'active' ? 'Active' : 'Inactive'}
+                </Badge>
+              ),
+            },
+            {
+              name: 'Action',
+              cell: row => (
+                <div className='d-flex align-items-center'>
+                  <AddEditBanner bannerType="edit" changed={changeData} data={row} />
+                  <DeleteConfirmation caseType="banner" id={row.id} title={row.title} changed={changeData} />
+                </div>
+              ),
+            },
+          ],
+          renderAdd: () => <AddEditBanner changed={changeData} />,
+        };
       case 'featuredproduct':
         return {
           columns: [
@@ -197,7 +198,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  <AddEditCouons couponType="edit" changed={changeData} data={row}/>
+                  <AddEditCouons couponType="edit" changed={changeData} data={row} />
                   <DeleteConfirmation caseType="coupons" id={row.id} title={row.offer_name} changed={changeData} />
                 </div>
               ),
@@ -221,6 +222,33 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             },
           ],
           renderAdd: () => <AddAttributes changed={changeData} />,
+        };
+      case 'tax':
+        return {
+          columns: [
+            { name: 'Tax Name', selector: row => row.tax_name },
+            { name: 'Tax Rate', selector: row => row.tax_rate },
+            { name: 'Tax Description', selector: row => row.description },
+            {
+              name: 'Status',
+              selector: row => (
+                <Badge color={row.status === 'active' ? 'success' : 'danger'}>
+                  {row.status === 'active' ? 'Active' : 'Inactive'}
+                </Badge>
+              ),
+            },
+            {
+              name: 'Actions',
+              cell: row => (
+                <div className='d-flex align-items-center'>
+                  <AddEditTaxSettings taxType="edit" changed={changeData} data={row} />
+                  {/* <FaRegEdit className='text-dark cursor-pointer fs-5' /> */}
+                  <DeleteConfirmation caseType="tax" id={row.id} title={row.tax_name} changed={changeData} />
+                </div>
+              ),
+            },
+          ],
+          renderAdd: () => <AddEditTaxSettings changed={changeData} />,
         };
       case 'tags':
         return {
@@ -293,7 +321,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               ),
             },
           ],
-          renderAdd: () => <AddEditReviews />,
+          renderAdd: () => <></ >,
         };
       default:
         return {

@@ -41,7 +41,7 @@ const ThemeRoutes = [
     children: [
       { path: '/', name: 'Home', element: <Navigate to={isUserLoggedIn ? "/dashboard" : "/auth/login"} /> },
       { path: '/dashboard', name: 'Dashboard', exact: true, element: <ProtectedRoute component={Dashboard} /> },
-      
+
       { path: '/banner', name: 'Banner', exact: true, element: <Banner component={Banner} /> },
       { path: '/products', name: 'Products', exact: true, element: <ProtectedRoute component={Products} /> },
       { path: '/categories', name: 'Categories', exact: true, element: <ProtectedRoute component={Categories} /> },
