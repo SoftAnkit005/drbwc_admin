@@ -23,18 +23,18 @@ const Header = () => {
     localStorage.removeItem('user');
     cogoToast.error('Logged Out!');
     setTimeout(() => {
-      navigate('/'); 
+      navigate('/');
     }, 500);
   };
 
 
   return (
-    <Navbar expand="lg" className="topbar bg-primary" >
+    <Navbar expand="lg" className="topbar bg-themegray" >
       {/******************************/}
       {/**********Toggle Buttons**********/}
       {/******************************/}
       <div className="d-flex align-items-center">
-        <Button className="d-none d-lg-block bg-transparent border-0" onClick={() => dispatch(ToggleMiniSidebar())} > <Icon.Menu size={22} className='text-white'/> </Button>
+        <Button className="d-none d-lg-block bg-transparent border-0" onClick={() => dispatch(ToggleMiniSidebar())} > <Icon.Menu size={22} className='text-white' /> </Button>
         <div href="/" className="d-sm-flex d-lg-none"> <Logo /> </div>
         <Button color={topbarColor} className="d-sm-block d-lg-none" onClick={() => dispatch(ToggleMobileSidebar())} > <Icon.Menu size={22} /> </Button>
       </div>

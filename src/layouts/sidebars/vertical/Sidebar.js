@@ -31,7 +31,7 @@ const Sidebar = () => {
     <div className={`sidebarBox shadow bg-${activeBg} ${isFixed ? 'fixedSidebar' : ''}`}>
       <SimpleBar style={{ height: '100%' }}>
         {/********Logo*******/}
-        <div className="d-flex p-3 align-items-center">
+        <div className="d-flex p-2 align-items-center justify-content-center bg-themegray" style={{ height: '65px' }}>
           <Logo />
           <Button
             close
