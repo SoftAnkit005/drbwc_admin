@@ -1,4 +1,3 @@
-
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -194,9 +193,6 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     setImages(newImages);
   }, []);
 
-
-
-
   return (
     <div>
       {prodtype === 'add' ? (
@@ -339,25 +335,8 @@ function AddEditProduct({ changed, prodtype, alldata }) {
               <Col md="12">
                 <ComponentCard title="Media">
                   <FormGroup>
-                    <FileDropZone
-                      prodImages={prodImagesChange}
-                      initialImages={images} // Use images state directly
-                    />
-                    {/* <div className="image-preview">
-                      {images.map((image, index) => (
-                        <div key={index} className="image-item">
-                          <img
-                            src={typeof image === 'string' ? image : URL.createObjectURL(image)}
-                            alt={`preview-${index}`}
-                            width="50"
-                            height="50"
-                          />
-                          <button type="button" onClick={() => handleImageRemove(index)}>Remove</button>
-                        </div>
-                      ))}
-                    </div> */}
+                    <FileDropZone prodImages={prodImagesChange} initialImages={alldata?.image_urls ? JSON.parse(alldata.image_urls) : []} />
                   </FormGroup>
-
                 </ComponentCard>
               </Col>
 
