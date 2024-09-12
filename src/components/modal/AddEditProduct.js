@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -12,7 +13,7 @@ import { getsubcategories } from '../../store/subcategory/subcategorySlice';
 
 function AddEditProduct({ changed, prodtype, alldata }) {
   const dispatch = useDispatch();
-  
+
   const [modal, setModal] = useState(false);
   const [allVarients, setAllVarients] = useState([]);
   const [varientColor, setVarientColor] = useState('');
@@ -44,7 +45,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
       setSelectedCategory(alldata.category_id);
       setProductState(alldata.status === 'active');
     }
-  }, [prodtype, alldata]);  
+  }, [prodtype, alldata]);
 
   console.log('productState: ', productState);
   useEffect(() => {
@@ -56,7 +57,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     if (categories?.success) {
       setcategoryData(categories?.categories);
     }
-  
+
     if (subcategories?.success && Array.isArray(subcategories?.subcategories)) {
       const filteredSubCategories = subcategories.subcategories.filter(
         (subCategory) => subCategory.category_id === parseInt(selectedCategory, 10)
@@ -64,20 +65,41 @@ function AddEditProduct({ changed, prodtype, alldata }) {
       setsubCategoryData(filteredSubCategories);
     }
   }, [categories, subcategories, selectedCategory]);
-  
+
+  useEffect(() => {
+    if (prodtype === 'edit' && alldata?.color_image_urls) {
+      const parsedData = JSON.parse(alldata.color_image_urls);
+      const variantArray = Object.keys(parsedData).map(async (color) => {
+        const files = await Promise.all(
+          parsedData[color].map(async (url) => {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            return new File([blob], url.split('/').pop(), { type: blob.type });
+          })
+        );
+        return { variant: color, imageFile: files, imageURLs: parsedData[color] };
+      });
+
+      Promise.all(variantArray).then(setAllVarients);
+      setSelectedCategory(alldata.category_id);
+      setProductState(alldata.status === 'active');
+    }
+  }, [prodtype, alldata]);
+
+
 
   // console.log(categoryData, subCategoryData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     // Create a FormData object to handle file uploads and form data
     const formData = new FormData();
-  
+
     // Append general product data
     formData.append('product_name', e.target.product_name.value);
     formData.append('price', e.target.price.value);
-    formData.append('status', productState?'Active':'Inactive');
+    formData.append('status', productState ? 'Active' : 'Inactive');
     formData.append('use_for', e.target.use_for.value);
     formData.append('power_source', e.target.power_source.value);
     formData.append('material', e.target.material.value);
@@ -91,15 +113,15 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     formData.append('subcategory_id', e.target.subcategory_id.value);
     // formData.append('stock', e.target.stock.value);
     formData.append('qty', e.target.qty.value);
-  
+
     // Append description from CKEditor
     formData.append('product_description', description);
-  
+
     // Append images from FileDropZone
     images.forEach((image) => {
       formData.append('image_urls', image);
     });
-  
+
     // Append variants
     allVarients.forEach((variant) => {
       if (variant.imageFile) {
@@ -109,12 +131,12 @@ function AddEditProduct({ changed, prodtype, alldata }) {
         });
       }
     });
-    
-  
+
+
     // Make an API request to submit the form data (replace the URL with the actual API)
     if (prodtype === 'edit') {
       dispatch(updateProduct({ formData, productId: alldata.id }));
-    }else{
+    } else {
       dispatch(addProduct(formData));
     }
 
@@ -122,28 +144,48 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
     toggle();
   };
-  
+
   const handleImageChange = (e) => {
     // console.log(e);
-    const file = e.target.files;
-    if (file) {
-      setVariantImageFile(file);
+    const files = Array.from(e.target.files); // Convert FileList to array
+    if (files.length) {
+      setVariantImageFile(files);
     }
+
   };
 
   const handleAddVariant = () => {
     if (varientColor && variantImageFile) {
-      setAllVarients([...allVarients, { variant: varientColor, imageFile: variantImageFile }]);
+      const newVariant = {
+        variant: varientColor,
+        imageFile: variantImageFile,
+        imageURLs: [] // Initialize an empty array for image URLs for new variants
+      };
+
+      // Handle image URLs in edit mode for existing data
+      if (prodtype === 'edit' && alldata?.color_image_urls) {
+        const parsedData = JSON.parse(alldata.color_image_urls);
+        if (!parsedData[varientColor]) {
+          parsedData[varientColor] = []; // Initialize the array for new color variants
+        }
+        newVariant.imageURLs = parsedData[varientColor]; // Store existing URLs for edit mode
+      }
+
+      // Update the state immediately for image preview
+      setAllVarients((prevVarients) => [...prevVarients, newVariant]);
+
+      // Reset input fields
       setVarientColor('');
       setVariantImageFile(null);
     }
   };
 
+
   const handleDeleteVariant = (index) => {
     setAllVarients(allVarients.filter((_, i) => i !== index));
   };
-  
-  
+
+
   const handleDescriptionChange = (data) => {
     setDescription(data.data);
   };
@@ -151,6 +193,9 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   const prodImagesChange = useCallback((newImages) => {
     setImages(newImages);
   }, []);
+
+
+
 
   return (
     <div>
@@ -174,77 +219,77 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                     <div className="d-flex justify-content-between px-4 py-3">
                       <h4 className="m-0 fw-semibold">General</h4>
                       <FormGroup switch>
-                        <Input type="switch" defaultChecked={productState} onClick={() => { setProductState(!productState)}} />
+                        <Input type="switch" defaultChecked={productState} onClick={() => { setProductState(!productState) }} />
                       </FormGroup>
                     </div>
                   </CardTitle>
                   <CardBody>
                     <Row>
                       {/* Product form fields */}
-                      <Col className="py-1"  md="6" lg="4" xl="3">
+                      <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <Label htmlFor="product_name">Name</Label>
                           <Input type="text" id="product_name" name="product_name" placeholder="Name" defaultValue={prodtype === 'edit' ? alldata.product_name : ''} required />
                         </FormGroup>
                       </Col>
-                      <Col className="py-1"  md="6" lg="4" xl="3">
+                      <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <Label htmlFor="price">Price</Label>
                           <Input type="text" id="price" name="price" placeholder="Price" defaultValue={prodtype === 'edit' ? alldata.price : ''} />
                         </FormGroup>
                       </Col>
-                      <Col className="py-1"  md="6" lg="4" xl="3">
+                      <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <Label htmlFor="use_for">Use For</Label>
-                          <Input type="text" id="use_for" name="use_for" placeholder="Use For" defaultValue={prodtype === 'edit' ? alldata.use_for : ''}/>
+                          <Input type="text" id="use_for" name="use_for" placeholder="Use For" defaultValue={prodtype === 'edit' ? alldata.use_for : ''} />
                         </FormGroup>
                       </Col>
-                      <Col className="py-1"  md="6" lg="4" xl="3">
+                      <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <Label htmlFor="power_source">Power Source</Label>
                           <Input type="text" id="power_source" name="power_source" placeholder="Power Source" defaultValue={prodtype === 'edit' ? alldata.power_source : ''} />
                         </FormGroup>
                       </Col>
-                      <Col className="py-1"  md="6" lg="4" xl="3">
+                      <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <Label htmlFor="material">Material</Label>
-                          <Input type="text" id="material" name="material" placeholder="Material" defaultValue={prodtype === 'edit' ? alldata.material : ''}/>
+                          <Input type="text" id="material" name="material" placeholder="Material" defaultValue={prodtype === 'edit' ? alldata.material : ''} />
                         </FormGroup>
                       </Col>
-                      <Col className="py-1"  md="6" lg="4" xl="3">
+                      <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <Label htmlFor="item_weight">Item Weight</Label>
-                          <Input type="text" id="item_weight" name="item_weight" placeholder="Item Weight" defaultValue={prodtype === 'edit' ? alldata.item_weight : ''}/>
+                          <Input type="text" id="item_weight" name="item_weight" placeholder="Item Weight" defaultValue={prodtype === 'edit' ? alldata.item_weight : ''} />
                         </FormGroup>
                       </Col>
-                      <Col className="py-1"  md="6" lg="4" xl="3">
+                      <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <Label htmlFor="size">Size</Label>
-                          <Input type="text" id="size" name="size" placeholder="Size" defaultValue={prodtype === 'edit' ? alldata.size : ''}/>
+                          <Input type="text" id="size" name="size" placeholder="Size" defaultValue={prodtype === 'edit' ? alldata.size : ''} />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" xs="12">
                         <FormGroup>
-                            <Label htmlFor="about_item">About this item</Label>
-                            <Input type="textarea" id="about_item" name="about_item" placeholder="About this item" defaultValue={prodtype === 'edit' ? alldata.about_item : ''}/>
+                          <Label htmlFor="about_item">About this item</Label>
+                          <Input type="textarea" id="about_item" name="about_item" placeholder="About this item" defaultValue={prodtype === 'edit' ? alldata.about_item : ''} />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" xs="12">
                         <FormGroup>
                           <Label htmlFor="video_link">Video Link</Label>
-                          <Input type="text" id="video_link" name="video_link" placeholder="Video Link" defaultValue={prodtype === 'edit' ? alldata.video_link : ''}/>
+                          <Input type="text" id="video_link" name="video_link" placeholder="Video Link" defaultValue={prodtype === 'edit' ? alldata.video_link : ''} />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" xs="12">
                         <FormGroup>
-                            <Label htmlFor="amazon_link">Amazon Link</Label>
-                            <Input type="text" id="amazon_link" name="amazon_link" placeholder="Amazon Link" defaultValue={prodtype === 'edit' ? alldata.amazon_link : ''}/>
+                          <Label htmlFor="amazon_link">Amazon Link</Label>
+                          <Input type="text" id="amazon_link" name="amazon_link" placeholder="Amazon Link" defaultValue={prodtype === 'edit' ? alldata.amazon_link : ''} />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" xs="12">
                         <FormGroup>
-                            <Label htmlFor="flipkart_link">Flipkart Link</Label>
-                            <Input type="text" id="flipkart_link" name="flipkart_link" placeholder="Flipkart Link" defaultValue={prodtype === 'edit' ? alldata.flipkart_link : ''}/>
+                          <Label htmlFor="flipkart_link">Flipkart Link</Label>
+                          <Input type="text" id="flipkart_link" name="flipkart_link" placeholder="Flipkart Link" defaultValue={prodtype === 'edit' ? alldata.flipkart_link : ''} />
                         </FormGroup>
                       </Col>
                       <Col md="6" lg="4">
@@ -264,7 +309,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                           <Input type="select" id="subcategory" name="subcategory_id" defaultValue={prodtype === 'edit' ? alldata.subcategory_id : ''}>
                             <option>Select...</option>
                             {subCategoryData?.map((item) => (
-                                <option key={item.id} value={item.id}>{item.name}</option>
+                              <option key={item.id} value={item.id}>{item.name}</option>
                             ))}
                           </Input>
                         </FormGroup>
@@ -279,10 +324,10 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
                       <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
-                            <FormGroup>
-                              <Label>Stock Quantity</Label>
-                              <Input type="text" id="qty" name="qty" placeholder="Quantity" defaultValue={prodtype === 'edit' ? alldata.qty : ''}/>
-                            </FormGroup>
+                          <FormGroup>
+                            <Label>Stock Quantity</Label>
+                            <Input type="text" id="qty" name="qty" placeholder="Quantity" defaultValue={prodtype === 'edit' ? alldata.qty : ''} />
+                          </FormGroup>
                         </FormGroup>
                       </Col>
                     </Row>
@@ -294,8 +339,25 @@ function AddEditProduct({ changed, prodtype, alldata }) {
               <Col md="12">
                 <ComponentCard title="Media">
                   <FormGroup>
-                    <FileDropZone prodImages={prodImagesChange} initialImages={alldata?.image_urls ? JSON.parse(alldata.image_urls) : []}/>
+                    <FileDropZone
+                      prodImages={prodImagesChange}
+                      initialImages={images} // Use images state directly
+                    />
+                    {/* <div className="image-preview">
+                      {images.map((image, index) => (
+                        <div key={index} className="image-item">
+                          <img
+                            src={typeof image === 'string' ? image : URL.createObjectURL(image)}
+                            alt={`preview-${index}`}
+                            width="50"
+                            height="50"
+                          />
+                          <button type="button" onClick={() => handleImageRemove(index)}>Remove</button>
+                        </div>
+                      ))}
+                    </div> */}
                   </FormGroup>
+
                 </ComponentCard>
               </Col>
 
@@ -306,7 +368,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                     <Col className="px-lg-3 border-end" lg="4">
                       <FormGroup>
                         <Label htmlFor="variantImage">Image</Label>
-                        <Input type="file" className="custom-file-input mb-3" id="variantImage" onChange={handleImageChange} multiple/>
+                        <Input type="file" className="custom-file-input mb-3" id="variantImage" onChange={handleImageChange} multiple />
                       </FormGroup>
                       <FormGroup>
                         <Label htmlFor="color">Color</Label>
@@ -331,20 +393,37 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                           {allVarients.map((varient, index) => (
                             <tr key={index}>
                               <td>{index + 1}</td>
+
                               <td>
-                                {prodtype === 'edit' ? (
-                                  // When in edit mode, use the URLs from alldata.color_image_urls
-                                  (JSON.parse(alldata.color_image_urls)[varient.variant] || []).map((url, i) => (
-                                    <img className='mx-1' key={i} src={url} alt={`Variant ${i}`} width="50" height="50" />
+                                {varient.imageURLs && varient.imageURLs.length > 0 ? (
+                                  // Display existing image URLs in edit mode
+                                  varient.imageURLs.map((url, i) => (
+                                    <img
+                                      className="mx-1"
+                                      key={i}
+                                      src={url}
+                                      alt={`Variant ${i}`}
+                                      width="50"
+                                      height="50"
+                                    />
                                   ))
                                 ) : (
-                                  // When not in edit mode, use the uploaded files
-                                  varient.imageFile && 
-                                  Object.keys(varient.imageFile).map((key, i) => (
-                                    <img className='mx-1' key={i} src={URL.createObjectURL(varient.imageFile[key])} alt={`Variant ${i}`} width="50" height="50" />
+                                  // Display uploaded files for new variants
+                                  varient.imageFile &&
+                                  Array.from(varient.imageFile).map((file, i) => (
+                                    <img
+                                      className="mx-1"
+                                      key={i}
+                                      src={URL.createObjectURL(file)}
+                                      alt={`Variant ${i}`}
+                                      width="50"
+                                      height="50"
+                                    />
                                   ))
                                 )}
                               </td>
+
+
                               <td>{varient.variant}</td>
                               <td>
                                 <i className="bi bi-trash cursor-pointer ms-2 text-danger fs-5" onClick={() => handleDeleteVariant(index)} />
@@ -357,7 +436,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                   </Row>
                 </ComponentCard>
               </Col>
-            </Row> 
+            </Row>
 
             <ModalFooter>
               <Button color="dark" onClick={toggle}>Cancel</Button>
