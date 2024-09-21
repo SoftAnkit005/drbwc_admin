@@ -58,7 +58,7 @@ const Header = () => {
           <DropdownMenu className="ddWidth">
             <ProfileDD />
             <div className="p-2 px-3">
-              <Button onClick={handleLogout} color="danger" size="sm">
+              <Button onClick={handleLogout} color="danger" size="md">
                 Logout
               </Button>
             </div>
