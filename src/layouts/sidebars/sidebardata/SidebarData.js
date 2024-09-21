@@ -1,4 +1,4 @@
-import { MdAddLink, MdOutlineCategory, MdOutlineReviews, MdSettingsInputComponent } from 'react-icons/md';
+import { MdAddLink, MdOutlineCategory, MdOutlineReviews } from 'react-icons/md';
 import { RiCoupon3Line, RiListOrdered2 } from 'react-icons/ri';
 import { LuTags, LuUsers2 } from "react-icons/lu";
 import { HiOutlineInboxStack } from "react-icons/hi2";
@@ -51,7 +51,7 @@ const SidebarData = [
   { title: 'Products', href: '/products', icon: <HiOutlineInboxStack className='fs-3' />, id: 2.1, collapisble: false, },
   { title: 'Banner', href: '/banner', icon: <IoImagesOutline className='fs-3' />, id: 2.2, collapisble: false, },
   { title: 'Categories', href: '/categories', icon: <MdOutlineCategory className='fs-3' />, id: 2.3, collapisble: false, },
-  { title: 'Attributes', href: '/attributes', icon: <MdSettingsInputComponent className='fs-3' />, id: 2.4, collapisble: false, },
+  // { title: 'Attributes', href: '/attributes', icon: <MdSettingsInputComponent className='fs-3' />, id: 2.4, collapisble: false, },
   { title: 'Tags', href: '/tags', icon: <LuTags className='fs-3' />, id: 2.5, collapisble: false, },
   { title: 'Reviews', href: '/reviews', icon: <MdOutlineReviews className='fs-3' />, id: 2.6, collapisble: false, },
   { title: 'Featured Product', href: '/featured-product', icon: <IoImagesOutline className='fs-3' />, id: 2.7, collapisble: false, },
