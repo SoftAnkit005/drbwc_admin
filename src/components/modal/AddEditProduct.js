@@ -191,7 +191,20 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
   const prodImagesChange = useCallback((newImages) => {
     setImages(newImages);
-  }, []);
+    // Logic to update allVarients with new images
+    setAllVarients((prevVariants) =>
+      prevVariants.map((variant, index) => {
+        if (index === 0) { // assuming the first variant is updated with the new images
+          return {
+            ...variant,
+            imageFile: newImages, // Update with new image files
+          };
+        }
+        return variant;
+      })
+    );
+  }, [  setAllVarients, setImages]);
+
 
   return (
     <div>
