@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "homepage": "/",
   "private": true,
-  "proxy": "http://192.168.29.66:5000",
+  "proxy": "http://93.127.185.159:5000",
   "dependencies": {
     "@blueprintjs/core": "^4.4.1",
     "@casl/ability": "^5.4.4",
