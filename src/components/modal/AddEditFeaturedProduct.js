@@ -6,16 +6,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createSection, updateSection } from '../../store/featuredproduct/featuredProductSlice';
 
 function AddEditFeaturedProduct({ changed, featureproductType, data }) {
+    const { categories } = useSelector((state) => state.categories);
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
     const apiUrl = process.env.REACT_APP_API_URL;
-    const [formData, setFormData] = useState({
-        type: "",
-        product_id: "",
-        description: "",
-        image: null,
-        preview: null
-    });
+    const [categoryData, setcategoryData] = useState([]);
+    const [formData, setFormData] = useState({ type: "", product_id: "", description: "", category_id: "", image: null, preview: null });
+
+    useEffect(() => {
+        if (categories?.success) {
+            setcategoryData(categories?.categories);
+        }
+    }, [categories]);
+
+    console.log(categoryData);
 
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.featuredproduct);
@@ -27,6 +31,7 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                 product_id: data.product_id,
                 description: data.description,
                 image: null,
+                category_id: data.category_id,
                 preview: data.image ? `${apiUrl}/${data.image}` : null
             })
         }
@@ -57,7 +62,7 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
         formDataToSend.append("type", formData.type);
         formDataToSend.append("product_id", formData.product_id);
         formDataToSend.append("description", formData.description);
-
+        formDataToSend.append("category_id", formData.category_id);
         if (formData.image) {
             formDataToSend.append("image", formData.image);
         }
@@ -112,18 +117,6 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                                                     />
                                                 </FormGroup>
                                             </Col>
-                                            {/* <Col className="py-1" xs="12">
-                                            <FormGroup>
-                                                <Label htmlFor="product_id">Product ID</Label>
-                                                <Input
-                                                    type="text"
-                                                    name="product_id"
-                                                    value={formData.product_id}
-                                                    onChange={handleChange}
-                                                    placeholder="Enter Product ID"
-                                                    />
-                                                    </FormGroup>
-                                                    </Col> */}
                                             <Col className="py-1" xs="12">
                                                 <FormGroup>
                                                     <Label htmlFor="description">Description</Label>
@@ -134,6 +127,17 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                                                         onChange={handleChange}
                                                         placeholder="Enter Description"
                                                     />
+                                                </FormGroup>
+                                            </Col>
+                                            <Col className="py-1" xs="12">
+                                                <FormGroup>
+                                                    <Label htmlFor="category">Category</Label>
+                                                    <Input type="select" value={formData.category_id} id="category" name="category_id" onChange={handleChange}>
+                                                        <option>Select...</option>
+                                                        {categoryData?.map((item) => (
+                                                            <option key={item.id} value={item.id}>{item.name}</option>
+                                                        ))}
+                                                    </Input>
                                                 </FormGroup>
                                             </Col>
                                             <Col className="py-1" xs="12">
