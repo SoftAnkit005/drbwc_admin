@@ -116,7 +116,11 @@ export const updateProduct = createAsyncThunk(
 const productSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    setproducts: (state, action) => {
+      state.wishlistItems = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -175,4 +179,5 @@ const productSlice = createSlice({
   }
 });
 
+export const { setproducts } = productSlice.actions;
 export default productSlice.reducer;

@@ -12,7 +12,7 @@ import { getsubcategories } from '../../store/subcategory/subcategorySlice';
 
 function AddEditProduct({ changed, prodtype, alldata }) {
   const dispatch = useDispatch();
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [modal, setModal] = useState(false);
   const [allVarients, setAllVarients] = useState([]);
   const [varientColor, setVarientColor] = useState('');
@@ -23,19 +23,23 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   const [variantImageFile, setVariantImageFile] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [productState, setProductState] = useState(true);
-
   const { categories } = useSelector((state) => state.categories);
   const { subcategories } = useSelector((state) => state.subcategories);
 
   const toggle = () => setModal(!modal);
 
   useEffect(() => {
-    if (prodtype === 'edit' && alldata?.color_image_urls) {
-      const parsedData = JSON.parse(alldata.color_image_urls);
-      const variantArray = Object.keys(parsedData).map(color => {
+    if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
+      console.log('alldata.color_image_urls', alldata.color_image_urls);
+      const parsedData = alldata.color_image_urls;
+      console.log('parsedData', parsedData);
+      const parsedImagevariant =  JSON.parse(parsedData);
+      console.log('color_image_urls',parsedImagevariant)
+      const variantArray = Object.keys(parsedImagevariant).map(color => {
+        console.log('parsedData[color]', parsedImagevariant[color]);
         return {
           variant: color,
-          imageFile: parsedData[color].map((url, index) => {
+          imageFile: parsedData[color]?.map((url, index) => {
             return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
           })
         };
@@ -46,7 +50,6 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     }
   }, [prodtype, alldata]);
 
-  console.log('productState: ', productState);
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(getsubcategories());
@@ -66,25 +69,38 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   }, [categories, subcategories, selectedCategory]);
 
   useEffect(() => {
-    if (prodtype === 'edit' && alldata?.color_image_urls) {
-      const parsedData = JSON.parse(alldata.color_image_urls);
-      const variantArray = Object.keys(parsedData).map(async (color) => {
+    if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
+      const parsedData = alldata.color_image_urls;
+      const parsedImagevariant =  JSON.parse(parsedData);
+      // Iterate over the color keys
+      const variantArray = Object.keys(parsedImagevariant).map(async (color) => {
         const files = await Promise.all(
-          parsedData[color].map(async (url) => {
-            const response = await fetch(url);
-            const blob = await response.blob();
-            return new File([blob], url.split('/').pop(), { type: blob.type });
+          parsedImagevariant[color]?.map(async (url) => {
+            // Check if the URL is valid
+            if (typeof url === 'string' && url.startsWith('uploads/')) {
+              const fullUrl = `${apiUrl}/${url}`; // Construct full URL if necessary
+              try {
+                const response = await fetch(fullUrl);
+                const blob = await response.blob();
+                return new File([blob], url.split('/').pop(), { type: blob.type });
+              } catch (error) {
+                console.error('Error fetching file:', error);
+                return null;
+              }
+            } else {
+              console.warn('Invalid URL format:', url);
+              return null;
+            }
           })
         );
-        return { variant: color, imageFile: files, imageURLs: parsedData[color] };
+        return { variant: color, imageFile: files.filter(Boolean), imageURLs: parsedData[color] };
       });
-
+  
       Promise.all(variantArray).then(setAllVarients);
       setSelectedCategory(alldata.category_id);
       setProductState(alldata.status === 'active');
     }
-  }, [prodtype, alldata]);
-
+  }, [prodtype, alldata, apiUrl]);
 
 
   // console.log(categoryData, subCategoryData);
@@ -390,27 +406,13 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                                 {varient.imageURLs && varient.imageURLs.length > 0 ? (
                                   // Display existing image URLs in edit mode
                                   varient.imageURLs.map((url, i) => (
-                                    <img
-                                      className="mx-1"
-                                      key={i}
-                                      src={url}
-                                      alt={`Variant ${i}`}
-                                      width="50"
-                                      height="50"
-                                    />
+                                    <img className="mx-1" key={i} src={`${apiUrl}/${url}`} alt={`Variant ${i}`} width="50" height="50" />
                                   ))
                                 ) : (
                                   // Display uploaded files for new variants
                                   varient.imageFile &&
                                   Array.from(varient.imageFile).map((file, i) => (
-                                    <img
-                                      className="mx-1"
-                                      key={i}
-                                      src={URL.createObjectURL(file)}
-                                      alt={`Variant ${i}`}
-                                      width="50"
-                                      height="50"
-                                    />
+                                    <img className="mx-1" key={i} src={URL.createObjectURL(file)} alt={`Variant ${i}`} width="50" height="50" />
                                   ))
                                 )}
                               </td>

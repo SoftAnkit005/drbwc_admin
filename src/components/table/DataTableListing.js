@@ -18,18 +18,21 @@ import AddEditTaxSettings from '../modal/settingmodals/AddEditTaxSettings';
 const DataTableListing = ({ pageName, tableData = [], changeData }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(tableData);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (Array.isArray(tableData)) {
+      // Sort the table data by updated_at
+      const sortedData = [...tableData].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+      
+      // Filter the sorted data based on the search term
       const lowercasedSearchTerm = searchTerm.toLowerCase();
-      setFilteredData(
-        tableData.filter((item) => {
-          return Object.values(item)
-            .some(value =>
-              value && value.toString().toLowerCase().includes(lowercasedSearchTerm)
-            );
-        })
+      const filtered = sortedData.filter((item) =>
+        Object.values(item).some(value =>
+          value && value.toString().toLowerCase().includes(lowercasedSearchTerm)
+        )
       );
+      setFilteredData(filtered);
     }
   }, [searchTerm, tableData]);
 
@@ -51,7 +54,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
           columns: [
             {
               name: 'Thumbnail',
-              selector: row => <img className='my-2 rounded shadow-sm' src={JSON.parse(row.image_urls)[0]} alt={row.product_name} width={50} />,
+              selector: row => <img className='my-2 rounded shadow-sm' src={`${apiUrl}/${JSON.parse(row.image_urls)[0]}`} alt={row.product_name} width={50} />,
             },
             { name: 'Name', selector: row => row.product_name, sortable: true },
             { name: 'Price', selector: row => row.price, sortable: true },
@@ -106,7 +109,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
           columns: [
             { name: 'Banner Name', selector: row => row.title },
             { name: 'description', selector: row => row.description },
-            { name: 'Image', selector: row => <img src={row.image_url} alt='' width="50" height="50" className='m-2' /> },
+            { name: 'Image', selector: row => <img src={`${apiUrl}/${row.image_url}`} alt='' width="50" height="50" className='m-2' /> },
             {
               name: 'Status',
               selector: row => (
@@ -139,7 +142,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               selector: row => row.description
             },
             {
-              name: 'Image', selector: row => <img src={row.image} alt='' width="50" height="50" />
+              name: 'Image', selector: row => <img className='my-2' src={`${apiUrl}/${row.image}`} alt='' width="50" height="50" />
             },
             {
               name: 'Actions',

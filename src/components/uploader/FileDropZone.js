@@ -9,6 +9,7 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
   const [images, setImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const { error, uploadedFilesUrls } = useSelector((state) => state.fileUpload);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // Helper function to convert URL to File
   const urlToFile = async (url, filename) => {
@@ -24,17 +25,18 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
         const imageUrlsArray = Array.isArray(initialImages) 
           ? initialImages 
           : JSON.parse(initialImages || '[]');
-
+  
         const files = await Promise.all(imageUrlsArray.map(async (url, index) => {
-          const filename = `image-${index}.jpg`; // You might need a different logic to get the filename
-          const file = await urlToFile(url, filename);
+          const fullUrl = `${apiUrl}/${url}`; // Construct full URL for remote images
+          const filename = `image-${index}.jpg`; // Adjust logic for actual filename
+          const file = await urlToFile(fullUrl, filename);
           return {
-            id: URL.createObjectURL(file),
+            id: fullUrl, // Use full URL for remote images instead of object URL
             file,
-            preview: URL.createObjectURL(file),
+            preview: fullUrl, // Use full URL for preview as well
           };
         }));
-
+  
         setImages(files);
         prodImages(files.map(image => image.file));
       }
@@ -112,13 +114,7 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
   }, [images]);
 
   return (
-    <div 
-      className={`${isDragging ? 'border border-primary border-2' : ''}`} 
-      onDragEnter={handleDragEnter} 
-      onDragOver={handleDragOver} 
-      onDragLeave={handleDragLeave} 
-      onDrop={handleDrop}
-    >
+    <div className={`${isDragging ? 'border border-primary border-2' : ''}`} onDragEnter={handleDragEnter} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} >
       <Row>
         <Col lg="6">
           <Input type="file" multiple onChange={handleFileChange} className="d-none" id="fileInput" accept=".jpg,.png" />
@@ -128,10 +124,10 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
         </Col>
         <Col lg="6">
           <ListGroup className="flex-row gap-2 preview-images flex-wrap mt-3 mt-lg-0">
-            {images.map((image) => (
-              <ListGroupItem key={image.id} className="position-relative p-0">
+            {images.map((image, i) => (
+              <ListGroupItem key={i} className="position-relative p-0">
                 <img 
-                  src={image.preview} 
+                  src={image.preview}
                   alt={image.file?.name || 'Preview'} 
                   className="img-thumbnail p-0 me-2" 
                 />

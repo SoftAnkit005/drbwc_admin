@@ -3,8 +3,6 @@ import user1 from '../../assets/images/users/user4.jpg';
 
 const ProfileDD = () => {
   const user = JSON.parse(localStorage.getItem('loggedUser'));
-
-  console.log(user);
   
   return (
     <div>

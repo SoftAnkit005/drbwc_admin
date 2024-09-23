@@ -8,7 +8,7 @@ import { createSection, updateSection } from '../../store/featuredproduct/featur
 function AddEditFeaturedProduct({ changed, featureproductType, data }) {
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
-
+    const apiUrl = process.env.REACT_APP_API_URL;
     const [formData, setFormData] = useState({
         type: "",
         product_id: "",
@@ -27,7 +27,7 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                 product_id: data.product_id,
                 description: data.description,
                 image: null,
-                preview: data.image ? data.image : null
+                preview: data.image ? `${apiUrl}/${data.image}` : null
             })
         }
     }, [featureproductType, data]);

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createBanner, updateBanner } from '../../store/banner/bannerSlice';
 
 function AddEditBanner({ changed, bannerType, data }) {
+    const apiUrl = process.env.REACT_APP_API_URL;
     const [modal, setModal] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -15,7 +16,6 @@ function AddEditBanner({ changed, bannerType, data }) {
     const [status, setStatus] = useState("active");
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.banners);
-
     const toggle = () => setModal(!modal);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ function AddEditBanner({ changed, bannerType, data }) {
             setTitle(data.title);
             setDescription(data.description);
             setStatus(data.status);
-            setImagePreview(data.image_url);
+            setImagePreview(`${apiUrl}/${data.image_url}`);
         }
     }, [bannerType, data]);
 
