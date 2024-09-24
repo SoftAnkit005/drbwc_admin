@@ -1,4 +1,4 @@
-import { MdAddLink, MdOutlineCategory, MdOutlineReviews } from 'react-icons/md';
+import { MdOutlineCategory, MdOutlineReviews } from 'react-icons/md';
 import { RiCoupon3Line, RiListOrdered2 } from 'react-icons/ri';
 import { LuTags, LuUsers2 } from "react-icons/lu";
 import { HiOutlineInboxStack } from "react-icons/hi2";
@@ -55,7 +55,7 @@ const SidebarData = [
   { title: 'Tags', href: '/tags', icon: <LuTags className='fs-3' />, id: 2.5, collapisble: false, },
   { title: 'Reviews', href: '/reviews', icon: <MdOutlineReviews className='fs-3' />, id: 2.6, collapisble: false, },
   { title: 'Featured Product', href: '/featured-product', icon: <IoImagesOutline className='fs-3' />, id: 2.7, collapisble: false, },
-  { title: 'Coupons', href: '/coupons', icon: <MdAddLink className='fs-3' />, id: 2.8, collapisble: false, },
+  // { title: 'Coupons', href: '/coupons', icon: <MdAddLink className='fs-3' />, id: 2.8, collapisble: false, },
 
   { caption: 'Sale' },
   { title: 'Orders', href: '/orders', icon: <RiListOrdered2 className='fs-3' />, id: 3.1, collapisble: false, },
