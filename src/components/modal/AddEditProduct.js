@@ -39,10 +39,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
           variant: color,
           imageFile: parsedImagevariant[color]?.map((url, index) => {
             return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
-          }),
-          // imageFile: parsedImagevariant[color]?.map((url, index) => {
-          //   return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
-          // })
+          })
         };
       });
       setAllVarients(variantArray);

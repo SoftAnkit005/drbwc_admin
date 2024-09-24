@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createSection, updateSection } from '../../store/featuredproduct/featuredProductSlice';
 
 function AddEditFeaturedProduct({ changed, featureproductType, data }) {
+    const dispatch = useDispatch();
     const { categories } = useSelector((state) => state.categories);
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
@@ -19,7 +20,8 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
         }
     }, [categories]);
 
-    const dispatch = useDispatch();
+    console.log(categories);
+
     const { loading } = useSelector((state) => state.featuredproduct);
 
     useEffect(() => {
