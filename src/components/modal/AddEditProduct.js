@@ -28,20 +28,21 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
   const toggle = () => setModal(!modal);
 
+  console.log('alldata', alldata);
+
   useEffect(() => {
     if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
-      console.log('alldata.color_image_urls', alldata.color_image_urls);
       const parsedData = alldata.color_image_urls;
-      console.log('parsedData', parsedData);
       const parsedImagevariant =  JSON.parse(parsedData);
-      console.log('color_image_urls',parsedImagevariant)
       const variantArray = Object.keys(parsedImagevariant).map(color => {
-        console.log('parsedData[color]', parsedImagevariant[color]);
         return {
           variant: color,
-          imageFile: parsedData[color]?.map((url, index) => {
+          imageFile: parsedImagevariant[color]?.map((url, index) => {
             return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
-          })
+          }),
+          // imageFile: parsedImagevariant[color]?.map((url, index) => {
+          //   return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
+          // })
         };
       });
       setAllVarients(variantArray);
@@ -72,6 +73,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
       const parsedData = alldata.color_image_urls;
       const parsedImagevariant =  JSON.parse(parsedData);
+
       // Iterate over the color keys
       const variantArray = Object.keys(parsedImagevariant).map(async (color) => {
         const files = await Promise.all(
@@ -93,7 +95,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
             }
           })
         );
-        return { variant: color, imageFile: files.filter(Boolean), imageURLs: parsedData[color] };
+        return { variant: color, imageFile: files.filter(Boolean), imageURLs: parsedImagevariant[color] };
       });
   
       Promise.all(variantArray).then(setAllVarients);
@@ -320,25 +322,40 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                       <Col md="6" lg="4">
                         <FormGroup>
                           <Label htmlFor="category">Category</Label>
-                          <Input type="select" id="category" name="category_id" onChange={(e) => setSelectedCategory(e.target.value)} defaultValue={prodtype === 'edit' ? alldata.category_id : ''}>
-                            <option>Select...</option>
+                          <Input
+                            type="select"
+                            id="category"
+                            name="category_id"
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            defaultValue={prodtype === 'edit' ? alldata.category_id : ''}
+                            required
+                          >
+                            <option value="">Select...</option> {/* Empty value ensures required works */}
                             {categoryData?.map((item) => (
                               <option key={item.id} value={item.id}>{item.name}</option>
                             ))}
                           </Input>
                         </FormGroup>
                       </Col>
+
                       <Col md="6" lg="4">
                         <FormGroup>
                           <Label htmlFor="subcategory">Sub Category</Label>
-                          <Input type="select" id="subcategory" name="subcategory_id" defaultValue={prodtype === 'edit' ? alldata.subcategory_id : ''}>
-                            <option>Select...</option>
+                          <Input
+                            type="select"
+                            id="subcategory"
+                            name="subcategory_id"
+                            defaultValue={prodtype === 'edit' ? alldata.subcategory_id : ''}
+                            required
+                          >
+                            <option value="">Select...</option> {/* Empty value ensures required works */}
                             {subCategoryData?.map((item) => (
                               <option key={item.id} value={item.id}>{item.name}</option>
                             ))}
                           </Input>
                         </FormGroup>
                       </Col>
+
 
                       <Col xs="12">
                         <FormGroup>
@@ -404,7 +421,6 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
                               <td>
                                 {varient.imageURLs && varient.imageURLs.length > 0 ? (
-                                  // Display existing image URLs in edit mode
                                   varient.imageURLs.map((url, i) => (
                                     <img className="mx-1" key={i} src={`${apiUrl}/${url}`} alt={`Variant ${i}`} width="50" height="50" />
                                   ))

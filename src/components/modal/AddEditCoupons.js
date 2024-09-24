@@ -5,7 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup
 import { FaRegEdit } from 'react-icons/fa';
 import Select from 'react-select';
 import './modalstyle.scss';
-import { fetchProducts } from '../../store/products/productSlice';
+// import { fetchProducts } from '../../store/products/productSlice';
 import { createOffers, updateOffers } from '../../store/coupons/couponSlice';
 
 function AddEditCoupons({ couponType, changed, data }) {
@@ -32,7 +32,7 @@ function AddEditCoupons({ couponType, changed, data }) {
   const { products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    // dispatch(fetchProducts());
     setSelectedProducts([]);
   }, [dispatch]);
 
