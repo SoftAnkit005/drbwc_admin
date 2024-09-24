@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "title": "Good Morning",
+        "imgSrc": "/static/media/morning-banner.6e781aa776b14828fe08.jpg",
+        "quote":""
+    },
+    {
+        "id": 2,
+        "title": "Good Afternoon",
+        "imgSrc": "/static/media/afternoon-banner.fd90cc6f064a0c76c080.jpg",
+        "quote":""
+    },
+    {
+        "id": 3,
+        "title": "Good Evening",
+        "imgSrc": "/static/media/evening-banner.b4ff1f23f34230f1e01a.png",
+        "quote":""
+    },
+    {
+        "id": 4,
+        "title": "Good Night",
+        "imgSrc": "/static/media/night-banner.45e6a800e5418b1efe67.png",
+        "quote":""
+    }
+]

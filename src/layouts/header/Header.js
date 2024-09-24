@@ -55,7 +55,7 @@ const Header = () => {
           <DropdownToggle className="bg-transparent border-0 p-0">
             <img src={user1} alt="profile" className="rounded-circle me-2" width="40" />
           </DropdownToggle>
-          <DropdownMenu className="ddWidth">
+          <DropdownMenu className="ddWidth" style={{zIndex: 999}}>
             <ProfileDD />
             <div className="p-2 px-3">
               <Button onClick={handleLogout} color="danger" size="md">

@@ -1,7 +1,7 @@
 import { Card, CardBody } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchSections } from "../../store/featuredproduct/featuredProductSlice";
+// import { fetchSections } from "../../store/featuredproduct/featuredProductSlice";
 import DataTableListing from "../../components/table/DataTableListing";
 
 const FeaturedProduct = () => {
@@ -16,7 +16,7 @@ const FeaturedProduct = () => {
 
     // Update the data when sections change
     useEffect(() => {
-        dispatch(fetchSections());
+        
         setFeaturedproductChange(false);
     }, [dispatch, featuredproductChange]);
 
@@ -39,7 +39,7 @@ const FeaturedProduct = () => {
         <Card>
             <CardBody>
                 <DataTableListing
-                    pageName="featuredproduct"
+                    pageName="featured product"
                     tableData={featuredproductData}
                     changeData={featuredproductChanged}
                 />

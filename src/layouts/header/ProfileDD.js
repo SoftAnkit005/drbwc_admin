@@ -2,7 +2,7 @@ import React from 'react';
 import user1 from '../../assets/images/users/user4.jpg';
 
 const ProfileDD = () => {
-  const user = JSON.parse(localStorage.getItem('loggedUser'));
+  const user = JSON.parse(localStorage.getItem('user'));
   
   return (
     <div>

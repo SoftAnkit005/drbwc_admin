@@ -1,3 +1,33 @@
 .w-fit{ width: fit-content; }
 .h-fit{ height: fit-content; }
 .badge{text-transform: capitalize;}
+.heading-3xl{ font-size: $heading-3xl !important; }
+.heading-xxl{ font-size: $heading-xxl !important; }
+.heading-xl{ font-size: $heading-xl !important; }
+.heading-lg{ font-size: $heading-lg !important; }
+.heading-md{ font-size: $heading-md !important; }
+.heading-sm{ font-size: $heading-sm !important; }
+.heading-xs{ font-size: $heading-xs !important; }
+
+
+.desc-3xl{ font-size: $desc-3xl !important;}
+.desc-xxl{ font-size: $desc-xxl !important;}
+.desc-xl{ font-size: $desc-xl !important;}
+.desc-lg{ font-size: $desc-lg !important;}
+.desc-md{ font-size: $desc-md !important;}
+.desc-sm{ font-size: $desc-sm !important;}
+.desc-xs{ font-size: $desc-xs !important;}
+.desc-xxs{ font-size: $desc-xxs !important;}
+
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    background-color: rgb(0 0 0 / 17%);
+    z-index: 0; /* Ensure the overlay is above the background */
+}

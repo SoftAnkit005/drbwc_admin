@@ -29,6 +29,25 @@ $gray-900: #212529 !default;
 $black: #000 !default;
 $text-muted: $gray-600 !default;
 
+// font Sizes
+$heading-3xl:50px;
+$heading-xxl:45px;
+$heading-xl:40px;
+$heading-lg:35px;
+$heading-md:30px;
+$heading-sm:25px;
+$heading-xs:20px;
+
+$desc-3xl:24px;
+$desc-xxl:22px;
+$desc-xl:20px;
+$desc-lg:18px;
+$desc-md:16px;
+$desc-sm:14px;
+$desc-xs:13px;
+$desc-xxs:12px;
+
+
 $theme-colors: (
   'primary': $primary,
   'themegray': $themegray,

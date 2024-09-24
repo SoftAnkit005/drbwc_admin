@@ -10,12 +10,16 @@ import TodoList from '../../components/dashboard/minimalDashboard/TodoList';
 import VisitStatistics from '../../components/dashboard/minimalDashboard/VisitStatistics';
 import WeatherCard from '../../components/dashboard/minimalDashboard/WeatherCard';
 import YearlySales from '../../components/dashboard/minimalDashboard/YearlySales';
+import Greetings from '../../components/dashboard/minimalDashboard/Greetings';
 
 const Dashboard = () => {
   return (
     <>
       {/*********************Sales Overview ************************/}
       <Row>
+        <Col xs="12">
+            <Greetings />
+        </Col>
         <Col lg="8">
             <YearlySales />
         </Col>

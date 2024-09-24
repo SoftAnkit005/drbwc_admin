@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { fetchProducts } from "../store/products/productSlice";
 import { fetchCategories } from "../store/category/categorySlice";
 import { getsubcategories } from "../store/subcategory/subcategorySlice";
+import { fetchSections } from "../store/featuredproduct/featuredProductSlice";
 
 // Function to validate token
 // const isTokenValid = (token) => {
@@ -17,6 +18,7 @@ const useInitialDispatches = () => {
   const dispatch = useDispatch();
   dispatch(fetchCategories());
   dispatch(getsubcategories());
+  dispatch(fetchSections());
 //   const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {

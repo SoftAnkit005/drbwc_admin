@@ -35,8 +35,9 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
       setFilteredData(filtered);
     }
   }, [searchTerm, tableData]);
-
-  // console.log(tableData);
+  
+  console.log('tableData', tableData);
+  console.log('filteredData', filteredData);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -130,7 +131,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
           ],
           renderAdd: () => <AddEditBanner changed={changeData} />,
         };
-      case 'featuredproduct':
+      case 'featured product':
         return {
           columns: [
             {

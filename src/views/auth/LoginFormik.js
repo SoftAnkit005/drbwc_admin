@@ -59,11 +59,7 @@ const LoginFormik = () => {
                 <h4 className="fw-semibold">Login</h4>
                 <small className="pb-4 d-block"> Do not have an account? <Link to="/auth/register">Sign Up</Link> </small>
                 {loginError && <p className='error-tag mb-2'>{loginError}</p>}
-                <Formik
-                  initialValues={initialValues}
-                  validationSchema={validationSchema}
-                  onSubmit={handleLogin}
-                >
+                <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleLogin} >
                   {() => (
                     <Form>
                       <FormGroup>
