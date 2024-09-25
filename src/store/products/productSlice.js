@@ -38,7 +38,7 @@ export const fetchProducts = createAsyncThunk( 'products/fetchProducts', async (
 // Define the async thunk
 export const addProduct = createAsyncThunk(
   'products/createProduct',
-  async (formData, { rejectWithValue }) => {
+  async (formData, { dispatch, rejectWithValue }) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
 
@@ -54,7 +54,7 @@ export const addProduct = createAsyncThunk(
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const result = await response.text();
+      const result = await dispatch(fetchProducts()).unwrap();
       return result;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -65,7 +65,7 @@ export const addProduct = createAsyncThunk(
 // Create an async thunk for deleting a product
 export const deleteProduct = createAsyncThunk(
   'products/deleteProduct',
-  async (productId, { rejectWithValue }) => {
+  async (productId, { dispatch, rejectWithValue }) => {
     try {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", token);
@@ -77,8 +77,9 @@ export const deleteProduct = createAsyncThunk(
         throw new Error('Failed to delete product');
       }
 
-      const data = await response.text();
-      return { productId, data }; // Return productId to filter it out from the state
+      // const data = await response.text();
+      const result = await dispatch(fetchProducts()).unwrap();
+      return { productId, result }; // Return productId to filter it out from the state
 
     } catch (error) {
       return rejectWithValue(error.message);
@@ -88,7 +89,7 @@ export const deleteProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
   'products/updateProduct',
-  async (productData, { rejectWithValue }) => {
+  async (productData, { dispatch, rejectWithValue }) => {
     const { formData, productId } = productData;
 
     try {
@@ -104,13 +105,15 @@ export const updateProduct = createAsyncThunk(
         throw new Error('Failed to update product');
       }
 
-      const result = await response.text();
-      return result;
+      // Dispatch fetchProducts and return its result to log it in fulfilled
+      const result = await dispatch(fetchProducts()).unwrap();
+      return result; // This will be available in updateProduct.fulfilled
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 // Create a slice
 const productSlice = createSlice({
@@ -118,7 +121,7 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     setproducts: (state, action) => {
-      state.wishlistItems = action.payload;
+      state.products = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -155,7 +158,6 @@ const productSlice = createSlice({
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.loading = false;
-        // Filter out the deleted product from the state
         state.products = state.products.filter(product => product.id !== action.payload.productId);
       })
       .addCase(deleteProduct.rejected, (state, action) => {
@@ -169,9 +171,8 @@ const productSlice = createSlice({
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        // handle the response as needed
-        console.log(action.payload);
-      })
+        state.products = action.payload;
+      })      
       .addCase(updateProduct.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;

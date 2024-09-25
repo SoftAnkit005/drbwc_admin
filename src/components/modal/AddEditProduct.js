@@ -28,7 +28,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
   const toggle = () => setModal(!modal);
 
-  console.log('alldata', alldata);
+  // console.log('alldata', alldata);
 
   useEffect(() => {
     if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {

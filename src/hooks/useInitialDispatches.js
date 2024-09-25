@@ -16,14 +16,14 @@ import { fetchSections } from "../store/featuredproduct/featuredProductSlice";
 
 const useInitialDispatches = () => {
   const dispatch = useDispatch();
-  dispatch(fetchCategories());
-  dispatch(getsubcategories());
-  dispatch(fetchSections());
-//   const token = useSelector((state) => state.auth.token);
-
+  //   const token = useSelector((state) => state.auth.token);
+  
   useEffect(() => {
     // Dispatch global thunks
     dispatch(fetchProducts());
+    dispatch(fetchCategories());
+    dispatch(getsubcategories());
+    dispatch(fetchSections());
   }, [dispatch]);
 };
 

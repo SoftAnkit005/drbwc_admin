@@ -11,6 +11,8 @@ const Products = () => {
   const [productsData, setproductsData] = useState([]);
   const [prodAddCheck, setprodAddCheck] = useState(false);
 
+  // console.log(products);
+
   const prodChanged = (e) => {
     setprodAddCheck(e);
   };
