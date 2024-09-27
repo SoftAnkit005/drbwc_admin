@@ -29,7 +29,7 @@ export const fetchSections = createAsyncThunk(
 // Async thunk for creating a section
 export const createSection = createAsyncThunk(
     "sections/createSection",
-    async (formData, { rejectWithValue }) => {
+    async (formData, { rejectWithValue, dispatch }) => {
         try {
             const myHeaders = new Headers();
             myHeaders.append("Authorization", token);
@@ -42,7 +42,7 @@ export const createSection = createAsyncThunk(
                 throw new Error("Failed to create section");
             }
 
-            const result = await response.json();
+            const result = await dispatch(fetchSections()).unwrap();
             return result;
         } catch (error) {
             return rejectWithValue(error.message);
@@ -52,7 +52,7 @@ export const createSection = createAsyncThunk(
 
 export const deleteSection = createAsyncThunk(
     "sections/deleteSection",
-    async (sectionId, { rejectWithValue }) => {
+    async (sectionId, { rejectWithValue, dispatch }) => {
         try {
             const myHeaders = new Headers();
             myHeaders.append("Authorization", token);
@@ -64,7 +64,7 @@ export const deleteSection = createAsyncThunk(
                 throw new Error("Failed to delete section");
             }
 
-            const result = await response.text();
+            const result = await dispatch(fetchSections()).unwrap();
             return { sectionId, result };
         } catch (error) {
             return rejectWithValue(error.message);
@@ -74,7 +74,7 @@ export const deleteSection = createAsyncThunk(
 
 export const updateSection = createAsyncThunk(
     "sections/updateSection",
-    async (formData, { rejectWithValue }) => {
+    async (formData, { rejectWithValue, dispatch }) => {
         try {
             const myHeaders = new Headers();
             myHeaders.append("Authorization", token);
@@ -87,7 +87,7 @@ export const updateSection = createAsyncThunk(
                 throw new Error("Failed to update section");
             }
 
-            const result = await response.text();
+            const result = await dispatch(fetchSections()).unwrap();
             return result;
         } catch (error) {
             return rejectWithValue(error.message);
@@ -125,7 +125,6 @@ const sectionSlice = createSlice({
                 state.error = null;
             })
             .addCase(createSection.fulfilled, (state, action) => {
-                console.log(action.payload);
                 if (Array.isArray(state.sections)) {
                     state.sections.push(action.payload);
                 }

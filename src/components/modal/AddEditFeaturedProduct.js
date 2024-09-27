@@ -20,8 +20,6 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
         }
     }, [categories]);
 
-    console.log(categories);
-
     const { loading } = useSelector((state) => state.featuredproduct);
 
     useEffect(() => {

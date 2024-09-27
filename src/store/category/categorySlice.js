@@ -25,7 +25,7 @@ export const fetchCategories = createAsyncThunk('categories/fetchCategories', as
 // Async thunk to create a new category
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
-  async (categoryData, { rejectWithValue }) => {
+  async (categoryData, { rejectWithValue, dispatch }) => {
     try {
       const response = await fetch(`${apiUrl}/api/categories/create-category`, {
         method: 'POST',
@@ -37,8 +37,9 @@ export const createCategory = createAsyncThunk(
         throw new Error('Failed to create category');
       }
 
-      const data = await response.json();
-      return data;
+      // const data = await response.json();
+      const result = await dispatch(fetchCategories()).unwrap();
+      return result;
     } catch (error) {
       return rejectWithValue(error.message);
     }

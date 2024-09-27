@@ -15,7 +15,7 @@ export const fetchReviews = createAsyncThunk('reviews/fetchReviews', async () =>
   return data;
 });
 
-export const addReview = createAsyncThunk('reviews/addReview', async (formData) => {
+export const addReview = createAsyncThunk('reviews/addReview', async (formData, { dispatch }) => {
   const token = localStorage.getItem('authToken');
   const requestOptions = {
     method: 'POST',
@@ -32,11 +32,12 @@ export const addReview = createAsyncThunk('reviews/addReview', async (formData) 
     throw new Error('Failed to add review');
   }
 
-  const data = await response.json();
-  return data; // Return the new review data
+  // const data = await response.json();
+  const result = await dispatch(fetchReviews()).unwrap();
+  return result; // Return the new review data
 });
 
-export const updateReview = createAsyncThunk('reviews/updateReview', async (formData) => {
+export const updateReview = createAsyncThunk('reviews/updateReview', async (formData, { getState }) => {
   const token = localStorage.getItem('authToken');
   const requestOptions = {
     method: 'POST',
@@ -53,11 +54,23 @@ export const updateReview = createAsyncThunk('reviews/updateReview', async (form
     throw new Error('Failed to update review');
   }
 
-  const data = await response.json();
+  const currentState = getState();
+  const currentData =  currentState.reviews.reviews.reviews
+
+  const upadatedResult = await response.json();
+  
+  const updatedData = currentData.map((review) => {
+    if (review.id !== upadatedResult.reviews.id) {
+      return review;
+    }
+    return upadatedResult.reviews;
+  })
+
+  const data = {success: true, message: 'Reviews updated successfully', reviews: updatedData}
   return data; // Return the updated review data
 });
 
-export const deleteReviews = createAsyncThunk('reviews/deleteReviews', async (id) => {
+export const deleteReviews = createAsyncThunk('reviews/deleteReviews', async (id, { dispatch }) => {
   const token = localStorage.getItem('authToken');
   const requestOptions = { 
     method: 'DELETE', 
@@ -72,7 +85,8 @@ export const deleteReviews = createAsyncThunk('reviews/deleteReviews', async (id
     throw new Error('Failed to delete review');
   }
 
-  return id; // Return the deleted review ID
+  const result = await dispatch(fetchReviews()).unwrap();
+  return result;
 });
 
 // Slice for handling review-related state
@@ -96,6 +110,7 @@ const reviewsSlice = createSlice({
       .addCase(fetchReviews.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.reviews = action.payload; // Update the state with fetched reviews
+        console.log('action.payload:', action.payload);
       })
       .addCase(fetchReviews.rejected, (state, action) => {
         state.status = 'failed';
@@ -119,10 +134,7 @@ const reviewsSlice = createSlice({
       })
       .addCase(updateReview.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        const index = state.reviews.findIndex(review => review.id === action.payload.id);
-        if (index !== -1) {
-          state.reviews[index] = action.payload; // Update the review in the state
-        }
+        state.reviews = action.payload;
       })
       .addCase(updateReview.rejected, (state, action) => {
         state.status = 'failed';

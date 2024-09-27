@@ -4,19 +4,20 @@ import Loadable from '../layouts/loader/Loadable';
 import ProtectedRoute from './ProtectedRoute'; // Import your ProtectedRoute component
 
 /***** Pages ****/
-import Dashboard from '../views/dashboards/Dashboard';
-import Coupon from '../views/coupon/Coupons';
-import Categories from '../views/category/Categories';
-import Products from '../views/product/Products';
-import Attributes from '../views/attributes/Attributes';
-import Tags from '../views/tags/Tags';
-import Reviews from '../views/reviews/Reviews';
-import Orders from '../views/orders/Orders';
-import Customers from '../views/customers/Customers';
-import Coupons from '../views/prmotion/Coupons';
-import Setting from '../views/setting/Setting';
-import Banner from '../views/banner/Banner';
-import FeaturedProduct from '../views/featuredproduct/FeaturedProduct';
+const Dashboard = lazy(() => import('../views/dashboards/Dashboard'));
+const Coupon = lazy(() => import('../views/coupon/Coupons'));
+const Categories = lazy(() => import('../views/category/Categories'));
+const Products = lazy(() => import('../views/product/Products'));
+const Attributes = lazy(() => import('../views/attributes/Attributes'));
+const Tags = lazy(() => import('../views/tags/Tags'));
+const Reviews = lazy(() => import('../views/reviews/Reviews'));
+const Orders = lazy(() => import('../views/orders/Orders'));
+const Customers = lazy(() => import('../views/customers/Customers'));
+const Coupons = lazy(() => import('../views/prmotion/Coupons'));
+const Setting = lazy(() => import('../views/setting/Setting'));
+const Banner = lazy(() => import('../views/banner/Banner'));
+const FeaturedProduct = lazy(() => import('../views/featuredproduct/FeaturedProduct'));
+const OrderStatus = lazy(() => import('../views/orders/OrderStatus'));
 
 /****Layouts*****/
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
@@ -51,6 +52,7 @@ const ThemeRoutes = [
       { path: '/tags', name: 'Tags', exact: true, element: <ProtectedRoute component={Tags} /> },
       { path: '/reviews', name: 'Reviews', exact: true, element: <ProtectedRoute component={Reviews} /> },
       { path: '/orders', name: 'Orders', exact: true, element: <ProtectedRoute component={Orders} /> },
+      { path: '/orders-status', name: 'Orders Status', exact: true, element: <ProtectedRoute component={OrderStatus} /> },
       { path: '/customers', name: 'Customers', exact: true, element: <ProtectedRoute component={Customers} /> },
       { path: '/coupons', name: 'Coupons', exact: true, element: <ProtectedRoute component={Coupons} /> },
       { path: '/setting', name: 'Setting', exact: true, element: <ProtectedRoute component={Setting} /> },

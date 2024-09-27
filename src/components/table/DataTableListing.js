@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { Badge, Input } from 'reactstrap';
-import { FaRegEdit } from "react-icons/fa";
+import { MdOutlineSpatialTracking } from "react-icons/md";
 import './table-style.scss';
 import AddEditProduct from '../modal/AddEditProduct';
 import AddEditCategory from '../modal/AddEditCategory';
@@ -16,6 +17,7 @@ import AddEditCouons from '../modal/AddEditCoupons';
 import AddEditTaxSettings from '../modal/settingmodals/AddEditTaxSettings';
 
 const DataTableListing = ({ pageName, tableData = [], changeData }) => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(tableData);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -307,17 +309,18 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
         return {
           columns: [
             { name: 'Order Number', selector: row => row.order_prefix },
-            { name: 'Date', selector: row => row.order_date },
+            { name: 'Date', selector: row => row.order_date, sortable: true },
             { name: 'Customer Email', selector: row => row.shipping_address },
             { name: 'Shipment Status', selector: row => row.status },
+            { name: 'Payment Method', selector: row => row.payment_method },
             { name: 'Payment Status', selector: row => row.total_amount },
-            { name: 'Total Amount', selector: row => row.total_amount },
             {
-              name: 'Actions',
+              name: 'Check/Edit Order',
               cell: row => (
-                <div className='d-flex align-items-center'>
-                  <FaRegEdit className='text-dark cursor-pointer fs-5' />
-                  <DeleteConfirmation caseType="orders" id={row.id} title={row.id} changed={changeData} />
+                <div className='d-flex align-items-center w-100 justify-content-center'>
+                  {console.log('row', row)}
+                  <MdOutlineSpatialTracking className='text-dark cursor-pointer fs-5' onClick={() => navigate(`/orders-status`, { state: row })} />
+                  {/* <DeleteConfirmation caseType="orders" id={row.id} title={row.id} changed={changeData} /> */}
                 </div>
               ),
             },

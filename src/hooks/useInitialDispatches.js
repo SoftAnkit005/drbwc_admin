@@ -4,6 +4,7 @@ import { fetchProducts } from "../store/products/productSlice";
 import { fetchCategories } from "../store/category/categorySlice";
 import { getsubcategories } from "../store/subcategory/subcategorySlice";
 import { fetchSections } from "../store/featuredproduct/featuredProductSlice";
+import { fetchReviews } from "../store/reviews/reviewsSlice";
 
 // Function to validate token
 // const isTokenValid = (token) => {
@@ -17,6 +18,7 @@ import { fetchSections } from "../store/featuredproduct/featuredProductSlice";
 const useInitialDispatches = () => {
   const dispatch = useDispatch();
   //   const token = useSelector((state) => state.auth.token);
+  dispatch(fetchReviews());
   
   useEffect(() => {
     // Dispatch global thunks

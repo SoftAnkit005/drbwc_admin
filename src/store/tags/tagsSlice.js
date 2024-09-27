@@ -16,7 +16,7 @@ export const fetchTags = createAsyncThunk('tags/fetchTags', async () => {
   return data;
 });
 
-export const addTags = createAsyncThunk('tags/addTags', async (tagData) => {
+export const addTags = createAsyncThunk('tags/addTags', async (tagData, { dispatch }) => {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -26,11 +26,12 @@ export const addTags = createAsyncThunk('tags/addTags', async (tagData) => {
   const response = await fetch(`${apiUrl}/api/tag/create`, requestOptions);
   if (!response.ok) { throw new Error('Failed to add tag'); }
 
-  const data = await response.json();
-  return data;
+  // const data = await response.json();
+  const result = await dispatch(fetchTags()).unwrap();
+  return result;
 });
 
-export const updateTags = createAsyncThunk('tags/updateTags', async (tagData) => {
+export const updateTags = createAsyncThunk('tags/updateTags', async (tagData, { dispatch }) => {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -40,11 +41,12 @@ export const updateTags = createAsyncThunk('tags/updateTags', async (tagData) =>
   const response = await fetch(`${apiUrl}/api/tag/update/${tagData.id}`, requestOptions);
   if (!response.ok) { throw new Error('Failed to update tag'); }
 
-  const data = await response.json();
-  return data;
+  // const data = await response.json();
+  const result = await dispatch(fetchTags()).unwrap();
+  return result;
 });
 
-export const deleteTags = createAsyncThunk('tags/deleteTags', async (id) => {
+export const deleteTags = createAsyncThunk('tags/deleteTags', async (id, { dispatch }) => {
   const requestOptions = {
     method: 'DELETE',
     headers: {
@@ -58,8 +60,9 @@ export const deleteTags = createAsyncThunk('tags/deleteTags', async (id) => {
     throw new Error('Failed to delete tag');
   }
 
-  const data = await response.json();
-  return data;
+  // const data = await response.json();
+  const result = await dispatch(fetchTags()).unwrap();
+  return result;
 });
 
 // Slice for handling tag-related state
