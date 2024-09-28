@@ -67,7 +67,7 @@ function AddEditTaxSetting({ changed, taxType, data }) {
                                         <Row>
                                             <Col className="py-1" xs="12">
                                                 <FormGroup>
-                                                    <Label htmlFor="title">Tax Name</Label>
+                                                    <Label htmlFor="title" className="required">Tax Name</Label>
                                                     <Input
                                                         type="text"
                                                         value={taxName}
@@ -82,7 +82,7 @@ function AddEditTaxSetting({ changed, taxType, data }) {
                                         <Row>
                                             <Col className="py-1" xs="12">
                                                 <FormGroup>
-                                                    <Label htmlFor="title">Tax Rate</Label>
+                                                    <Label htmlFor="title" className="required">Tax Rate</Label>
                                                     <Input
                                                         type="number"
                                                         value={taxRate}
@@ -92,6 +92,7 @@ function AddEditTaxSetting({ changed, taxType, data }) {
                                                         }}
                                                         id="taxrate"
                                                         placeholder="Enter VAT Rate"
+                                                        required
                                                     />
                                                 </FormGroup>
                                             </Col>

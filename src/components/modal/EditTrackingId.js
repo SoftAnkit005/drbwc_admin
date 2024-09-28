@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody } from 'reactstrap';
 import { FaRegEdit } from 'react-icons/fa';
 import './modalstyle.scss';
-import Select from 'react-select';
 
 const staticOptions = [
-  { value: '1', label: 'Product 1' },
-  { value: '2', label: 'Product 2' },
-  { value: '3', label: 'Product 3' },
+  { value: '1', label: 'Xpressbees' },
+  { value: '2', label: 'Delhivery' },
+  { value: '3', label: 'Blue Dart' },
+  { value: '3', label: 'FedEx Corp' },
+  { value: '3', label: 'Ecom Express' },
   // Add more static options as needed
 ];
 
@@ -58,12 +59,14 @@ function EditTrackingId({ trackType }) {
                     <Col className="py-1" xs="12">
                       <FormGroup>
                         <Label htmlFor="position">Courier Partner</Label>
-                        <Select
-                          closeMenuOnSelect={false}
-                          options={staticOptions} // Use static options
-                          value={selectedProducts}   // Bind selected products state
-                          onChange={(selected) => setSelectedProducts(selected)} // Update selected products state
-                        />
+                        <Input type="select" id="p_category" name="category_id" value={selectedProducts}  onChange={(e) => setSelectedProducts(e.target.value)} >
+                            <option value=''>Select...</option>
+                            {staticOptions?.map((partner, i) => (
+                                <option key={i} value={partner.value}>
+                                    {partner.label}
+                                </option>
+                            ))}
+                        </Input>
                       </FormGroup>
                     </Col>
                   </Row>

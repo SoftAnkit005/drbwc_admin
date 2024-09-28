@@ -99,9 +99,23 @@ const OrderStatus = () => {
               </CardSubtitle>
             </CardBody>
           </Card>
+          <Col xs="12">
+            <Card className="mb-0">
+              <CardBody>
+                <h4 className='fw-semibold'>Customer Info</h4>
+                <p>Name: <span className="text-muted">{userInfo?.full_name || 'N/A'}</span></p>
+                <p>Email: <span className="text-muted">{userInfo?.email || 'N/A'}</span></p>
+                <p>Phone: <span className="text-muted">{orderStatus.customer_phone || 'N/A'}</span></p>
+                <p>Address: <span className="text-muted">{orderStatus.shipping_address || 'N/A'}</span></p>
+                <p>Order Date: <span className="text-muted">{orderStatus.updated_at || 'N/A'}</span></p>
+                <p>Order ID: <span className="text-muted">{orderStatus.order_prefix || 'N/A'}</span></p>
+              </CardBody>
+            </Card>
+          </Col>
         </Col>
         <Col lg="4">
           <div className="timeline">
+            <h4 className='fw-semibold'>Delivery Status: Delivered</h4>
             <div className="line">
               <div className="line-content">
                 <div className="content">
@@ -123,19 +137,6 @@ const OrderStatus = () => {
               </div>
             </div>
           </div>
-        </Col>
-        <Col lg="8">
-          <Card>
-            <CardBody>
-              <h4 className='fw-semibold'>Customer Info</h4>
-              <p>Name: <span className="text-muted">{userInfo?.full_name || 'N/A'}</span></p>
-              <p>Email: <span className="text-muted">{userInfo?.email || 'N/A'}</span></p>
-              <p>Phone: <span className="text-muted">{orderStatus.customer_phone || 'N/A'}</span></p>
-              <p>Address: <span className="text-muted">{orderStatus.shipping_address || 'N/A'}</span></p>
-              <p>Order Date: <span className="text-muted">{orderStatus.updated_at || 'N/A'}</span></p>
-              <p>Order ID: <span className="text-muted">{orderStatus.order_prefix || 'N/A'}</span></p>
-            </CardBody>
-          </Card>
         </Col>
       </Row>
     </>
