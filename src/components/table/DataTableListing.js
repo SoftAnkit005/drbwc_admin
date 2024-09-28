@@ -293,11 +293,12 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             { name: 'Name', selector: row => row.full_name },
             { name: 'Email', selector: row => row.email },
             { name: 'Role', selector: row => row.user_role },
-            { name: 'Joined', selector: row => formatDate(row.createdAt) },
+            // { name: 'Joined', selector: row => formatDate(row.createdAt) },
             {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
+                  {console.log('users row',row)}
                   <AddEditReviews reviewType="edit" changed={changeData} data={row} />
                 </div>
               ),

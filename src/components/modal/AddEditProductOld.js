@@ -297,7 +297,7 @@ function AddEditProduct({ changed, prodtype }) {
 
             <ModalFooter>
               <Button color="dark" onClick={toggle}>Cancel</Button>
-              <Button color="success" type="submit">{prodtype === 'add' ? 'Add' : 'Edit'}</Button>
+              <Button color="success" type="submit">{prodtype === 'add' ? 'Add' : 'Update'}</Button>
             </ModalFooter>
           </Form>
         </ModalBody>

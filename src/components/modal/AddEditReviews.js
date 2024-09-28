@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, Form } from 'reactstrap';
 import './modalstyle.scss';
 import { FaRegEdit } from 'react-icons/fa';
 import { addReview, updateReview } from '../../store/reviews/reviewsSlice'; // Import actions
@@ -49,50 +49,54 @@ function AddEditReviews({ reviewType, data, changed }) {
         <ModalHeader className="bg-primary text-white" toggle={toggle}>
           {reviewType === 'edit' ? 'Edit Review' : 'Add Review'}
         </ModalHeader>
-        <ModalBody>
-          <Row>
-            <Col md="12">
-              <Card>
-                <CardBody className="p-0">
-                  <Row>
-                    <Col className="py-1" xs="12">
-                      <FormGroup>
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                          type="text"
-                          id="name"
-                          placeholder="Enter Name"
-                          value={reviewName} // Bind review name state
-                          onChange={(e) => setReviewName(e.target.value)} // Update review name state
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="py-1" xs="12">
-                      <FormGroup>
-                        <Label htmlFor="review">Review</Label>
-                        <Input
-                          type="textarea"
-                          id="review"
-                          placeholder="Enter Review"
-                          value={reviewContent} // Bind review content state
-                          onChange={(e) => setReviewContent(e.target.value)} // Update review content state
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="dark" onClick={toggle}>
-            Cancel
-          </Button>
-          <Button color="success" onClick={handleSave}>
-            Save
-          </Button>
-        </ModalFooter>
+        <Form onSubmit={handleSave}>
+          <ModalBody>
+            <Row>
+              <Col md="12">
+                <Card>
+                  <CardBody className="p-0">
+                    <Row>
+                      <Col className="py-1" xs="12">
+                        <FormGroup>
+                          <Label htmlFor="name" className="required">Name</Label>
+                          <Input
+                            type="text"
+                            id="name"
+                            placeholder="Enter Name"
+                            value={reviewName} // Bind review name state
+                            onChange={(e) => setReviewName(e.target.value)} // Update review name state
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="py-1" xs="12">
+                        <FormGroup>
+                          <Label htmlFor="review" className="required">Review</Label>
+                          <Input
+                            type="textarea"
+                            id="review"
+                            placeholder="Enter Review"
+                            value={reviewContent} // Bind review content state
+                            onChange={(e) => setReviewContent(e.target.value)} // Update review content state
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="dark" onClick={toggle}>
+              Cancel
+            </Button>
+            <Button color="success" type="submit">
+              {reviewType === 'edit' ? 'Update' : 'Save'}
+            </Button>
+          </ModalFooter>
+        </Form>
       </Modal>
     </div>
   );

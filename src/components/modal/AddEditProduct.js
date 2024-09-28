@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, CardTitle, Table, Form } from 'reactstrap';
 import { FaRegEdit } from 'react-icons/fa';
+import cogoToast from 'cogo-toast';
 import ComponentCard from '../ComponentCard';
 import CKEditorComponent from '../editor/CKEditorComponent';
 import FileDropZone from '../uploader/FileDropZone';
@@ -106,6 +107,11 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (images.length === 0) {
+      cogoToast.warn('Please upload at least one image', { position: 'top-right' });
+      return;
+    }
 
     // Create a FormData object to handle file uploads and form data
     const formData = new FormData();
@@ -252,14 +258,14 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                       {/* Product form fields */}
                       <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
-                          <Label htmlFor="product_name">Name</Label>
+                          <Label htmlFor="product_name" className="required">Name</Label>
                           <Input type="text" id="product_name" name="product_name" placeholder="Name" defaultValue={prodtype === 'edit' ? alldata.product_name : ''} required />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
-                          <Label htmlFor="price">Price</Label>
-                          <Input type="text" id="price" name="price" placeholder="Price" defaultValue={prodtype === 'edit' ? alldata.price : ''} />
+                          <Label htmlFor="price" className="required">Price</Label>
+                          <Input type="text" id="price" name="price" placeholder="Price" defaultValue={prodtype === 'edit' ? alldata.price : ''} required/>
                         </FormGroup>
                       </Col>
                       <Col className="py-1" md="6" lg="4" xl="3">
@@ -294,8 +300,8 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                       </Col>
                       <Col className="py-1" xs="12">
                         <FormGroup>
-                          <Label htmlFor="about_item">About this item</Label>
-                          <Input type="textarea" id="about_item" name="about_item" placeholder="About this item" defaultValue={prodtype === 'edit' ? alldata.about_item : ''} />
+                          <Label htmlFor="about_item" className="required">About this item</Label>
+                          <Input type="textarea" id="about_item" name="about_item" placeholder="About this item" defaultValue={prodtype === 'edit' ? alldata.about_item : ''} required/>
                         </FormGroup>
                       </Col>
                       <Col className="py-1" xs="12">
@@ -318,15 +324,8 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                       </Col>
                       <Col md="6" lg="4">
                         <FormGroup>
-                          <Label htmlFor="category">Category</Label>
-                          <Input
-                            type="select"
-                            id="category"
-                            name="category_id"
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                            defaultValue={prodtype === 'edit' ? alldata.category_id : ''}
-                            required
-                          >
+                          <Label htmlFor="category" className="required">Category</Label>
+                          <Input type="select" id="category" name="category_id" onChange={(e) => setSelectedCategory(e.target.value)} defaultValue={prodtype === 'edit' ? alldata.category_id : ''} required >
                             <option value="">Select...</option> {/* Empty value ensures required works */}
                             {categoryData?.map((item) => (
                               <option key={item.id} value={item.id}>{item.name}</option>
@@ -337,14 +336,8 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
                       <Col md="6" lg="4">
                         <FormGroup>
-                          <Label htmlFor="subcategory">Sub Category</Label>
-                          <Input
-                            type="select"
-                            id="subcategory"
-                            name="subcategory_id"
-                            defaultValue={prodtype === 'edit' ? alldata.subcategory_id : ''}
-                            required
-                          >
+                          <Label htmlFor="subcategory" className="required">Sub Category</Label>
+                          <Input type="select" id="subcategory" name="subcategory_id" defaultValue={prodtype === 'edit' ? alldata.subcategory_id : ''} required >
                             <option value="">Select...</option> {/* Empty value ensures required works */}
                             {subCategoryData?.map((item) => (
                               <option key={item.id} value={item.id}>{item.name}</option>
@@ -364,8 +357,8 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                       <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <FormGroup>
-                            <Label>Stock Quantity</Label>
-                            <Input type="text" id="qty" name="qty" placeholder="Quantity" defaultValue={prodtype === 'edit' ? alldata.qty : ''} />
+                            <Label className="required">Stock Quantity</Label>
+                            <Input type="text" id="qty" name="qty" placeholder="Quantity" defaultValue={prodtype === 'edit' ? alldata.qty : ''} required/>
                           </FormGroup>
                         </FormGroup>
                       </Col>
@@ -379,6 +372,9 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                 <ComponentCard title="Media">
                   <FormGroup>
                     <FileDropZone prodImages={prodImagesChange} initialImages={alldata?.image_urls ? JSON.parse(alldata.image_urls) : []} />
+                    {images.length === 0 && (
+                      <label className="mt-2 desc-xxs text-danger">No files selected, Please select a file!</label>
+                    )}
                   </FormGroup>
                 </ComponentCard>
               </Col>
@@ -447,7 +443,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
             <ModalFooter>
               <Button color="dark" onClick={toggle}>Cancel</Button>
-              <Button color="success" type="submit">{prodtype === 'add' ? 'Add' : 'Edit'}</Button>
+              <Button color="success" type="submit">{prodtype === 'add' ? 'Add' : 'Update'}</Button>
             </ModalFooter>
           </Form>
         </ModalBody>

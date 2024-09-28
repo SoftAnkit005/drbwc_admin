@@ -13,6 +13,7 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
     const apiUrl = process.env.REACT_APP_API_URL;
     const [categoryData, setcategoryData] = useState([]);
     const [formData, setFormData] = useState({ type: "", product_id: "", description: "", category_id: "", image: null, preview: null });
+    const [formErrors, setFormErrors] = useState({});
 
     useEffect(() => {
         if (categories?.success) {
@@ -31,7 +32,7 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                 image: null,
                 category_id: data.category_id,
                 preview: data.image ? `${apiUrl}/${data.image}` : null
-            })
+            });
         }
     }, [featureproductType, data]);
 
@@ -53,8 +54,20 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
         }
     };
 
+    const validate = () => {
+        const errors = {};
+        if (!formData.type) errors.type = "Title is required";
+        if (!formData.description) errors.description = "Description is required";
+        if (!formData.category_id) errors.category_id = "Category is required";
+        if (!formData.image && featureproductType !== "edit") errors.image = "Image is required";
+    
+        setFormErrors(errors); // Set the renamed state
+        return Object.keys(errors).length === 0; // Return true if no errors
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return; // Do not proceed if validation fails
 
         const formDataToSend = new FormData();
         formDataToSend.append("type", formData.type);
@@ -67,7 +80,6 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
 
         try {
             if (featureproductType === "edit") {
-                // Append the ID to the formData if updating
                 formDataToSend.append("id", data.id);
                 await dispatch(updateSection(formDataToSend));
             } else {
@@ -82,14 +94,13 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
 
     return (
         <div>
-            {featureproductType !== "edit" ?
+            {featureproductType !== "edit" ? (
                 <Button color="primary" className="mb-4 w-fit" onClick={toggle}>
                     Add Feature Product
                 </Button>
-                :
-                <FaRegEdit className='text-dark cursor-pointer fs-5' onClick={toggle} />
-
-            }
+            ) : (
+                <FaRegEdit className="text-dark cursor-pointer fs-5" onClick={toggle} />
+            )}
 
             <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader className="bg-primary text-white" toggle={toggle}>
@@ -104,7 +115,7 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                                         <Row>
                                             <Col className="py-1" xs="12">
                                                 <FormGroup>
-                                                    <Label htmlFor="type">Title</Label>
+                                                    <Label htmlFor="type" className="required">Title</Label>
                                                     <Input
                                                         type="text"
                                                         name="type"
@@ -113,35 +124,48 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                                                         placeholder="Enter Type"
                                                         required
                                                     />
+                                                    {formErrors.type && <span className="text-danger">{formErrors.type}</span>}
                                                 </FormGroup>
                                             </Col>
                                             <Col className="py-1" xs="12">
                                                 <FormGroup>
-                                                    <Label htmlFor="description">Description</Label>
+                                                    <Label htmlFor="description" className="required">Description</Label>
                                                     <Input
                                                         type="textarea"
                                                         name="description"
                                                         value={formData.description}
                                                         onChange={handleChange}
                                                         placeholder="Enter Description"
+                                                        required
                                                     />
+                                                    {formErrors.description && <span className="text-danger">{formErrors.description}</span>}
                                                 </FormGroup>
                                             </Col>
                                             <Col className="py-1" xs="12">
                                                 <FormGroup>
-                                                    <Label htmlFor="category">Category</Label>
-                                                    <Input type="select" value={formData.category_id} id="category" name="category_id" onChange={handleChange}>
-                                                        <option>Select...</option>
+                                                    <Label htmlFor="category" className="required">Category</Label>
+                                                    <Input
+                                                        type="select"
+                                                        value={formData.category_id}
+                                                        id="category"
+                                                        name="category_id"
+                                                        onChange={handleChange}
+                                                        required
+                                                    >
+                                                        <option value="">Select...</option>
                                                         {categoryData?.map((item) => (
-                                                            <option key={item.id} value={item.id}>{item.name}</option>
+                                                            <option key={item.id} value={item.id}>
+                                                                {item.name}
+                                                            </option>
                                                         ))}
                                                     </Input>
+                                                    {formErrors.category_id && <span className="text-danger">{formErrors.category_id}</span>}
                                                 </FormGroup>
                                             </Col>
                                             <Col className="py-1" xs="12">
                                                 <FormGroup>
-                                                    <Label htmlFor="image">Image</Label>
-                                                    <Input type="file" name="image" onChange={handleChange} />
+                                                    <Label htmlFor="image" className="required">Image</Label>
+                                                    <Input type="file" name="image" onChange={handleChange} required={featureproductType !== "edit"} />
                                                     {formData.preview && (
                                                         <img
                                                             src={formData.preview}
@@ -150,6 +174,7 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                                                             height={100}
                                                         />
                                                     )}
+                                                    {formErrors.image && <span className="text-danger">{formErrors.image}</span>}
                                                 </FormGroup>
                                             </Col>
                                         </Row>
@@ -162,8 +187,8 @@ function AddEditFeaturedProduct({ changed, featureproductType, data }) {
                         <Button color="dark" onClick={toggle}>
                             Cancel
                         </Button>
-                        <Button color="success" disabled={loading} >
-                            Save
+                        <Button color="success" disabled={loading}>
+                            {featureproductType ? "Update" : "Add"}
                         </Button>
                     </ModalFooter>
                 </Form>

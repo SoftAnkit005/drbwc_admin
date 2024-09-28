@@ -70,8 +70,8 @@ function AddEditCoupons({ couponType, changed, data }) {
         setIsEntireOrder(data.offer_type === 'code');
         setIsFixedDiscount(data.discount_type === 'fixed');
         setAmount(data.discount_value || '');
-        setStartDate(data.start_date.split('T')[0] || '');
-        setEndDate(data.end_date.split('T')[0] || '');
+        setStartDate(data.start_date?.split('T')[0] || '');
+        setEndDate(data.end_date?.split('T')[0] || '');
         setProductState(data.status === 'active');
 
         // Pre-select products if offer_type is 'product'
@@ -125,7 +125,7 @@ function AddEditCoupons({ couponType, changed, data }) {
           {couponType === 'edit' ? 'Edit Coupon' : 'Add Coupon'}
         </ModalHeader>
         <ModalBody>
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <CardTitle className="d-flex justify-content-end">
                 <FormGroup switch>
                     <Input type="switch" defaultChecked={productState} onClick={() => setProductState(!productState)} />
@@ -138,25 +138,27 @@ function AddEditCoupons({ couponType, changed, data }) {
                     <Row>
                       <Col className="py-1" md="6">
                         <FormGroup>
-                          <Label htmlFor="heading">Coupon Heading</Label>
+                          <Label htmlFor="heading" className="required">Coupon Heading</Label>
                           <Input
                             type="text"
                             id="heading"
                             value={heading}
                             onChange={(e) => setHeading(e.target.value)}
                             placeholder="Enter Heading"
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" md="6">
                         <FormGroup>
-                          <Label htmlFor="code">Coupon Code</Label>
+                          <Label htmlFor="code" className="required">Coupon Code</Label>
                           <Input
                             type="text"
                             id="code"
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
                             placeholder="Enter Code"
+                            required
                           />
                         </FormGroup>
                       </Col>
@@ -229,7 +231,7 @@ function AddEditCoupons({ couponType, changed, data }) {
                       {!isEntireOrder && ( // Show only if "Specific Products" is selected
                         <Col className="py-1" xs="12">
                           <FormGroup>
-                            <Label htmlFor="products">Choose Products</Label>
+                            <Label htmlFor="products" className="required">Choose Products</Label>
                             <Select
                               closeMenuOnSelect={false}
                               options={options}
@@ -242,7 +244,7 @@ function AddEditCoupons({ couponType, changed, data }) {
                       )}
                       <Col className="py-1" md="6" lg="4">
                         <FormGroup>
-                          <Label htmlFor="amount">Amount/Percentage</Label>
+                          <Label htmlFor="amount" className="required">Amount/Percentage</Label>
                           <Input
                             type="number"
                             id="amount"
@@ -258,30 +260,33 @@ function AddEditCoupons({ couponType, changed, data }) {
                             placeholder="Enter Amount/Percentage"
                             min="0"
                             max={!isFixedDiscount ? "100" : undefined} // Max 100 if percentage is selected
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" md="6" lg="4">
                         <FormGroup>
-                          <Label htmlFor="start_date">Start Date</Label>
+                          <Label htmlFor="start_date" className="required">Start Date</Label>
                           <Input
                             type="date"
                             id="start_date"
                             name="start_date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" md="6" lg="4">
                         <FormGroup>
-                          <Label htmlFor="end_date">End Date</Label>
+                          <Label htmlFor="end_date" className="required">End Date</Label>
                           <Input
                             type="date"
                             id="end_date"
                             name="end_date"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
+                            required
                           />
                         </FormGroup>
                       </Col>
@@ -294,8 +299,8 @@ function AddEditCoupons({ couponType, changed, data }) {
               <Button color="dark" onClick={toggle}>
                 Cancel
               </Button>
-              <Button color="success" onClick={handleSubmit}>
-                {couponType === 'edit' ? 'Edit' : 'Add'}
+              <Button color="success" type="submit">
+                {couponType === 'edit' ? 'Update' : 'Add'}
               </Button>
             </ModalFooter>
           </Form>

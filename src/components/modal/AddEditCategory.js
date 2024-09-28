@@ -152,7 +152,7 @@ function AddEditCategory({ changed, allCategories, field, catType, data }) {
                                             Cancel
                                         </Button>
                                         <Button color="success" type="submit" className="ms-2">
-                                            {catType !== 'edit' ? 'Add' : 'Edit'}
+                                            {catType !== 'edit' ? 'Add' : 'Update'}
                                         </Button>
                                     </div>
                                 </Form>
