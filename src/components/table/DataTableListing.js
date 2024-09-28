@@ -195,7 +195,9 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             },
             {
               name: 'Product Id',
-              selector: row => row.product_id
+              selector: row => (<>
+                {JSON.parse(row.product_id).length !== 0 ? row.product_id : 'Entire Order'}
+              </>)
             },
             {
               name: 'Actions',

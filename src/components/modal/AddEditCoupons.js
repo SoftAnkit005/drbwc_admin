@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import cogoToast from 'cogo-toast';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, Form, CardTitle } from 'reactstrap';
 import { FaRegEdit } from 'react-icons/fa';
@@ -86,7 +87,13 @@ function AddEditCoupons({ couponType, changed, data }) {
     }
   }, [products, couponType, data]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (selectedProducts.length === 0 && !isEntireOrder) {
+      cogoToast.warn('Please select at least one product.', { position: 'top-right' });
+      return;
+    }
 
     const formData = {
       offer_name: heading,
@@ -228,20 +235,23 @@ function AddEditCoupons({ couponType, changed, data }) {
                           </FormGroup>
                         </FormGroup>
                       </Col>
-                      {!isEntireOrder && ( // Show only if "Specific Products" is selected
-                        <Col className="py-1" xs="12">
-                          <FormGroup>
-                            <Label htmlFor="products" className="required">Choose Products</Label>
-                            <Select
-                              closeMenuOnSelect={false}
-                              options={options}
-                              isMulti
-                              value={selectedProducts}
-                              onChange={(selected) => setSelectedProducts(selected)}
-                            />
-                          </FormGroup>
-                        </Col>
-                      )}
+                        {!isEntireOrder && (
+                          <Col className="py-1" xs="12">
+                            <FormGroup>
+                              <Label htmlFor="products" className="required">Choose Products</Label>
+                              <Select
+                                closeMenuOnSelect={false}
+                                options={options}
+                                isMulti
+                                value={selectedProducts}
+                                onChange={(selected) => setSelectedProducts(selected)}
+                              />
+                              {selectedProducts.length === 0 && (
+                                <div className="text-danger">Please select at least one product</div>
+                              )}
+                            </FormGroup>
+                          </Col>
+                        )}
                       <Col className="py-1" md="6" lg="4">
                         <FormGroup>
                           <Label htmlFor="amount" className="required">Amount/Percentage</Label>
