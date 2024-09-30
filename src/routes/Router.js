@@ -37,34 +37,34 @@ const isUserLoggedIn = localStorage.getItem('authToken') !== null;
 /***** Routes Configuration *****/
 const ThemeRoutes = [
   {
-    path: '/',
+    path: '/admin/',
     element: <FullLayout />,
     children: [
-      { path: '/', name: 'Home', element: <Navigate to={isUserLoggedIn ? "/dashboard" : "/auth/login"} /> },
-      { path: '/dashboard', name: 'Dashboard', exact: true, element: <ProtectedRoute component={Dashboard} /> },
-
-      { path: '/banner', name: 'Banner', exact: true, element: <Banner component={Banner} /> },
-      { path: '/products', name: 'Products', exact: true, element: <ProtectedRoute component={Products} /> },
-      { path: '/categories', name: 'Categories', exact: true, element: <ProtectedRoute component={Categories} /> },
-      { path: '/attributes', name: 'Attributes', exact: true, element: <ProtectedRoute component={Attributes} /> },
-      { path: '/featured-product', name: 'Featured Product', exact: true, element: <FeaturedProduct component={FeaturedProduct} /> },
-      { path: '/coupons', name: 'Coupons', exact: true, element: <ProtectedRoute component={Coupon} /> },
-      { path: '/tags', name: 'Tags', exact: true, element: <ProtectedRoute component={Tags} /> },
-      { path: '/reviews', name: 'Reviews', exact: true, element: <ProtectedRoute component={Reviews} /> },
-      { path: '/orders', name: 'Orders', exact: true, element: <ProtectedRoute component={Orders} /> },
-      { path: '/orders-status', name: 'Orders Status', exact: true, element: <ProtectedRoute component={OrderStatus} /> },
-      { path: '/customers', name: 'Customers', exact: true, element: <ProtectedRoute component={Customers} /> },
-      { path: '/coupons', name: 'Coupons', exact: true, element: <ProtectedRoute component={Coupons} /> },
-      { path: '/setting', name: 'Setting', exact: true, element: <ProtectedRoute component={Setting} /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
+      { path: '', name: 'Home', element: <Navigate to={isUserLoggedIn ? "/admin/dashboard" : "/admin/auth/login"} /> }, // Use relative path here
+      { path: 'dashboard', name: 'Dashboard', exact: true, element: <ProtectedRoute component={Dashboard} /> },
+      
+      { path: 'banner', name: 'Banner', exact: true, element: <Banner component={Banner} /> },
+      { path: 'products', name: 'Products', exact: true, element: <ProtectedRoute component={Products} /> },
+      { path: 'categories', name: 'Categories', exact: true, element: <ProtectedRoute component={Categories} /> },
+      { path: 'attributes', name: 'Attributes', exact: true, element: <ProtectedRoute component={Attributes} /> },
+      { path: 'featured-product', name: 'Featured Product', exact: true, element: <FeaturedProduct component={FeaturedProduct} /> },
+      { path: 'coupons', name: 'Coupons', exact: true, element: <ProtectedRoute component={Coupon} /> },
+      { path: 'tags', name: 'Tags', exact: true, element: <ProtectedRoute component={Tags} /> },
+      { path: 'reviews', name: 'Reviews', exact: true, element: <ProtectedRoute component={Reviews} /> },
+      { path: 'orders', name: 'Orders', exact: true, element: <ProtectedRoute component={Orders} /> },
+      { path: 'orders-status', name: 'Orders Status', exact: true, element: <ProtectedRoute component={OrderStatus} /> },
+      { path: 'customers', name: 'Customers', exact: true, element: <ProtectedRoute component={Customers} /> },
+      { path: 'coupons', name: 'Coupons', exact: true, element: <ProtectedRoute component={Coupons} /> },
+      { path: 'setting', name: 'Setting', exact: true, element: <ProtectedRoute component={Setting} /> },
+      { path: '*', element: <Navigate to="/admin/auth/404" /> },
     ],
   },
   {
-    path: '/auth',
+    path: '/admin/auth',
     element: <BlankLayout />,
     children: [
       { path: '404', element: <Error /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
+      { path: '*', element: <Navigate to="/admin/auth/404" /> },
       { path: 'register', element: <RegisterFormik /> },
       { path: 'login', element: <LoginFormik /> },
       { path: 'maintanance', element: <Maintanance /> },
@@ -73,5 +73,6 @@ const ThemeRoutes = [
     ],
   },
 ];
+
 
 export default ThemeRoutes;

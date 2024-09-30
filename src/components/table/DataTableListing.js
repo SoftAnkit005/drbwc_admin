@@ -331,7 +331,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               cell: row => (
                 <div className='d-flex align-items-center w-100 justify-content-center'>
                   {console.log('row', row)}
-                  <MdOutlineSpatialTracking className='text-dark cursor-pointer fs-5' onClick={() => navigate(`/orders-status`, { state: row })} />
+                  <MdOutlineSpatialTracking className='text-dark cursor-pointer fs-5' onClick={() => navigate(`/admin/orders-status`, { state: row })} />
                   {/* <DeleteConfirmation caseType="orders" id={row.id} title={row.id} changed={changeData} /> */}
                 </div>
               ),

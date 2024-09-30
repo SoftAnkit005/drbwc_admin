@@ -43,7 +43,7 @@ const LoginFormik = () => {
           localStorage.setItem('authToken', result.token);
           localStorage.setItem('user', JSON.stringify(result.user));
           cogoToast.success('Logged in successfully!');
-          navigate('/dashboard');
+          navigate('/admin/dashboard');
         } else {
           setLoginError('Authentication token missing. Please try again.');
         }
@@ -71,7 +71,7 @@ const LoginFormik = () => {
               </div>
               <CardBody className="p-4 m-1">
                 <h4 className="fw-semibold">Login</h4>
-                <small className="pb-4 d-block"> Do not have an account? <Link to="/auth/register">Sign Up</Link> </small>
+                <small className="pb-4 d-block"> Do not have an account? <Link to="/admin/auth/register">Sign Up</Link> </small>
                 {loginError && <p className='error-tag mb-2'>{loginError}</p>}
                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleLogin} >
                   {() => (
@@ -88,9 +88,9 @@ const LoginFormik = () => {
                         <Label check>
                           <Input type="checkbox" /> Remember me
                         </Label>
-                        <Link className="ms-auto text-decoration-none" to="/auth/forgotPwd">
+                        {/* <Link className="ms-auto text-decoration-none" to="/admin/auth/forgotPwd">
                           <small>Forgot Pwd?</small>
-                        </Link>
+                        </Link> */}
                       </FormGroup>
                       <FormGroup>
                         <Button type="submit" color="primary" className="me-2" disabled={loading}>

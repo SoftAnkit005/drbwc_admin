@@ -2,31 +2,37 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody } from 'reactstrap';
 import { FaRegEdit } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
 import './modalstyle.scss';
+import { updateOrder } from '../../store/orders/ordersSlice';
 
 const staticOptions = [
-  { value: '1', label: 'Xpressbees' },
-  { value: '2', label: 'Delhivery' },
-  { value: '3', label: 'Blue Dart' },
-  { value: '3', label: 'FedEx Corp' },
-  { value: '3', label: 'Ecom Express' },
-  // Add more static options as needed
+  { value: 'pending', label: 'Pending' },
+  { value: 'awaiting-pickup', label: 'Awaiting pickup' },
+  { value: 'pick-up', label: 'Pick Up' },
+  { value: 'shipped', label: 'Shipped' },
+  { value: 'delivered', label: 'Delivered' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'canceled', label: 'Canceled' },
+  { value: 'declined', label: 'Declined' },
 ];
 
-function EditTrackingId({ trackType }) {
+function EditTrackingId({ order, trackType }) {
   const [modal, setModal] = useState(false);
-  const [tagName, setTagName] = useState(""); // State for tag name
-  const [selectedProducts, setSelectedProducts] = useState([]); // State for selected products
+  const [deliveryData, setDeliveryData] = useState(order.comments || ''); // Initialize with order comments
+  const [selectedStatus, setSelectedStatus] = useState(order.status || ''); // Initialize with order status
   const toggle = () => setModal(!modal);
 
-  const handleSave = () => {
+  const dispatch = useDispatch(); // Get the dispatch function from Redux
 
-    if (trackType === 'edit') {
-      console.log('edit');
-      // dispatch(updateTags({ id: someId, ...formData })); // Replace someId with appropriate ID logic
-    } else {
-      console.log('add');
-      // dispatch(addTags(formData));
+  const handleSave = () => {
+    if (selectedStatus && deliveryData) {
+      // Dispatch the updateOrder action with the order ID, status, and comments
+      dispatch(updateOrder({
+        orderId: order.id,
+        status: selectedStatus,
+        comments: deliveryData,
+      }));
     }
 
     toggle();
@@ -34,10 +40,12 @@ function EditTrackingId({ trackType }) {
 
   return (
     <div>
-      <FaRegEdit className='text-dark cursor-pointer fs-4' onClick={toggle}/>
+      <FaRegEdit className='text-dark cursor-pointer fs-4' onClick={toggle} />
 
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader className="bg-primary text-white" toggle={toggle}>{trackType !== 'add' ? 'Edit' : 'Add'} Tracking Information</ModalHeader>
+        <ModalHeader className="bg-primary text-white" toggle={toggle}>
+          {trackType !== 'add' ? 'Edit' : 'Add'} Tracking Information
+        </ModalHeader>
         <ModalBody>
           <Row>
             <Col md="12">
@@ -46,27 +54,33 @@ function EditTrackingId({ trackType }) {
                   <Row>
                     <Col className="py-1" xs="12">
                       <FormGroup>
-                        <Label htmlFor="name">Tracking number</Label>
+                        <Label htmlFor="d_status">Delivery Status</Label>
                         <Input
-                          type="text"
-                          id="name"
-                          placeholder="Enter Name"
-                          value={tagName}            // Bind tag name state
-                          onChange={(e) => setTagName(e.target.value)} // Update tag name state
-                        />
+                          type="select"
+                          id="d_status"
+                          name="d_status"
+                          value={selectedStatus}  // Bind selectedStatus state
+                          onChange={(e) => setSelectedStatus(e.target.value)} // Update selectedStatus state
+                        >
+                          <option value="">Select...</option>
+                          {staticOptions?.map((partner, i) => (
+                            <option key={i} value={partner.value}>
+                              {partner.label}
+                            </option>
+                          ))}
+                        </Input>
                       </FormGroup>
                     </Col>
                     <Col className="py-1" xs="12">
                       <FormGroup>
-                        <Label htmlFor="position">Courier Partner</Label>
-                        <Input type="select" id="p_category" name="category_id" value={selectedProducts}  onChange={(e) => setSelectedProducts(e.target.value)} >
-                            <option value=''>Select...</option>
-                            {staticOptions?.map((partner, i) => (
-                                <option key={i} value={partner.value}>
-                                    {partner.label}
-                                </option>
-                            ))}
-                        </Input>
+                        <Label htmlFor="deliveryDetails">Delivery Details</Label>
+                        <Input
+                          type="textarea"
+                          id="deliveryDetails"
+                          placeholder="Enter Details"
+                          value={deliveryData} // Bind deliveryData state
+                          onChange={(e) => setDeliveryData(e.target.value)} // Update deliveryData state
+                        />
                       </FormGroup>
                     </Col>
                   </Row>
@@ -89,7 +103,8 @@ function EditTrackingId({ trackType }) {
 }
 
 EditTrackingId.propTypes = {
-    trackType: PropTypes.string,
+  order: PropTypes.object.isRequired, // Ensure that the order object is required
+  trackType: PropTypes.string.isRequired, // Ensure trackType is required
 };
 
 export default EditTrackingId;

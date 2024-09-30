@@ -12,7 +12,7 @@ const ProtectedRoute = ({ component: Component }) => {
   const authToken = localStorage.getItem('authToken');
   const isUserLoggedIn = authToken && isValidToken(authToken);
   
-  return isUserLoggedIn ? <Component /> : <Navigate to="/auth/login" />;
+  return isUserLoggedIn ? <Component /> : <Navigate to="/admin/auth/login" />;
 };
 
 // Add PropTypes validation

@@ -24,7 +24,7 @@ const Header = () => {
     localStorage.removeItem('user');
     cogoToast.error('Logged Out!');
     setTimeout(() => {
-      navigate('/');
+      navigate('/admin');
     }, 500);
   };
 
