@@ -25,8 +25,11 @@ export const fetchUserData = createAsyncThunk(
       }
 
       const result = await response.json();
+
       return result;
     } catch (error) {
+      // console.log(error.message);
+      localStorage.setItem('authToken', error.message);
       return rejectWithValue(error.message);
     }
   }

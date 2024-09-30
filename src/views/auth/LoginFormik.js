@@ -33,16 +33,30 @@ const LoginFormik = () => {
   const handleLogin = async (values) => {
     try {
       const result = await dispatch(loginUser(values)).unwrap();
-      if (result.token) {
-        localStorage.setItem('authToken', result.token);
-        localStorage.setItem('user', JSON.stringify(result.user));
-        cogoToast.success('Logged in Successfully!');
-        navigate('/dashboard'); 
+      if (result.success) {
+        if (result.user.user_role !== "admin") {
+          setLoginError('You are not an admin. Please login with admin credentials!');
+          return;
+        }
+  
+        if (result.token) {
+          localStorage.setItem('authToken', result.token);
+          localStorage.setItem('user', JSON.stringify(result.user));
+          cogoToast.success('Logged in successfully!');
+          navigate('/dashboard');
+        } else {
+          setLoginError('Authentication token missing. Please try again.');
+        }
+      } else {
+        setLoginError('Login failed. Please check your credentials.');
       }
     } catch (error) {
-      setLoginError(error);
+      const errorMessage = error || 'An error occurred during login. Please try again.';
+      setLoginError(errorMessage);
+      cogoToast.error(errorMessage);
     }
   };
+  
 
   return (
     <div className="loginBox">

@@ -1,8 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import user1 from '../../assets/images/users/user4.jpg';
 
-const ProfileDD = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+const ProfileDD = ({ user }) => {
   
   return (
     <div>
@@ -17,4 +17,7 @@ const ProfileDD = () => {
   );
 };
 
+ProfileDD.propTypes = {
+  user: PropTypes.object,
+};
 export default ProfileDD;

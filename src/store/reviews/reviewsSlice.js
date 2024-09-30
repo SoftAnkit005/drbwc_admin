@@ -110,7 +110,6 @@ const reviewsSlice = createSlice({
       .addCase(fetchReviews.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.reviews = action.payload; // Update the state with fetched reviews
-        console.log('action.payload:', action.payload);
       })
       .addCase(fetchReviews.rejected, (state, action) => {
         state.status = 'failed';

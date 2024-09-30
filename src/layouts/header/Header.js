@@ -2,7 +2,7 @@ import React from 'react';
 // import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Navbar, Nav, NavItem, UncontrolledDropdown, DropdownToggle, DropdownMenu, Button, Input, } from 'reactstrap';
+import { Navbar, UncontrolledDropdown, DropdownToggle, DropdownMenu, Button, } from 'reactstrap';
 import cogoToast from 'cogo-toast';
 import * as Icon from 'react-feather';
 import user1 from '../../assets/images/users/user4.jpg';
@@ -14,6 +14,7 @@ import Logo from '../logo/Logo';
 const Header = () => {
   const navigate = useNavigate();
   // const isDarkMode = useSelector((state) => state.customizer.isDark);
+  const user = JSON.parse(localStorage.getItem('user'));
   const topbarColor = useSelector((state) => state.customizer.topbarBg);
   const dispatch = useDispatch();
 
@@ -43,20 +44,23 @@ const Header = () => {
       {/**********Left Nav Bar**********/}
       {/******************************/}
 
-      <Nav className="me-auto d-none d-lg-flex" navbar>
-
+      {/* <Nav className="me-auto d-none d-lg-flex" navbar>
         <NavItem className="app-search ps-3">
           <Input id="txt-srch" name="search" placeholder="Search & Enter" className="rounded-pill" type="text" />
         </NavItem>
-      </Nav>
+      </Nav> */}
 
       <div className="d-flex align-items-center">
         <UncontrolledDropdown>
-          <DropdownToggle className="bg-transparent border-0 p-0">
+          <DropdownToggle className="bg-transparent border-0 p-0 me-lg-3 d-flex align-items-center">
             <img src={user1} alt="profile" className="rounded-circle me-2" width="40" />
+            <span className='d-flex flex-column align-items-start'>
+              <label className='text-white d-block'>{user?.full_name}</label>
+              <label className='text-white desc-xxs text-muted text-capitalize'>{user?.user_role}</label>
+            </span>
           </DropdownToggle>
-          <DropdownMenu className="ddWidth" style={{zIndex: 999}}>
-            <ProfileDD />
+          <DropdownMenu className="ddWidth mt-2" style={{zIndex: 999}}>
+            <ProfileDD user={user}/>
             <div className="p-2 px-3">
               <Button onClick={handleLogout} color="danger" size="md">
                 Logout

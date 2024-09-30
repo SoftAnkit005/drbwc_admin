@@ -101,14 +101,7 @@ function AddEditTaxSetting({ changed, taxType, data }) {
                                             <Col className="py-1" xs="12">
                                                 <FormGroup>
                                                     <Label htmlFor="description">Description</Label>
-                                                    <Input
-                                                        type="description"
-                                                        value={description}
-                                                        onChange={(e) => setDescription(e.target.value)}
-                                                        rows="2"
-                                                        id="description"
-                                                        placeholder="Enter VAT Rate"
-                                                    />
+                                                    <Input type="description" value={description} onChange={(e) => setDescription(e.target.value)} rows="2" id="description" placeholder="Enter VAT Rate" />
                                                 </FormGroup>
                                             </Col>
                                         </Row>
@@ -119,7 +112,9 @@ function AddEditTaxSetting({ changed, taxType, data }) {
                     </ModalBody>
                     <ModalFooter>
                         <Button color="dark" onClick={toggle}>Cancel</Button>
-                        <Button color="success" disabled={loading}>Save</Button>
+                        <Button color="success" disabled={loading}>
+                            {taxType === "edit" ? "Update" : "Add"}
+                        </Button>
                     </ModalFooter>
                 </Form>
             </Modal>
