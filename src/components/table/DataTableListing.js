@@ -15,6 +15,7 @@ import AddEditBanner from '../modal/AddEditBanner';
 import AddEditFeaturedProduct from '../modal/AddEditFeaturedProduct';
 import AddEditCouons from '../modal/AddEditCoupons';
 import AddEditTaxSettings from '../modal/settingmodals/AddEditTaxSettings';
+import BlockUnblockUser from '../modal/BlockUnblockUser';
 
 const DataTableListing = ({ pageName, tableData = [], changeData }) => {
   const navigate = useNavigate();
@@ -295,13 +296,21 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             { name: 'Name', selector: row => row.full_name },
             { name: 'Email', selector: row => row.email },
             { name: 'Role', selector: row => row.user_role },
-            // { name: 'Joined', selector: row => formatDate(row.createdAt) },
+            { name: 'Joined', selector: row => formatDate(row.createdAt) },
+            {
+              name: 'User Status',
+              selector: row => (
+                <Badge color={row.status === '1' ? 'success' : 'danger'}>
+                  {row.status === '1' ? 'Unblocked' : 'Blocked'}
+                </Badge>
+              ),
+            },
             {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
                   {console.log('users row',row)}
-                  <AddEditReviews reviewType="edit" changed={changeData} data={row} />
+                  <BlockUnblockUser caseType={row.status} changed={changeData} data={row} />
                 </div>
               ),
             },
