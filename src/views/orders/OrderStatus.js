@@ -159,7 +159,7 @@ const OrderStatus = () => {
         </Col>
         <Col lg="4">
           <div className="timeline">
-            <h4 className='fw-semibold'>Delivery Status: Delivered</h4>
+            <h4 className='fw-semibold'>Delivery Status: {ordersData?.status}</h4>
             <div className="line">
               <div className="line-content">
                 {statusOptions.map((status) => (
