@@ -4,6 +4,7 @@ import { IoCartOutline, IoCloseCircle } from "react-icons/io5";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { GiCardboardBox } from "react-icons/gi";
 import { BsCashStack } from "react-icons/bs";
+import { FcCancel } from "react-icons/fc";
 import { MdOutlineRadioButtonChecked } from "react-icons/md";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useSelector } from 'react-redux';
@@ -19,6 +20,7 @@ const AllDataCards = () => {
   const [activeOrders, setactiveOrders] = useState(null);
   const [completedOrders, setcompletedOrders] = useState(null);
   const [cancelledOrders, setcancelledOrders] = useState(null);
+  const [declinedOrders, setdeclinedOrders] = useState(null);
   const [totalCompletedAmount, settotalCompletedAmount] = useState('')
 
   const formatCurrency = (amount) => {
@@ -43,6 +45,8 @@ const AllDataCards = () => {
     setcompletedOrders(completeOrders);
     const canceleOrders = allOrders?.filter(order => order.status === 'canceled');
     setcancelledOrders(canceleOrders);
+    const declineOrders = allOrders?.filter(order => order.status === 'declined');
+    setdeclinedOrders(declineOrders);
     const activeOrd = allOrders?.filter(order => order.status !== 'delivered' && order.status !== 'canceled' && order.status !== 'completed' );
     setactiveOrders(activeOrd);
 
@@ -99,7 +103,7 @@ const AllDataCards = () => {
           </CardBody>
         </Card>
       </Col>
-      <Col md="4" className="">
+      <Col md="6" lg="3" className="">
         <Card className="bg-light">
           <CardBody className="position-relative">
             <MdOutlineRadioButtonChecked className='heading-sm text-warning position-absolute top-0 end-0 m-2'/>
@@ -110,7 +114,7 @@ const AllDataCards = () => {
           </CardBody>
         </Card>
       </Col>
-      <Col md="4" className="">
+      <Col md="6" lg="3" className="">
         <Card className="bg-light">
           <CardBody className="position-relative">
             <IoIosCheckmarkCircle className='heading-sm text-success position-absolute top-0 end-0 m-2'/>
@@ -121,7 +125,7 @@ const AllDataCards = () => {
           </CardBody>
         </Card>
       </Col>
-      <Col md="4" className="">
+      <Col md="6" lg="3" className="">
         <Card className="bg-light">
           <CardBody className="position-relative">
             <IoCloseCircle className='heading-sm text-danger position-absolute top-0 end-0 m-2'/>
@@ -132,7 +136,17 @@ const AllDataCards = () => {
           </CardBody>
         </Card>
       </Col>
-      
+      <Col md="6" lg="3" className="">
+        <Card className="bg-light">
+          <CardBody className="position-relative">
+            <FcCancel className='heading-sm text-danger position-absolute top-0 end-0 m-2'/>
+            <div>
+              <h5>Declined Orders</h5>
+              <h2 className='mb-0'>{declinedOrders?.length}</h2>
+            </div>
+          </CardBody>
+        </Card>
+      </Col>
     </Row>
   );
 };
