@@ -6,6 +6,7 @@ import { getsubcategories } from "../store/subcategory/subcategorySlice";
 import { fetchSections } from "../store/featuredproduct/featuredProductSlice";
 import { fetchReviews } from "../store/reviews/reviewsSlice";
 import { fetchUserData } from "../store/users/userSlice";
+import { getOrders } from "../store/orders/ordersSlice";
 
 // Function to validate token
 // const isTokenValid = (token) => {
@@ -27,6 +28,7 @@ const useInitialDispatches = () => {
     dispatch(fetchCategories());
     dispatch(fetchUserData());
     dispatch(getsubcategories());
+    dispatch(getOrders());
     dispatch(fetchSections());
   }, [dispatch]);
 };

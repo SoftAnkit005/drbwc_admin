@@ -168,23 +168,35 @@ const OrderStatus = () => {
         <Col lg="4">
           <div className="timeline">
             <h4 className='fw-semibold text-capitalize'>Delivery Status</h4>
-            {ordersData?.status !== "canceled" ?
+            {(ordersData?.status !== "canceled" && ordersData?.status !== "declined") ? (
               <div className="line">
                 <div className="line-content">
                   {statusOptions.map((status) => (
-                    <div key={status.value} className={`content ${currentStatus === status.value ? 'active' : ''}`}>
-                      <h6 className='desc-md fw-semibold'>{status.label}</h6>
-                      <p className='text-muted desc-xxs'>{status.description}</p>
+                    <div key={status.value} className={`content ${currentStatus === status.value ? 'active' : ''}`} >
+                      <h6 className="desc-md fw-semibold">{status.label}</h6>
+                      <p className="text-muted desc-xxs">{status.description}</p>
                     </div>
                   ))}
                 </div>
               </div>
-            :
+            ) : ordersData?.status === "declined" ? (
               <div className="">
-                <h6 className='desc-md text-danger'>Order Canceled</h6>
-                <p className='text-muted desc-xxs'>{orderUpdateddate.toLocaleDateString('en-US', dateOptions)}</p>
+                <p className="text-muted desc-xxs">
+                  {orderUpdateddate.toLocaleDateString('en-US', dateOptions)}
+                </p>
+                <h6 className="desc-md text-danger">Order Declined</h6>
+                <p className="text-danger desc-xxs">Reason: {ordersData?.comments}</p>
               </div>
-            }
+            ) : (
+              <div className="">
+                <p className="text-muted desc-xxs">
+                  {orderUpdateddate.toLocaleDateString('en-US', dateOptions)}
+                </p>
+                <h6 className="desc-md text-danger">Order Canceled</h6>
+                <p className="text-danger desc-xxs">Reason: {ordersData?.comments}</p>
+              </div>
+            )}
+
           </div>
         </Col>
       </Row>

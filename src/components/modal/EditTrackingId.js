@@ -14,7 +14,7 @@ const staticOptions = [
   { value: 'delivered', label: 'Delivered' },
   { value: 'completed', label: 'Completed' },
   { value: 'canceled', label: 'Canceled' },
-  { value: 'declined', label: 'Declined' },
+  { value: 'declined', label: 'Decline' },
 ];
 
 function EditTrackingId({ order, trackType }) {

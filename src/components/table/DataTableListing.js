@@ -323,14 +323,17 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             { name: 'Order Number', selector: row => row.order_prefix },
             { name: 'Date', selector: row => row.order_date, sortable: true },
             { name: 'Customer Email', selector: row => row.shipping_address },
-            { name: 'Shipment Status', selector: row => row.status },
+            { name: 'Shipment Status', cell: row => (
+              <div className={`text-capitalize ${(row.status !== 'declined' && row.status !== 'canceled') ? '' : 'text-danger'}`}>
+                {(row.status).split('-').join(' ')}
+              </div> )
+            },
             { name: 'Payment Method', selector: row => row.payment_method },
             { name: 'Payment Status', selector: row => row.total_amount },
             {
               name: 'Check/Edit Order',
               cell: row => (
                 <div className='d-flex align-items-center w-100 justify-content-center'>
-                  {console.log('row', row)}
                   <MdOutlineSpatialTracking className='text-dark cursor-pointer fs-5' onClick={() => navigate(`/admin/orders-status`, { state: row })} />
                   {/* <DeleteConfirmation caseType="orders" id={row.id} title={row.id} changed={changeData} /> */}
                 </div>
