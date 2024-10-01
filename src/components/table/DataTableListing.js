@@ -324,10 +324,11 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             { name: 'Date', selector: row => row.order_date, sortable: true },
             { name: 'Customer Email', selector: row => row.shipping_address },
             { name: 'Shipment Status', cell: row => (
-              <div className={`text-capitalize ${(row.status !== 'declined' && row.status !== 'canceled') ? '' : 'text-danger'}`}>
-                {(row.status).split('-').join(' ')}
-              </div> )
-            },
+              <div className={`text-capitalize badge ${ row.status === 'completed' ? 'bg-success' : (row.status === 'declined' || row.status === 'canceled') ? 'bg-danger' : 'bg-secondary' }`}>
+                {row.status.split('-').join(' ')}
+              </div>
+             
+            )},
             { name: 'Payment Method', selector: row => row.payment_method },
             { name: 'Payment Status', selector: row => row.total_amount },
             {

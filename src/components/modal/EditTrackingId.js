@@ -9,11 +9,11 @@ import { updateOrder } from '../../store/orders/ordersSlice';
 const staticOptions = [
   { value: 'pending', label: 'Pending' },
   { value: 'awaiting-pickup', label: 'Awaiting pickup' },
-  { value: 'pick-up', label: 'Pick Up' },
+  // { value: 'pick-up', label: 'Pick Up' },
   { value: 'shipped', label: 'Shipped' },
   { value: 'delivered', label: 'Delivered' },
   { value: 'completed', label: 'Completed' },
-  { value: 'canceled', label: 'Canceled' },
+  // { value: 'canceled', label: 'Canceled' },
   { value: 'declined', label: 'Decline' },
 ];
 

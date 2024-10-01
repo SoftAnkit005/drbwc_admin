@@ -28,13 +28,13 @@ const AllDataCards = () => {
   };
 
   useEffect(() => {
-    if(orders.success){
+    if(orders?.success){
       setallOrders(orders.orders);
     }
-    if(userData.success){
+    if(userData?.success){
       setallUsers(userData.users);
     }
-    if(products.success){
+    if(products?.success){
       setallProducts(products.products);
     }
   }, [orders, userData, products]);

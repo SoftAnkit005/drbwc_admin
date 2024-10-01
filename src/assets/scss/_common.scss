@@ -44,6 +44,11 @@
     border-radius: 5px 5px 0px 0px; 
 }
 
+.bg-secondary {
+    --bs-bg-opacity: 1;
+    background-color: rgb(165 165 165) !important;
+}
+
 
 // Timeline CSS
 .timeline {
