@@ -130,7 +130,7 @@ const AllDataCards = () => {
           <CardBody className="position-relative">
             <IoCloseCircle className='heading-sm text-danger position-absolute top-0 end-0 m-2'/>
             <div>
-              <h5>Cancelled Orders</h5>
+              <h5>User Cancelled Orders</h5>
               <h2 className='mb-0'>{cancelledOrders?.length}</h2>
             </div>
           </CardBody>
@@ -141,7 +141,7 @@ const AllDataCards = () => {
           <CardBody className="position-relative">
             <FcCancel className='heading-sm text-danger position-absolute top-0 end-0 m-2'/>
             <div>
-              <h5>Declined Orders</h5>
+              <h5>Admin Declined Orders</h5>
               <h2 className='mb-0'>{declinedOrders?.length}</h2>
             </div>
           </CardBody>
