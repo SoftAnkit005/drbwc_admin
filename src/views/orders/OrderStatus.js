@@ -22,9 +22,6 @@ const OrderStatus = () => {
 
   const currentStatus = ordersData?.status || 'pending';
 
-  console.log('orderStatus', orderStatus);
-  console.log('orders', ordersData);
-
   useEffect(() => {
     dispatch(getOrders());
   }, [dispatch]);
@@ -36,6 +33,17 @@ const OrderStatus = () => {
     }
   }, [orders]);
 
+  const dateOptions = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit', 
+    hour12: true, // 12-hour format with AM/PM
+    timeZone: 'Asia/Kolkata', // Indian Standard Time
+  };
+  const orderUpdateddate = new Date(ordersData?.updated_at);
   // Dynamically update only the current status's description based on orderStatus.comments
   const statusOptions = [
     { 
@@ -99,7 +107,7 @@ const OrderStatus = () => {
           <Card>
             <CardBody>
               <CardTitle tag="h4" className="d-flex align-items-center justify-content-between">
-                <span>Order Status: <span className='text-capitalize'>{ordersData?.status}</span></span>
+                <span>Order Status: <span className={`text-capitalize ${ordersData?.status !== "canceled" ? '' : 'text-danger'}`}>{ordersData?.status}</span></span>
                 <div className='d-flex gap-3 align-items-center'>
                     <EditTrackingId order={orderStatus}/>
                     {/* <TbTruckDelivery className='fs-3'/> */}
@@ -159,17 +167,24 @@ const OrderStatus = () => {
         </Col>
         <Col lg="4">
           <div className="timeline">
-            <h4 className='fw-semibold'>Delivery Status: {ordersData?.status}</h4>
-            <div className="line">
-              <div className="line-content">
-                {statusOptions.map((status) => (
-                  <div key={status.value} className={`content ${currentStatus === status.value ? 'active' : ''}`}>
-                    <h6 className='desc-md fw-semibold'>{status.label}</h6>
-                    <p className='text-muted desc-xxs'>{status.description}</p>
-                  </div>
-                ))}
+            <h4 className='fw-semibold text-capitalize'>Delivery Status</h4>
+            {ordersData?.status !== "canceled" ?
+              <div className="line">
+                <div className="line-content">
+                  {statusOptions.map((status) => (
+                    <div key={status.value} className={`content ${currentStatus === status.value ? 'active' : ''}`}>
+                      <h6 className='desc-md fw-semibold'>{status.label}</h6>
+                      <p className='text-muted desc-xxs'>{status.description}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            :
+              <div className="">
+                <h6 className='desc-md text-danger'>Order Canceled</h6>
+                <p className='text-muted desc-xxs'>{orderUpdateddate.toLocaleDateString('en-US', dateOptions)}</p>
+              </div>
+            }
           </div>
         </Col>
       </Row>
