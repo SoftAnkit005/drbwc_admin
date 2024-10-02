@@ -10,16 +10,18 @@ import { getOrders } from '../../store/orders/ordersSlice';
 const OrderStatus = () => {
   const location = useLocation();
   const [ordersData, setordersData] = useState([]);
+  const [filteredTax, setfilteredTax] = useState(null);
+
   const orderStatus = location.state || {};
   const { products } = useSelector((state) => state.products);
   const { userData } = useSelector((state) => state.users);
   const { orders } = useSelector((state) => state.orders);
+  const { taxes } = useSelector((state) => state.taxes);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const productIds = orderStatus?.product_id?.split(',').map(id => parseInt(id, 10)); // Specify radix 10
   const productQty = orderStatus?.qty?.split(',').map(id => parseInt(id, 10)); // Specify radix 10
   const filteredProducts = products?.products?.filter(product => productIds?.includes(product.id)) || [];
-
   const currentStatus = ordersData?.status || 'pending';
 
   useEffect(() => {
@@ -101,6 +103,15 @@ const OrderStatus = () => {
     setuserInfo(info);
   }, [userData, orderStatus]);
   
+  console.log('taxes', taxes);
+  useEffect(() => {
+    if (taxes?.taxes && orderStatus?.tax_id) {
+      const taxIds = orderStatus.tax_id.split(',').map(id => parseInt(id.trim(), 10));
+      const filterTax = taxes.taxes.filter(tax => taxIds.includes(tax.id));
+      setfilteredTax(filterTax);
+    }
+  }, [taxes, orderStatus]);
+  
   return (
     <>
       <Button color="primary" className="mb-2" outline onClick={goBack}>
@@ -114,7 +125,7 @@ const OrderStatus = () => {
               <CardTitle tag="h4" className="d-flex align-items-center justify-content-between">
                 <span>Order Status: <span className={`text-capitalize ${ordersData?.status !== "canceled" ? '' : 'text-danger'}`}>{ordersData?.status}</span></span>
                 <div className='d-flex gap-3 align-items-center'>
-                    <EditTrackingId order={orderStatus}/>
+                    <EditTrackingId order={orderStatus} trackType="edit"/>
                     {/* <TbTruckDelivery className='fs-3'/> */}
                 </div>
               </CardTitle>
@@ -132,7 +143,7 @@ const OrderStatus = () => {
                       <Col md="6">
                         <div className="d-flex align-items-center h-100">
                           <div className="me-3">
-                            <img src={`/${displayImage}`} alt={product.product_name} width="50" />
+                            <img src={`${displayImage}`} alt={product.product_name} width="50" />
                           </div>
                           <div>
                             <h5 className="mb-0">{product.product_name}</h5>
@@ -149,6 +160,11 @@ const OrderStatus = () => {
                     </Row>
                   );
                 })}
+                <div className='mt-3'>
+                  {filteredTax?.map((tax, index) => (
+                    <p key={index} className='d-flex justify-content-between text-muted desc-xs mb-2'><span>{tax.tax_name} </span> <span>{tax.tax_rate} %</span></p>
+                  ))}
+                </div>
                 <h5 className="mb-0 mt-2 d-flex justify-content-between aligin-items-center border-top border-bottom py-2">
                   <span>Sub Total:</span> <span className='text-capitalize fw-semibold'>₹{ordersData?.total_amount || 'N/A'}</span>
                 </h5>

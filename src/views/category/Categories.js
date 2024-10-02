@@ -6,6 +6,7 @@ import { fetchCategories } from '../../store/category/categorySlice';
 import DataTableListing from '../../components/table/DataTableListing';
 import SubCatDataTableListing from '../../components/table/SubCatDataTableListing';
 import { getsubcategories } from '../../store/subcategory/subcategorySlice';
+import gif from '../../assets/images/gifs/scroll-down.gif';
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -14,7 +15,8 @@ const Categories = () => {
   const [categoryData, setcategoryData] = useState([]);
   const [subCategoryData, setsubCategoryData] = useState([]);
   const [categorycheck, setcategoryCheck] = useState(false);
-
+  const [isVisible, setIsVisible] = useState(true);
+  
   const cateChanged = (e) => {
     setcategoryCheck(e);
   };
@@ -36,6 +38,14 @@ const Categories = () => {
     };
   }, [categories, subcategories]);
 
+  // Effect to hide the sub-categories section after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false); // Hide after 3 seconds
+    }, 3000);
+    return () => clearTimeout(timer); // Clear timeout if the component unmounts
+  }, []);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -51,6 +61,10 @@ const Categories = () => {
           <SubCatDataTableListing pageName="sub categories" tableData={subCategoryData} parentData={categoryData} changeData={cateChanged} />
         </CardBody>
       </Card>
+      <div className={`d-flex flex-column justify-content-center align-items-center sticky-bottom ${!isVisible ? 'd-none' : ''}`}>
+        <p className='mb-0'>Sub Categories</p>
+        <img className='mb-3' src={gif} height={50} width={50} alt="" />
+      </div>
     </>
   );
 };

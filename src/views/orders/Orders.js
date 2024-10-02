@@ -33,7 +33,7 @@ const Orders = () => {
     return <p>Error: {error}</p>;
   }
 
-  console.log(ordersData);
+  console.log('ordersData', ordersData);
   return (
     <Card>
       <CardBody>
