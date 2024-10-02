@@ -61,7 +61,7 @@ const OrderStatus = () => {
     { 
       value: 'awaiting-pickup', 
       label: 'Awaiting pickup', 
-      description: currentStatus === 'awaitingpickup' ? ordersData?.comments || 'Waiting for pickup.' : 'Waiting for pickup.'
+      description: currentStatus === 'awaiting-pickup' ? ordersData?.comments || 'Waiting for pickup.' : 'Waiting for pickup.'
     },
     // { 
     //   value: 'pick-up', 
@@ -103,7 +103,6 @@ const OrderStatus = () => {
     setuserInfo(info);
   }, [userData, orderStatus]);
   
-  console.log('taxes', taxes);
   useEffect(() => {
     if (taxes?.taxes && orderStatus?.tax_id) {
       const taxIds = orderStatus.tax_id.split(',').map(id => parseInt(id.trim(), 10));
@@ -125,7 +124,7 @@ const OrderStatus = () => {
               <CardTitle tag="h4" className="d-flex align-items-center justify-content-between">
                 <span>Order Status: <span className={`text-capitalize ${ordersData?.status !== "canceled" ? '' : 'text-danger'}`}>{ordersData?.status}</span></span>
                 <div className='d-flex gap-3 align-items-center'>
-                    <EditTrackingId order={orderStatus} trackType="edit"/>
+                    <EditTrackingId order={ordersData} />
                     {/* <TbTruckDelivery className='fs-3'/> */}
                 </div>
               </CardTitle>

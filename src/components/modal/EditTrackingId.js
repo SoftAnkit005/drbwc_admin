@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody } from 'reactstrap';
 import { FaRegEdit } from 'react-icons/fa';
@@ -8,32 +8,48 @@ import { updateOrder } from '../../store/orders/ordersSlice';
 
 const staticOptions = [
   { value: 'pending', label: 'Pending' },
+  { value: 'confirmed', label: 'Confirmed' },
   { value: 'awaiting-pickup', label: 'Awaiting pickup' },
-  // { value: 'pick-up', label: 'Pick Up' },
   { value: 'shipped', label: 'Shipped' },
   { value: 'delivered', label: 'Delivered' },
   { value: 'completed', label: 'Completed' },
-  // { value: 'canceled', label: 'Canceled' },
   { value: 'declined', label: 'Decline' },
 ];
 
-function EditTrackingId({ order, trackType }) {
+function EditTrackingId({ order }) {
   const [modal, setModal] = useState(false);
-  const [deliveryData, setDeliveryData] = useState(order.comments || ''); // Initialize with order comments
-  const [selectedStatus, setSelectedStatus] = useState(order.status || ''); // Initialize with order status
-  const toggle = () => setModal(!modal);
+  const [deliveryData, setDeliveryData] = useState(''); // Initialize with empty string
+  const [selectedStatus, setSelectedStatus] = useState(''); // Initialize with empty string
+  const [error, setError] = useState(''); // State for error message
 
   const dispatch = useDispatch(); // Get the dispatch function from Redux
 
-  const handleSave = () => {
-    if (selectedStatus && deliveryData) {
-      // Dispatch the updateOrder action with the order ID, status, and comments
-      dispatch(updateOrder({
-        orderId: order.id,
-        status: selectedStatus,
-        comments: deliveryData,
-      }));
+  // Update form data with order details when the modal is opened
+  useEffect(() => {
+    if (modal) {
+      setDeliveryData(order.comments || ''); // Set deliveryData from order.comments
+      setSelectedStatus(order.status || ''); // Set selectedStatus from order.status
     }
+  }, [modal, order]);
+
+  const toggle = () => setModal(!modal);
+
+  const handleSave = () => {
+    // Reset error message
+    setError('');
+
+    // Validate deliveryData
+    if (!deliveryData.trim()) {
+      setError('Please add a delivery comment.'); // Check for empty input
+      return;
+    }
+
+    // Dispatch the updateOrder action with the order ID, status, and comments
+    dispatch(updateOrder({
+      orderId: order.id,
+      status: selectedStatus,
+      comments: deliveryData,
+    }));
 
     toggle();
   };
@@ -44,7 +60,7 @@ function EditTrackingId({ order, trackType }) {
 
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader className="bg-primary text-white" toggle={toggle}>
-          {trackType !== 'add' ? 'Edit' : 'Add'} Tracking Information
+          Edit Tracking Information
         </ModalHeader>
         <ModalBody>
           <Row>
@@ -81,6 +97,7 @@ function EditTrackingId({ order, trackType }) {
                           value={deliveryData} // Bind deliveryData state
                           onChange={(e) => setDeliveryData(e.target.value)} // Update deliveryData state
                         />
+                        {error && <div className="text-danger desc-xs">{error}</div>} {/* Display error message */}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -103,8 +120,7 @@ function EditTrackingId({ order, trackType }) {
 }
 
 EditTrackingId.propTypes = {
-  order: PropTypes.object.isRequired, // Ensure that the order object is required
-  trackType: PropTypes.string.isRequired, // Ensure trackType is required
+  order: PropTypes.object, // Ensure that the order object is required
 };
 
 export default EditTrackingId;
