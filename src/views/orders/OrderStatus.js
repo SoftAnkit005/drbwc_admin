@@ -91,7 +91,7 @@ const OrderStatus = () => {
 
   useEffect(() => {
     if (!orderStatus || Object.keys(orderStatus).length === 0 || (products && filteredProducts.length === 0)) {
-      navigate('/admin/orders');
+      navigate('/orders');
       cogoToast.warn('Product data not found!', { position: 'top-right' });
     }
   }, [orderStatus, navigate, filteredProducts, products]);

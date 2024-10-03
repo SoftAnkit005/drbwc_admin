@@ -49,7 +49,7 @@ const RegisterFormik = () => {
               <CardBody className="p-4 m-1">
                 <h4 className="fw-semibold">Register</h4>
                 <small className="pb-2 d-block">
-                  Already have an account? <Link to="/admin/auth/login">Login</Link>
+                  Already have an account? <Link to="/auth/login">Login</Link>
                 </small>
                 <Formik
                   initialValues={initialValues}
@@ -65,7 +65,7 @@ const RegisterFormik = () => {
                         <>
                           <div className="success-tag mb-2">Registration Successful!</div>
                           {cogoToast.success('Logged in Successfully!')}
-                          {navigate('/admin/dashboard')}
+                          {navigate('/dashboard')}
                         </>
                       )}
                       <FormGroup>
