@@ -26,7 +26,12 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
   useEffect(() => {
     if (Array.isArray(tableData)) {
       // Sort the table data by updated_at
-      const sortedData = [...tableData].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+      let sortedData;
+      if(pageName !== 'orders'){
+        sortedData = [...tableData].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+      }else{
+        sortedData = [...tableData].sort((a, b) => new Date(b.id) - new Date(a.id));
+      }
       
       // Filter the sorted data based on the search term
       const lowercasedSearchTerm = searchTerm.toLowerCase();

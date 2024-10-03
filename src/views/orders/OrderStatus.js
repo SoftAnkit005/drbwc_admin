@@ -11,7 +11,6 @@ const OrderStatus = () => {
   const location = useLocation();
   const [ordersData, setordersData] = useState([]);
   const [filteredTax, setfilteredTax] = useState(null);
-
   const orderStatus = location.state || {};
   const { products } = useSelector((state) => state.products);
   const { userData } = useSelector((state) => state.users);
@@ -23,6 +22,7 @@ const OrderStatus = () => {
   const productQty = orderStatus?.qty?.split(',').map(id => parseInt(id, 10)); // Specify radix 10
   const filteredProducts = products?.products?.filter(product => productIds?.includes(product.id)) || [];
   const currentStatus = ordersData?.status || 'pending';
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     dispatch(getOrders());
@@ -142,7 +142,7 @@ const OrderStatus = () => {
                       <Col md="6">
                         <div className="d-flex align-items-center h-100">
                           <div className="me-3">
-                            <img src={`${displayImage}`} alt={product.product_name} width="50" />
+                            <img src={`${apiUrl}/${displayImage}`} alt={product.product_name} width="50" />
                           </div>
                           <div>
                             <h5 className="mb-0">{product.product_name}</h5>
