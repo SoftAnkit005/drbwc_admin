@@ -46,6 +46,7 @@ const OrderStatus = () => {
     timeZone: 'Asia/Kolkata', // Indian Standard Time
   };
   const orderUpdateddate = new Date(ordersData?.updated_at);
+  const orderCreateddate = new Date(ordersData?.created_at);
   // Dynamically update only the current status's description based on orderStatus.comments
   const statusOptions = [
     { 
@@ -179,7 +180,7 @@ const OrderStatus = () => {
                 <p>Email: <span className="text-muted">{userInfo?.email || 'N/A'}</span></p>
                 <p>Phone: <span className="text-muted">{ordersData?.customer_phone || 'N/A'}</span></p>
                 <p>Address: <span className="text-muted">{ordersData?.shipping_address || 'N/A'}</span></p>
-                <p>Order Date: <span className="text-muted">{ordersData?.updated_at || 'N/A'}</span></p>
+                <p>Order Date: <span className="text-muted">{orderCreateddate.toLocaleDateString('en-US', dateOptions) || 'N/A'}</span></p>
                 <p>Order ID: <span className="text-muted">{ordersData?.order_prefix || 'N/A'}</span></p>
               </CardBody>
             </Card>
