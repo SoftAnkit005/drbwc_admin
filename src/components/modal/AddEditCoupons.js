@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cogoToast from 'cogo-toast';
 import PropTypes from 'prop-types';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, Form, CardTitle } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, FormGroup, Label, Input, Card, CardBody, Form, CardTitle, Table } from 'reactstrap';
 import { FaRegEdit } from 'react-icons/fa';
 import Select from 'react-select';
 import './modalstyle.scss';
 // import { fetchProducts } from '../../store/products/productSlice';
 import { createOffers, updateOffers } from '../../store/coupons/couponSlice';
+import { fetchProducts } from '../../store/products/productSlice';
+
 
 function AddEditCoupons({ couponType, changed, data }) {
   const dispatch = useDispatch();
@@ -24,16 +26,16 @@ function AddEditCoupons({ couponType, changed, data }) {
   const [isFixedDiscount, setIsFixedDiscount] = useState(true);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [minQty, setMinQty] = useState('');
   const [amount, setAmount] = useState('');
+  const [isQuantityProducts, setIsQuantityProducts] = useState(false); // New state for quantity products
+  const [addedProducts, setAddedProducts] = useState([]);
 
   const toggle = () => setModal(!modal);
-
-  // console.log(data);
 
   const { products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    // dispatch(fetchProducts());
     setSelectedProducts([]);
   }, [dispatch]);
 
@@ -47,68 +49,116 @@ function AddEditCoupons({ couponType, changed, data }) {
     }
   }, [products]);
 
+  // console.log('isEntireOrder:', isEntireOrder);
+
   const handleProductTypeChange = (value) => {
-    setIsEntireOrder(value);
-    if (value) {
+    setIsEntireOrder(value === 'entire');
+    setIsQuantityProducts(value === 'quantity'); // Set the new state
+
+    if (value === 'entire') {
       setSelectedProducts([]); // Clear selected products if Entire Order is selected
     }
-  };
 
+    if (value === 'quantity') {
+      setIsFixedDiscount(false); // Default to Percentage Discount
+    }
+
+    if (value === 'specific') {
+        dispatch(fetchProducts());
+    }
+  };
    // Prefill form when editing
    useEffect(() => {
+    // Ensure products are fetched and available
     if (products?.success && products?.products) {
       const formattedOptions = products.products.map((product) => ({
         value: product.id.toString(),
         label: product.product_name,
       }));
       setOptions(formattedOptions);
-
+      
+      // Check if we're editing
       if (couponType === 'edit' && data) {
-        // Pre-fill form data for editing
+        console.log("Editing Coupon Data: ", data); // Debugging line to check the data
+
+        // Pre-fill form fields
         setHeading(data.offer_name || '');
         setCode(data.offer_code || '');
         setDescription(data.offer_description || '');
         setIsEntireOrder(data.offer_type === 'code');
         setIsFixedDiscount(data.discount_type === 'fixed');
         setAmount(data.discount_value || '');
-        setStartDate(data.start_date?.split('T')[0] || '');
-        setEndDate(data.end_date?.split('T')[0] || '');
+        setStartDate(data.start_date ? data.start_date.split('T')[0] : ''); // Ensure valid date
+        setEndDate(data.end_date ? data.end_date.split('T')[0] : ''); // Ensure valid date
         setProductState(data.status === 'active');
 
-        // Pre-select products if offer_type is 'product'
+        // Pre-select products for specific offer type
         if (data.offer_type === 'product' && data.product_id) {
-          const selectedProductIds = JSON.parse(data.product_id); // Parse product_id to array
+          const selectedProductIds = JSON.parse(data.product_id);
           const selectedOptions = formattedOptions.filter(option =>
             selectedProductIds.includes(parseInt(option.value, 10))
           );
           setSelectedProducts(selectedOptions);
         }
+
+        // Check for Quantity Products
+        if (data.discount_type === 'percentage' && data.qty) {
+          const qtyArray = JSON.parse(data.qty);
+          const discountValueArray = JSON.parse(data.discount_value);
+          setIsQuantityProducts(true);
+
+          // Ensure both arrays exist and are of the same length
+          if (Array.isArray(qtyArray) && Array.isArray(discountValueArray) && qtyArray.length === discountValueArray.length) {
+            const newAddedProducts = qtyArray.map((qty, index) => ({
+              productType: 'Quantity Products',
+              discountType: 'Percentage Discount',
+              amount: discountValueArray[index],
+              startDate: data.start_date.split('T')[0],
+              endDate: data.end_date.split('T')[0],
+              minQty: qty
+            }));
+            setAddedProducts(newAddedProducts);
+          }
+        }
       }
     }
   }, [products, couponType, data]);
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (selectedProducts.length === 0 && !isEntireOrder) {
       cogoToast.warn('Please select at least one product.', { position: 'top-right' });
       return;
     }
-
+  
+    // Prepare qty and discount_value arrays if Product Type is Quantity Products
+    const qty = [];
+    const discountValue = [];
+  
+    if (isQuantityProducts) {
+      addedProducts.forEach(product => {
+        qty.push(product.minQty);  // Collecting minQty for qty
+        discountValue.push(product.amount);  // Collecting amount for discount_value
+      });
+    }
+  
     const formData = {
       offer_name: heading,
       offer_description: description,
-      offer_type: isEntireOrder ? "code" : "product", // Correct value for offer_type
+      offer_type: (isEntireOrder || isQuantityProducts ) ? "code" : "product",
+      qty: isQuantityProducts ? `[${qty.join(',')}]` : "[]", // Use qty if Quantity Products
       product_id: isEntireOrder ? "[]" : `[${selectedProducts.map(option => option.value).join(',')}]`,
-      discount_type: isFixedDiscount ? "fixed" : "percentage",
+      discount_type: isQuantityProducts ? "percentage" : (isFixedDiscount ? "fixed" : "percentage"),
+      discount_value: isQuantityProducts ? `[${discountValue.join(',')}]` : amount, // Use discount_value if Quantity Products
       start_date: startDate,
       end_date: endDate,
       status: productState ? "active" : "inactive",
-      offer_code: code,
-      discount_value: amount
+      offer_code: code
     };
   
-    if(couponType !== 'edit') {
+    if (couponType !== 'edit') {
       dispatch(createOffers(formData));
     } else {
       console.log({ offerId: data.id, ...formData });
@@ -117,6 +167,32 @@ function AddEditCoupons({ couponType, changed, data }) {
     changed(true);
     // toggle();
   };
+  
+
+  const handleAddProduct = (e) => {
+    e.preventDefault();
+    const newProduct = {
+      productType: isEntireOrder ? 'Entire Order' : isQuantityProducts ? 'Quantity Products' : 'Specific Products',
+      discountType: isFixedDiscount ? 'Fixed Discount' : 'Percentage Discount',
+      amount,
+      startDate,
+      endDate,
+      minQty, // Include minimum quantity
+    };
+    setAddedProducts([...addedProducts, newProduct]);
+  
+    // Reset form fields after adding the product
+    setAmount('');
+    setIsEntireOrder(true);
+    setMinQty(''); // Reset minQty
+    setSelectedProducts([]);
+  };
+  
+
+  const handleTableDeleteProduct = (indexToDelete) => {
+    const updatedProducts = addedProducts.filter((_, index) => index !== indexToDelete);
+    setAddedProducts(updatedProducts);
+  };  
 
   return (
     <div>
@@ -190,9 +266,9 @@ function AddEditCoupons({ couponType, changed, data }) {
                                 type="radio"
                                 id="proddisc1"
                                 name="prodDiscType"
-                                value="true"
+                                value="entire"
                                 checked={isEntireOrder}
-                                onChange={() => handleProductTypeChange(true)}
+                                onChange={() => handleProductTypeChange('entire')}
                               />
                               <Label htmlFor="proddisc1" check>Entire Order</Label>
                             </FormGroup>
@@ -201,26 +277,39 @@ function AddEditCoupons({ couponType, changed, data }) {
                                 type="radio"
                                 id="proddisc2"
                                 name="prodDiscType"
-                                value="false"
-                                checked={!isEntireOrder}
-                                onChange={() => handleProductTypeChange(false)}
+                                value="specific"
+                                checked={!isEntireOrder && !isQuantityProducts}
+                                onChange={() => handleProductTypeChange('specific')}
                               />
                               <Label htmlFor="proddisc2" check>Specific Products</Label>
+                            </FormGroup>
+                            <FormGroup check className="me-2">
+                              <Input
+                                type="radio"
+                                id="proddisc3"
+                                name="prodDiscType"
+                                value="quantity"
+                                checked={isQuantityProducts}
+                                onChange={() => handleProductTypeChange('quantity')}
+                              />
+                              <Label htmlFor="proddisc3" check>Quantity Products</Label>
                             </FormGroup>
                           </FormGroup>
                           <Label>Discount Type</Label>
                           <FormGroup className="d-flex align-items-center">
-                            <FormGroup check className="me-2">
-                              <Input
-                                type="radio"
-                                id="disc1"
-                                name="discType"
-                                value="true"
-                                checked={isFixedDiscount}
-                                onChange={() => setIsFixedDiscount(true)}
-                              />
-                              <Label htmlFor="disc1" check>Fixed discount</Label>
-                            </FormGroup>
+                            {!isQuantityProducts && 
+                              <FormGroup check className="me-2">
+                                <Input
+                                  type="radio"
+                                  id="disc1"
+                                  name="discType"
+                                  value="true"
+                                  checked={isFixedDiscount}
+                                  onChange={() => setIsFixedDiscount(true)}
+                                />
+                                <Label htmlFor="disc1" check>Fixed discount</Label>
+                              </FormGroup>
+                            }
                             <FormGroup check className="me-2">
                               <Input
                                 type="radio"
@@ -235,23 +324,24 @@ function AddEditCoupons({ couponType, changed, data }) {
                           </FormGroup>
                         </FormGroup>
                       </Col>
-                        {!isEntireOrder && (
-                          <Col className="py-1" xs="12">
-                            <FormGroup>
-                              <Label htmlFor="products" className="required">Choose Products</Label>
-                              <Select
-                                closeMenuOnSelect={false}
-                                options={options}
-                                isMulti
-                                value={selectedProducts}
-                                onChange={(selected) => setSelectedProducts(selected)}
-                              />
-                              {selectedProducts.length === 0 && (
-                                <div className="text-danger">Please select at least one product</div>
-                              )}
-                            </FormGroup>
-                          </Col>
-                        )}
+                      {!isEntireOrder && !isQuantityProducts && (
+                        <Col className="py-1" xs="12">
+                          <FormGroup>
+                            <Label htmlFor="products" className="required">Choose Products</Label>
+                            <Select
+                              closeMenuOnSelect={false}
+                              options={options}
+                              isMulti
+                              value={selectedProducts}
+                              onChange={(selected) => setSelectedProducts(selected)}
+                            />
+                            {selectedProducts.length === 0 && (
+                              <div className="text-danger">Please select at least one product</div>
+                            )}
+                          </FormGroup>
+                        </Col>
+                      )}
+
                       <Col className="py-1" md="6" lg="4">
                         <FormGroup>
                           <Label htmlFor="amount" className="required">Amount/Percentage</Label>
@@ -270,7 +360,7 @@ function AddEditCoupons({ couponType, changed, data }) {
                             placeholder="Enter Amount/Percentage"
                             min="0"
                             max={!isFixedDiscount ? "100" : undefined} // Max 100 if percentage is selected
-                            required
+                            required={addedProducts.length <= 0}
                           />
                         </FormGroup>
                       </Col>
@@ -300,6 +390,60 @@ function AddEditCoupons({ couponType, changed, data }) {
                           />
                         </FormGroup>
                       </Col>
+                      {isQuantityProducts && (
+                        <>
+                        <Col className="py-1" md="6" lg="4">
+                          <FormGroup>
+                            <Label htmlFor="end_date">Min Quantity</Label>
+                            <Input
+                              type="number"
+                              id="min_qty"
+                              name="min_qty"
+                              value={minQty}
+                              onChange={(e) => setMinQty(e.target.value)}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="py-1" xs="12">
+                          <FormGroup>
+                            <Button color="info" onClick={handleAddProduct}> Add </Button>
+                          </FormGroup>
+                        </Col>
+                        </>
+                      )}
+
+                      {addedProducts.length > 0 && (
+                        <Col xs="12">
+                          <Table responsive>
+                            <thead>
+                              <tr>
+                                <th>Product Type</th>
+                                <th>Discount Type</th>
+                                <th>Percentage</th>
+                                {/* <th>Start Date</th>
+                                <th>End Date</th> */}
+                                <th>Min Quantity</th> {/* New column for min quantity */}
+                                <th>Actions</th> {/* Column for delete button */}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {addedProducts.map((product, index) => (
+                                <tr key={index}>
+                                  <td>{product.productType}</td>
+                                  <td>{product.discountType}</td>
+                                  <td>{product.amount}</td>
+                                  {/* <td>{startDate}</td>
+                                  <td>{endDate}</td> */}
+                                  <td>{product.minQty || 'N/A'}</td> {/* Show min quantity or 'N/A' if not applicable */}
+                                  <td>
+                                    <i className="bi bi-trash cursor-pointer ms-2 text-danger fs-5" onClick={() => handleTableDeleteProduct(index)} />
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        </Col>
+                      )}
                     </Row>
                   </CardBody>
                 </Card>

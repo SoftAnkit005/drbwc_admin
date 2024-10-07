@@ -193,7 +193,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             },
             {
               name: 'Discount Type',
-              selector: row => row.discount_type
+              selector: row => (JSON.parse(row.qty)?.length !== 0 && JSON.parse(row.qty)?.length !== undefined) ? 'Quantity Based' : <span className='text-capitalize'>{row.discount_type}</span> 
             },
             {
               name: 'Start Date',
@@ -214,7 +214,7 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             {
               name: 'Product Id',
               selector: row => (<>
-                {JSON.parse(row.product_id).length !== 0 ? row.product_id : 'Entire Order'}
+                {JSON.parse(row.product_id)?.length !== 0 ? row.product_id : 'Entire Order'}
               </>)
             },
             {
@@ -326,7 +326,6 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
               name: 'Actions',
               cell: row => (
                 <div className='d-flex align-items-center'>
-                  {console.log('users row',row)}
                   <BlockUnblockUser caseType={row.status} changed={changeData} data={row} />
                 </div>
               ),

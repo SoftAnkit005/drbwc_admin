@@ -14,7 +14,6 @@ const Coupons = () => {
     setcouponChange(e);
   };
 
-  console.log(couponChange);
   
   useEffect(() => {
     dispatch(fetchOffers());

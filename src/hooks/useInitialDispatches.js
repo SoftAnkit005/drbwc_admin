@@ -28,14 +28,12 @@ const isTokenValid = (token) => {
 };
 
 const useInitialDispatches = () => {
-  const dispatch = useDispatch();
   const token = localStorage.getItem("authAdminToken");
+  const dispatch = useDispatch();
 
   // Check if token is valid
   useEffect(() => {
     if (isTokenValid(token)) {
-      console.log("Token is valid");
-
       // Dispatch global thunks if the token is valid
       dispatch(fetchProducts());
       dispatch(fetchCategories());
