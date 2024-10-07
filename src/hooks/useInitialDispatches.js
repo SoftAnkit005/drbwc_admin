@@ -20,7 +20,8 @@ import { fetchTaxData } from "../store/settings/taxsettings/taxsettingsSlice";
 
 const useInitialDispatches = () => {
   const dispatch = useDispatch();
-  //   const token = useSelector((state) => state.auth.token);
+  // const token = useSelector((state) => state.auth.token);
+  // console.log('token', token);
   dispatch(fetchReviews());
   
   useEffect(() => {

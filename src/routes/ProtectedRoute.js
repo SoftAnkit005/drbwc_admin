@@ -9,7 +9,7 @@ const isValidToken = (token) => {
 };
 
 const ProtectedRoute = ({ component: Component }) => {
-  const authToken = localStorage.getItem('authToken');
+  const authToken = localStorage.getItem('authAdminToken');
   const isUserLoggedIn = authToken && isValidToken(authToken);
   
   return isUserLoggedIn ? <Component /> : <Navigate to="/auth/login" />;

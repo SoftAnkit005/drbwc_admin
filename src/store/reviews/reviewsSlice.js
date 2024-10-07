@@ -16,7 +16,7 @@ export const fetchReviews = createAsyncThunk('reviews/fetchReviews', async () =>
 });
 
 export const addReview = createAsyncThunk('reviews/addReview', async (formData, { dispatch }) => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('authAdminToken');
   const requestOptions = {
     method: 'POST',
     headers: { 
@@ -38,7 +38,7 @@ export const addReview = createAsyncThunk('reviews/addReview', async (formData, 
 });
 
 export const updateReview = createAsyncThunk('reviews/updateReview', async (formData, { getState }) => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('authAdminToken');
   const requestOptions = {
     method: 'POST',
     headers: { 
@@ -71,7 +71,7 @@ export const updateReview = createAsyncThunk('reviews/updateReview', async (form
 });
 
 export const deleteReviews = createAsyncThunk('reviews/deleteReviews', async (id, { dispatch }) => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('authAdminToken');
   const requestOptions = { 
     method: 'DELETE', 
     headers: { 

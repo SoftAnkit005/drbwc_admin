@@ -95,7 +95,7 @@ const getSalesDataByMonth = (ordersData) => {
   const salesAmountByMonth = new Array(12).fill(0); // Sales amount for each month
 
   // Filter only completed orders
-  const completedOrders = ordersData.filter(order => order.status === 'completed');
+  const completedOrders = ordersData.filter(order => order.status === 'delivered');
 
   completedOrders.forEach(order => {
     const orderDate = new Date(order.updated_at);

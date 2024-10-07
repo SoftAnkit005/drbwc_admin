@@ -15,6 +15,7 @@ function AddEditTags({ changed, tagType, data }) {
   const [tagName, setTagName] = useState(""); // State for tag name
   const [selectedProducts, setSelectedProducts] = useState([]); // State for selected products
   const [productError, setProductError] = useState(false); // State to track validation error
+  const [selectAll, setSelectAll] = useState(false); // State for "Select All" checkbox
   const toggle = () => setModal(!modal);
 
   const { products } = useSelector((state) => state.products);
@@ -43,6 +44,29 @@ function AddEditTags({ changed, tagType, data }) {
       setSelectedProducts(selectedOptions);
     }
   }, [tagType, data, options]);
+
+  // Handle "Select All" checkbox
+  const handleSelectAll = () => {
+    if (selectAll) {
+      // Deselect all products
+      setSelectedProducts([]);
+      setProductError(true); // Show error if nothing is selected
+    } else {
+      // Select all products
+      setSelectedProducts(options);
+      setProductError(false); // Clear error as we are selecting all
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // Check if all products are selected
+  useEffect(() => {
+    if (selectedProducts.length === options.length) {
+      setSelectAll(true);
+    } else {
+      setSelectAll(false);
+    }
+  }, [selectedProducts, options]);
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -99,7 +123,7 @@ function AddEditTags({ changed, tagType, data }) {
                         </FormGroup>
                       </Col>
                       <Col className="py-1" xs="12">
-                        <FormGroup>
+                        <FormGroup className='add-tag-products'>
                           <Label htmlFor="position" className="required">Choose Products</Label>
                           <Select
                             closeMenuOnSelect={false}
@@ -111,6 +135,16 @@ function AddEditTags({ changed, tagType, data }) {
                               if (selected.length > 0) setProductError(false); // Remove error on valid selection
                             }} // Update selected products state
                           />
+                          <FormGroup check className="mt-2">
+                            <Label check>
+                              <Input 
+                                type="checkbox" 
+                                checked={selectAll} 
+                                onChange={handleSelectAll} 
+                              />{' '}
+                              Select All Products
+                            </Label>
+                          </FormGroup>
                           {productError && <span className="text-danger">Please select at least one product.</span>} {/* Show error message */}
                         </FormGroup>
                       </Col>

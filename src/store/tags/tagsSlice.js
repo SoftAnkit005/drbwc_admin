@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const token = localStorage.getItem('authToken');
+const token = localStorage.getItem('authAdminToken');
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Async thunk to fetch tags from the API

@@ -12,8 +12,11 @@ import { Row, Col } from 'reactstrap';
 import YearlySales from '../../components/dashboard/minimalDashboard/YearlySales';
 import Greetings from '../../components/dashboard/minimalDashboard/Greetings';
 import AllDataCards from '../../components/dashboard/minimalDashboard/AllDataCards';
+import useInitialDispatches from '../../hooks/useInitialDispatches';
 
 const Dashboard = () => {
+  useInitialDispatches();
+  
   return (
     <>
       {/*********************Sales Overview ************************/}

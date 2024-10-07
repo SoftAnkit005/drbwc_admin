@@ -79,11 +79,11 @@ const OrderStatus = () => {
       label: 'Delivered', 
       description: currentStatus === 'delivered' ? ordersData?.comments || 'Shipment delivered to the destination.' : 'Shipment delivered to the destination.'
     },
-    { 
-      value: 'completed', 
-      label: 'Completed', 
-      description: currentStatus === 'completed' ? ordersData?.comments || 'Order process completed.' : 'Order process completed.'
-    }
+    // { 
+    //   value: 'completed', 
+    //   label: 'Completed', 
+    //   description: currentStatus === 'completed' ? ordersData?.comments || 'Order process completed.' : 'Order process completed.'
+    // }
   ];
 
   const goBack = () => {

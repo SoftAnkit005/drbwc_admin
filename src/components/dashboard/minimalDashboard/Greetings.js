@@ -26,7 +26,7 @@ const Greetings = () => {
         <Card className="text-center" style={{ backgroundImage: `url(${greeting.imgSrc})`, height: '150px', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'  }}>
             <div className="overlay">
                 <div className="p-4 text-start text-white mb-0">
-                    <h5 className='heading-sm'>Welcome back! {user.full_name}</h5>
+                    <h5 className='heading-sm'>Welcome back! {user?.full_name}</h5>
                     <h5 className='heading-md fw-semibold'>{greeting.title}</h5>
                     <p>{greeting.quote}</p>
                 </div>

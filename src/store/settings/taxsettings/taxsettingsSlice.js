@@ -2,7 +2,7 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const token = localStorage.getItem("authToken");
+const token = localStorage.getItem("authAdminToken");
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Step 1: Create Async Thunk

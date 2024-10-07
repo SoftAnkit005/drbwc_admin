@@ -5,7 +5,7 @@ const apiUrl = process.env.REACT_APP_API_URL;
 
 // Function to get the token
 const getAuthToken = () => {
-  return localStorage.getItem("authToken");
+  return localStorage.getItem("authAdminToken");
 };
 
 // Async thunk for fetching user data

@@ -8,7 +8,7 @@ const initialState = {
 };
 
 // Get token and API URL
-const token = localStorage.getItem("authToken");
+const token = localStorage.getItem("authAdminToken");
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Create an async thunk for fetching data

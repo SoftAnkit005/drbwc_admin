@@ -3,7 +3,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // Get token and API URL
-const token = localStorage.getItem("authToken");
+const token = localStorage.getItem("authAdminToken");
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Fetch attributes (GET request)

@@ -12,7 +12,7 @@ const staticOptions = [
   { value: 'awaiting-pickup', label: 'Awaiting pickup' },
   { value: 'shipped', label: 'Shipped' },
   { value: 'delivered', label: 'Delivered' },
-  { value: 'completed', label: 'Completed' },
+  // { value: 'completed', label: 'Completed' },
   { value: 'declined', label: 'Decline' },
 ];
 

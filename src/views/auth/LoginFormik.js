@@ -50,7 +50,7 @@ const LoginFormik = () => {
         }
 
         if (result.token) {
-          localStorage.setItem('authToken', result.token);
+          localStorage.setItem('authAdminToken', result.token);
           localStorage.setItem('user', JSON.stringify(result.user));
 
           // Handle "Remember me" logic

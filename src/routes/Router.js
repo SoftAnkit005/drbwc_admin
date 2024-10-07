@@ -32,7 +32,7 @@ const LockScreen = Loadable(lazy(() => import('../views/auth/LockScreen')));
 const RecoverPassword = Loadable(lazy(() => import('../views/auth/RecoverPassword')));
 
 /***** Check if User is Logged In ****/
-const isUserLoggedIn = localStorage.getItem('authToken') !== null;
+const isUserLoggedIn = localStorage.getItem('authAdminToken') !== null;
 
 /***** Routes Configuration *****/
 const ThemeRoutes = [

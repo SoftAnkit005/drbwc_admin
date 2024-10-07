@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { Badge, Input } from 'reactstrap';
 import { MdOutlineSpatialTracking } from "react-icons/md";
@@ -19,10 +19,14 @@ import BlockUnblockUser from '../modal/BlockUnblockUser';
 
 const DataTableListing = ({ pageName, tableData = [], changeData }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(tableData);
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  const searchParams = new URLSearchParams(location.search);
+  const orderStatus = searchParams.get('status') || ''; // Default to 'all' if no status is provided
+  
   useEffect(() => {
     if (Array.isArray(tableData)) {
       // Sort the table data by updated_at
@@ -43,6 +47,14 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
       setFilteredData(filtered);
     }
   }, [searchTerm, tableData]);
+
+  useEffect(() => {
+    if (orderStatus !== '') {
+      setSearchTerm(orderStatus);
+    }else{
+      setSearchTerm('');
+    }
+  }, [orderStatus]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -329,10 +341,9 @@ const DataTableListing = ({ pageName, tableData = [], changeData }) => {
             { name: 'Date', selector: row => row.order_date, sortable: true },
             { name: 'Customer Email', selector: row => row.shipping_address },
             { name: 'Shipment Status', cell: row => (
-              <div className={`text-capitalize badge ${ row.status === 'completed' ? 'bg-success' : (row.status === 'declined' || row.status === 'canceled') ? 'bg-danger' : 'bg-secondary' }`}>
+              <div className={`text-capitalize badge ${ row.status === 'delivered' ? 'bg-success' : (row.status === 'declined' || row.status === 'canceled') ? 'bg-danger' : 'bg-secondary' }`}>
                 {row.status.split('-').join(' ')}
               </div>
-             
             )},
             { name: 'Payment Method', selector: row => row.payment_method },
             { name: 'Payment Status', selector: row => row.total_amount },

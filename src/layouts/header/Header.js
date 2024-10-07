@@ -20,7 +20,7 @@ const Header = () => {
 
   // Logout function example
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('authAdminToken');
     localStorage.removeItem('user');
     cogoToast.error('Logged Out!');
     setTimeout(() => {

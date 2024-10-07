@@ -8,6 +8,7 @@ import { FcCancel } from "react-icons/fc";
 import { MdOutlineRadioButtonChecked } from "react-icons/md";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 
 const AllDataCards = () => {
@@ -41,7 +42,7 @@ const AllDataCards = () => {
 
   useEffect(() => {
     // Filter completed orders
-    const completeOrders = allOrders?.filter(order => order.status === 'completed');
+    const completeOrders = allOrders?.filter(order => order.status === 'delivered');
     setcompletedOrders(completeOrders);
     const canceleOrders = allOrders?.filter(order => order.status === 'canceled');
     setcancelledOrders(canceleOrders);
@@ -60,37 +61,43 @@ const AllDataCards = () => {
   return (
     <Row>
       <Col md="6" lg="3" className="text-end">
-        <Card className="bg-light">
-          <CardBody className="d-flex align-items-center justify-content-between">
-            <IoCartOutline className='heading-xxl text-cyan'/>
-            <div>
-              <h5>Orders</h5>
-              <h2 className='mb-0'>{allOrders?.length}</h2>
-            </div>
-          </CardBody>
-        </Card>
+        <Link to='/orders' className='text-decoration-none text-dark'>
+          <Card className="bg-light">
+            <CardBody className="d-flex align-items-center justify-content-between">
+              <IoCartOutline className='heading-xxl text-cyan'/>
+              <div>
+                <h5>Orders</h5>
+                <h2 className='mb-0'>{allOrders?.length}</h2>
+              </div>
+            </CardBody>
+          </Card>
+        </Link>
       </Col>
       <Col md="6" lg="3" className="text-end">
-        <Card className="bg-light">
-          <CardBody className="d-flex align-items-center justify-content-between">
-            <HiOutlineUsers className='heading-xxl text-warning'/>
-            <div>
-              <h5>Users</h5>
-              <h2 className='mb-0'>{allUsers?.length}</h2>
-            </div>
-          </CardBody>
-        </Card>
+        <Link to='/customers' className='text-decoration-none text-dark'>
+          <Card className="bg-light">
+            <CardBody className="d-flex align-items-center justify-content-between">
+              <HiOutlineUsers className='heading-xxl text-warning'/>
+              <div>
+                <h5>Users</h5>
+                <h2 className='mb-0'>{allUsers?.length}</h2>
+              </div>
+            </CardBody>
+          </Card>
+        </Link>
       </Col>
       <Col md="6" lg="3" className="text-end">
-        <Card className="bg-light">
-          <CardBody className="d-flex align-items-center justify-content-between">
-            <GiCardboardBox className='heading-xxl text-primary'/>
-            <div>
-              <h5>Total Products</h5>
-              <h2 className='mb-0'>{allProducts?.length}</h2>
-            </div>
-          </CardBody>
-        </Card>
+        <Link to='/products' className='text-decoration-none text-dark'>
+          <Card className="bg-light">
+            <CardBody className="d-flex align-items-center justify-content-between">
+              <GiCardboardBox className='heading-xxl text-primary'/>
+              <div>
+                <h5>Total Products</h5>
+                <h2 className='mb-0'>{allProducts?.length}</h2>
+              </div>
+            </CardBody>
+          </Card>
+        </Link>
       </Col>
       <Col md="6" lg="3" className="text-end">
         <Card className="bg-light">
@@ -104,48 +111,56 @@ const AllDataCards = () => {
         </Card>
       </Col>
       <Col md="6" lg="3" className="">
-        <Card className="bg-light">
-          <CardBody className="position-relative">
-            <MdOutlineRadioButtonChecked className='heading-sm text-warning position-absolute top-0 end-0 m-2'/>
-            <div>
-              <h5>Active Orders</h5>
-              <h2 className='mb-0'>{activeOrders?.length}</h2>
-            </div>
-          </CardBody>
-        </Card>
+        <Link to="/orders" className='text-decoration-none text-dark'>
+          <Card className="bg-light">
+            <CardBody className="position-relative">
+              <MdOutlineRadioButtonChecked className='heading-sm text-warning position-absolute top-0 end-0 m-2'/>
+              <div>
+                <h5>Active Orders</h5>
+                <h2 className='mb-0'>{activeOrders?.length}</h2>
+              </div>
+            </CardBody>
+          </Card>
+        </Link>
       </Col>
       <Col md="6" lg="3" className="">
-        <Card className="bg-light">
-          <CardBody className="position-relative">
-            <IoIosCheckmarkCircle className='heading-sm text-success position-absolute top-0 end-0 m-2'/>
-            <div>
-              <h5>Completed Orders</h5>
-              <h2 className='mb-0'>{completedOrders?.length}</h2>
-            </div>
-          </CardBody>
-        </Card>
+        <Link to="/orders?status=delivered" className='text-decoration-none text-dark'>
+          <Card className="bg-light">
+            <CardBody className="position-relative">
+              <IoIosCheckmarkCircle className='heading-sm text-success position-absolute top-0 end-0 m-2'/>
+              <div>
+                <h5>Delivered Orders</h5>
+                <h2 className='mb-0'>{completedOrders?.length}</h2>
+              </div>
+            </CardBody>
+          </Card>
+        </Link>
       </Col>
       <Col md="6" lg="3" className="">
-        <Card className="bg-light">
-          <CardBody className="position-relative">
-            <IoCloseCircle className='heading-sm text-danger position-absolute top-0 end-0 m-2'/>
-            <div>
-              <h5>User Cancelled Orders</h5>
-              <h2 className='mb-0'>{cancelledOrders?.length}</h2>
-            </div>
-          </CardBody>
-        </Card>
+        <Link to="/orders?status=canceled" className='text-decoration-none text-dark'>
+          <Card className="bg-light">
+            <CardBody className="position-relative">
+              <IoCloseCircle className='heading-sm text-danger position-absolute top-0 end-0 m-2'/>
+              <div>
+                <h5>User Cancelled Orders</h5>
+                <h2 className='mb-0'>{cancelledOrders?.length}</h2>
+              </div>
+            </CardBody>
+          </Card>
+        </Link>
       </Col>
       <Col md="6" lg="3" className="">
-        <Card className="bg-light">
-          <CardBody className="position-relative">
-            <FcCancel className='heading-sm text-danger position-absolute top-0 end-0 m-2'/>
-            <div>
-              <h5>Admin Declined Orders</h5>
-              <h2 className='mb-0'>{declinedOrders?.length}</h2>
-            </div>
-          </CardBody>
-        </Card>
+        <Link to="/orders?status=declined" className='text-decoration-none text-dark'>
+          <Card className="bg-light">
+            <CardBody className="position-relative">
+              <FcCancel className='heading-sm text-danger position-absolute top-0 end-0 m-2'/>
+              <div>
+                <h5>Admin Declined Orders</h5>
+                <h2 className='mb-0'>{declinedOrders?.length}</h2>
+              </div>
+            </CardBody>
+          </Card>
+        </Link>
       </Col>
     </Row>
   );
