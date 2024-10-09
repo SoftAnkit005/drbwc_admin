@@ -28,7 +28,7 @@ export const fetchProducts = createAsyncThunk( 'products/fetchProducts', async (
      
 
       const data = await response.json();
-      console.log('data', data);
+      console.log('fetchProducts-data', data);
       return data;
       
     } catch (error) {
