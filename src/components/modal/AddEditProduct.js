@@ -29,21 +29,26 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
   const toggle = () => setModal(!modal);
 
-  // console.log('alldata', alldata);
+  console.log('alldata', alldata);
+  console.log('subcategories', subcategories);
+  console.log('subCategoryData', subCategoryData);
 
   useEffect(() => {
-    if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
-      const parsedData = alldata.color_image_urls;
-      const parsedImagevariant =  JSON.parse(parsedData);
-      const variantArray = Object.keys(parsedImagevariant).map(color => {
-        return {
-          variant: color,
-          imageFile: parsedImagevariant[color]?.map((url, index) => {
-            return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
-          })
-        };
-      });
-      setAllVarients(variantArray);
+    if (prodtype === 'edit') {
+      if(alldata?.color_image_urls && alldata?.color_image_urls !== '{}'){
+        const parsedData = alldata.color_image_urls;
+        const parsedImagevariant =  JSON.parse(parsedData);
+        const variantArray = Object.keys(parsedImagevariant).map(color => {
+          return {
+            variant: color,
+            imageFile: parsedImagevariant[color]?.map((url, index) => {
+              return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
+            })
+          };
+        });
+        setAllVarients(variantArray);
+      }
+     
       setSelectedCategory(alldata.category_id);
       setProductState(alldata.status === 'active');
     }
