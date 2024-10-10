@@ -40,7 +40,7 @@ const useInitialDispatches = () => {
       dispatch(fetchUserData());
       dispatch(getsubcategories());
       dispatch(fetchTaxData());
-      dispatch(getOrders());
+      dispatch(getOrders(token));
       dispatch(fetchSections());
       dispatch(fetchReviews());
     } else {

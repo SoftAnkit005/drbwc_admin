@@ -29,7 +29,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
   const toggle = () => setModal(!modal);
 
-  console.log('alldata', alldata);
+  // console.log('alldata', alldata);
   // console.log('subcategories', subcategories);
   // console.log('subCategoryData', subCategoryData);
 
@@ -162,6 +162,8 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     // Make an API request to submit the form data (replace the URL with the actual API)
     // if (false) {
       if (prodtype === 'edit') {
+        const token = localStorage.getItem("authAdminToken");
+        console.log('token' , token);
         dispatch(updateProduct({ formData, productId: alldata.id }));
       } else {
         dispatch(addProduct(formData));

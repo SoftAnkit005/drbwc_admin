@@ -1,14 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 // Get token and API URL
-const token = localStorage.getItem("authAdminToken");
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Step 1: Create the async thunk for fetching orders
-export const getOrders = createAsyncThunk('orders/getOrders', async (_, { rejectWithValue }) => {
+export const getOrders = createAsyncThunk('orders/getOrders', async (validToken, { rejectWithValue }) => {
   try {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", token);
+    myHeaders.append("Authorization", validToken);
 
     const requestOptions = {
       method: 'GET',
@@ -33,6 +32,7 @@ export const updateOrder = createAsyncThunk(
   'order/updateOrder',
   async ({ orderId, status, comments }, { rejectWithValue, dispatch }) => {
     try {
+      const token = localStorage.getItem("authAdminToken");
       const myHeaders = new Headers();
       myHeaders.append("Authorization", `Bearer ${token}`);
       myHeaders.append("Content-Type", "application/json");

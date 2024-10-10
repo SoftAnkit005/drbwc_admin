@@ -6,10 +6,10 @@ import { useSelector } from 'react-redux';
 import Themeroutes from './routes/Router';
 import ThemeSelector from './layouts/theme/ThemeSelector';
 import Loader from './layouts/loader/Loader';
-// import useInitialDispatches from './hooks/useInitialDispatches';
+import useInitialDispatches from './hooks/useInitialDispatches';
 
 const App = () => {
-  // useInitialDispatches();
+  useInitialDispatches();
   const routing = useRoutes(Themeroutes);
   const direction = useSelector((state) => state.customizer.isRTL);
   const isMode = useSelector((state) => state.customizer.isDark);
