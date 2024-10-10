@@ -3,7 +3,7 @@ import {CardBody, Card } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DataTableListing from '../../components/table/DataTableListing';
 import './product-style.scss'
-// import { fetchProducts } from '../../store/products/productSlice';
+import { fetchProducts } from '../../store/products/productSlice';
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -11,14 +11,12 @@ const Products = () => {
   const [productsData, setproductsData] = useState([]);
   const [prodAddCheck, setprodAddCheck] = useState(false);
 
-  // console.log(products);
-
   const prodChanged = (e) => {
     setprodAddCheck(e);
   };
 
   useEffect(() => {
-    // dispatch(fetchProducts());
+    dispatch(fetchProducts());
     setprodAddCheck(false);
   }, [dispatch, prodAddCheck]);
   

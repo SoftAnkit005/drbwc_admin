@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody } from 'reactstrap';
 import './reviews.scss'; // Create a specific SCSS file for reviews if needed
 import DataTableListing from '../../components/table/DataTableListing'; // Reuse the same DataTableListing component
-// import { fetchReviews } from '../../store/reviews/reviewsSlice';
+import { fetchReviews } from '../../store/reviews/reviewsSlice';
 
 const Reviews = () => {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ const Reviews = () => {
   };
 
   useEffect(() => {
-    // dispatch(fetchReviews());
+    dispatch(fetchReviews());
     setReviewsChange(false);
   }, [dispatch, reviewsChange]);
 

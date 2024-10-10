@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody } from 'reactstrap';
 import { getOrders } from '../../store/orders/ordersSlice';
 import DataTableListing from '../../components/table/DataTableListing';
+import { fetchProducts } from '../../store/products/productSlice';
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const Orders = () => {
   };
 
   useEffect(() => {
+    dispatch(fetchProducts());
     dispatch(getOrders());
     setorderCheck(false);
   }, [dispatch, orderCheck]);
