@@ -5,11 +5,174 @@ import { IoClose } from 'react-icons/io5';
 import './filedropzone.scss';
 import { useSelector } from 'react-redux';
 
+// const FileDropZone = ({ prodImages, initialImages = [] }) => {
+//   const [images, setImages] = useState([]);
+//   const [isDragging, setIsDragging] = useState(false);
+//   const { error, uploadedFilesUrls } = useSelector((state) => state.fileUpload);
+//   const apiUrl = process.env.REACT_APP_API_URL;
+
+//   // Helper function to convert URL to File
+//   const urlToFile = async (url, filename) => {
+//     const response = await fetch(url);
+//     const blob = await response.blob();
+//     return new File([blob], filename, { type: blob.type });
+//   };
+
+//   // Initialize images from initialImages
+//   useEffect(() => {
+//     const initializeImages = async () => {
+//       if (initialImages.length && images.length === 0) {
+//         const imageUrlsArray = Array.isArray(initialImages) 
+//           ? initialImages 
+//           : JSON.parse(initialImages || '[]');
+  
+//         const files = await Promise.all(imageUrlsArray.map(async (url, index) => {
+//           const fullUrl = `${apiUrl}/${url}`; // Construct full URL for remote images
+//           const filename = `image-${index}.jpg`; // Adjust logic for actual filename
+//           const file = await urlToFile(fullUrl, filename);
+//           return {
+//             id: fullUrl, // Use full URL for remote images instead of object URL
+//             file,
+//             preview: fullUrl, // Use full URL for preview as well
+//           };
+//         }));
+  
+//         setImages(files);
+//         prodImages(files.map(image => image.file));
+//       }
+//     };
+
+//     initializeImages();
+//   }, [initialImages, images, prodImages]);
+
+//   // Update prodImages prop with current images (but only if images actually change)
+//   useEffect(() => {
+//     prodImages(images.map(image => image.file || image.preview)); 
+//   }, [images, prodImages]);
+
+//   const handleFile = (files) => {
+//     const selectedFiles = Array.from(files);
+//     const validFiles = selectedFiles.filter(file =>
+//       ['image/jpeg', 'image/png'].includes(file.type)
+//     );
+  
+//     setImages(prevImages => [
+//       ...prevImages,
+//       ...validFiles.map(file => ({
+//         id: URL.createObjectURL(file),
+//         file,
+//         preview: URL.createObjectURL(file),
+//       }))
+//     ]);
+//   };
+
+//   const handleFileChange = (e) => {
+//     handleFile(e.target.files);
+//   };
+
+//   const handleDragEnter = (e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     setIsDragging(true);
+//   };
+
+//   const handleDragOver = (e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//   };
+
+//   const handleDragLeave = (e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     setIsDragging(false);
+//   };
+
+//   const handleDrop = (e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     setIsDragging(false);
+//     handleFile(e.dataTransfer.files);
+//   };
+
+//   const handleRemove = (id) => {
+//     setImages(prevImages => {
+//       if (!id.startsWith('http')) {
+//         URL.revokeObjectURL(id);
+//       }
+//       return prevImages.filter(image => image.id !== id);
+//     });
+//   };
+
+//   useEffect(() => {
+//     return () => {
+//       images.forEach(image => {
+//         if (!image.id.startsWith('http')) {
+//           URL.revokeObjectURL(image.id);
+//         }
+//       });
+//     };
+//   }, [images]);
+
+//   return (
+//     <div className={`${isDragging ? 'border border-primary border-2' : ''}`} onDragEnter={handleDragEnter} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} >
+//       <Row>
+//         <Col lg="6">
+//           <Input type="file" multiple onChange={handleFileChange} className="d-none" id="fileInput" accept=".jpg,.png" />
+//           <label htmlFor="fileInput" className="file-drag my-0">
+//             Select files to upload <br />OR <br />Drag files into this box
+//           </label>
+//         </Col>
+//         <Col lg="6">
+//           <ListGroup className="flex-row gap-2 preview-images flex-wrap mt-3 mt-lg-0">
+//             {images.map((image, i) => (
+//               <ListGroupItem key={i} className="position-relative p-0">
+//                 <img 
+//                   src={image.preview}
+//                   alt={image.file?.name || 'Preview'} 
+//                   className="img-thumbnail p-0 me-2" 
+//                 />
+//                 <Button 
+//                   className="position-absolute p-0 close-button top-0 end-0" 
+//                   color="danger" 
+//                   size="sm" 
+//                   onClick={() => handleRemove(image.id)}
+//                 >
+//                   <IoClose className='fs-6'/>
+//                 </Button>
+//               </ListGroupItem>
+//             ))}
+//           </ListGroup>
+//         </Col>
+//       </Row>
+//       {error && <p>Error: {error}</p>}
+//       <div>
+//         {uploadedFilesUrls.map((url, index) => (
+//           <img key={index} src={url} alt={`Uploaded ${index}`} width="100" />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// FileDropZone.propTypes = {
+//   prodImages: PropTypes.func.isRequired,
+//   initialImages: PropTypes.oneOfType([
+//     PropTypes.arrayOf(PropTypes.string),
+//     PropTypes.string
+//   ])
+// };
+
+// export default FileDropZone;
+
+
 const FileDropZone = ({ prodImages, initialImages = [] }) => {
   const [images, setImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const { error, uploadedFilesUrls } = useSelector((state) => state.fileUpload);
   const apiUrl = process.env.REACT_APP_API_URL;
+
+  // State to track if images have been initialized
+  const [imagesInitialized, setImagesInitialized] = useState(false);
 
   // Helper function to convert URL to File
   const urlToFile = async (url, filename) => {
@@ -21,11 +184,12 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
   // Initialize images from initialImages
   useEffect(() => {
     const initializeImages = async () => {
-      if (initialImages.length && images.length === 0) {
-        const imageUrlsArray = Array.isArray(initialImages) 
-          ? initialImages 
+      if (initialImages.length && images.length === 0 && !imagesInitialized) {
+        console.log('Initializing images...');
+        const imageUrlsArray = Array.isArray(initialImages)
+          ? initialImages
           : JSON.parse(initialImages || '[]');
-  
+
         const files = await Promise.all(imageUrlsArray.map(async (url, index) => {
           const fullUrl = `${apiUrl}/${url}`; // Construct full URL for remote images
           const filename = `image-${index}.jpg`; // Adjust logic for actual filename
@@ -36,18 +200,19 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
             preview: fullUrl, // Use full URL for preview as well
           };
         }));
-  
+
         setImages(files);
         prodImages(files.map(image => image.file));
+        setImagesInitialized(true); // Mark images as initialized
       }
     };
 
     initializeImages();
-  }, [initialImages, images, prodImages]);
+  }, [initialImages, images.length, prodImages, imagesInitialized]); // Include imagesInitialized in dependency array
 
   // Update prodImages prop with current images (but only if images actually change)
   useEffect(() => {
-    prodImages(images.map(image => image.file || image.preview)); 
+    prodImages(images.map(image => image.file || image.preview));
   }, [images, prodImages]);
 
   const handleFile = (files) => {
@@ -55,14 +220,14 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
     const validFiles = selectedFiles.filter(file =>
       ['image/jpeg', 'image/png'].includes(file.type)
     );
-  
+
     setImages(prevImages => [
       ...prevImages,
       ...validFiles.map(file => ({
         id: URL.createObjectURL(file),
         file,
         preview: URL.createObjectURL(file),
-      }))
+      })),
     ]);
   };
 
@@ -95,11 +260,18 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
   };
 
   const handleRemove = (id) => {
+    console.log('Removing image:', id);
     setImages(prevImages => {
       if (!id.startsWith('http')) {
         URL.revokeObjectURL(id);
       }
-      return prevImages.filter(image => image.id !== id);
+      const updatedImages = prevImages.filter(image => image.id !== id);
+
+      // If no images left, set to empty
+      if (updatedImages.length === 0) {
+        prodImages([]); // Clear prodImages if no images left
+      }
+      return updatedImages;
     });
   };
 
@@ -126,18 +298,18 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
           <ListGroup className="flex-row gap-2 preview-images flex-wrap mt-3 mt-lg-0">
             {images.map((image, i) => (
               <ListGroupItem key={i} className="position-relative p-0">
-                <img 
+                <img
                   src={image.preview}
-                  alt={image.file?.name || 'Preview'} 
-                  className="img-thumbnail p-0 me-2" 
+                  alt={image.file?.name || 'Preview'}
+                  className="img-thumbnail p-0 me-2"
                 />
-                <Button 
-                  className="position-absolute p-0 close-button top-0 end-0" 
-                  color="danger" 
-                  size="sm" 
+                <Button
+                  className="position-absolute p-0 close-button top-0 end-0"
+                  color="danger"
+                  size="sm"
                   onClick={() => handleRemove(image.id)}
                 >
-                  <IoClose className='fs-6'/>
+                  <IoClose className='fs-6' />
                 </Button>
               </ListGroupItem>
             ))}

@@ -29,21 +29,26 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
   const toggle = () => setModal(!modal);
 
-  // console.log('alldata', alldata);
+  console.log('alldata', alldata);
+  // console.log('subcategories', subcategories);
+  // console.log('subCategoryData', subCategoryData);
 
   useEffect(() => {
-    if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
-      const parsedData = alldata.color_image_urls;
-      const parsedImagevariant =  JSON.parse(parsedData);
-      const variantArray = Object.keys(parsedImagevariant).map(color => {
-        return {
-          variant: color,
-          imageFile: parsedImagevariant[color]?.map((url, index) => {
-            return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
-          })
-        };
-      });
-      setAllVarients(variantArray);
+    if (prodtype === 'edit') {
+      if (alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
+        const parsedData = alldata.color_image_urls;
+        const parsedImagevariant = JSON.parse(parsedData);
+        const variantArray = Object.keys(parsedImagevariant).map(color => {
+          return {
+            variant: color,
+            imageFile: parsedImagevariant[color]?.map((url, index) => {
+              return new File([url], `filename-${index}.jpg`, { type: 'image/jpeg' });
+            })
+          };
+        });
+        setAllVarients(variantArray);
+      }
+
       setSelectedCategory(alldata.category_id);
       setProductState(alldata.status === 'active');
     }
@@ -70,7 +75,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   useEffect(() => {
     if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
       const parsedData = alldata.color_image_urls;
-      const parsedImagevariant =  JSON.parse(parsedData);
+      const parsedImagevariant = JSON.parse(parsedData);
 
       // Iterate over the color keys
       const variantArray = Object.keys(parsedImagevariant).map(async (color) => {
@@ -95,7 +100,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
         );
         return { variant: color, imageFile: files.filter(Boolean), imageURLs: parsedImagevariant[color] };
       });
-  
+
       Promise.all(variantArray).then(setAllVarients);
       setSelectedCategory(alldata.category_id);
       setProductState(alldata.status === 'active');
@@ -113,6 +118,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
       return;
     }
 
+    console.log('images', images);
     // Create a FormData object to handle file uploads and form data
     const formData = new FormData();
 
@@ -154,11 +160,13 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
 
     // Make an API request to submit the form data (replace the URL with the actual API)
-    if (prodtype === 'edit') {
-      dispatch(updateProduct({ formData, productId: alldata.id }));
-    } else {
-      dispatch(addProduct(formData));
-    }
+    // if (false) {
+      if (prodtype === 'edit') {
+        dispatch(updateProduct({ formData, productId: alldata.id }));
+      } else {
+        dispatch(addProduct(formData));
+      }
+    // }
 
     changed(true);
 
@@ -213,18 +221,18 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   const prodImagesChange = useCallback((newImages) => {
     setImages(newImages);
     // Logic to update allVarients with new images
-    setAllVarients((prevVariants) =>
-      prevVariants.map((variant, index) => {
-        if (index === 0) { // assuming the first variant is updated with the new images
-          return {
-            ...variant,
-            imageFile: newImages, // Update with new image files
-          };
-        }
-        return variant;
-      })
-    );
-  }, [  setAllVarients, setImages]);
+    // setAllVarients((prevVariants) =>
+    //   prevVariants.map((variant, index) => {
+    //     if (index === 0) { // assuming the first variant is updated with the new images
+    //       return {
+    //         ...variant,
+    //         imageFile: newImages, // Update with new image files
+    //       };
+    //     }
+    //     return variant;
+    //   })
+    // );
+  }, [ setImages]);
 
 
   return (
@@ -265,7 +273,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                       <Col className="py-1" md="6" lg="4" xl="3">
                         <FormGroup>
                           <Label htmlFor="price" className="required">Price</Label>
-                          <Input type="text" id="price" name="price" placeholder="Price" defaultValue={prodtype === 'edit' ? alldata.price : ''} required/>
+                          <Input type="text" id="price" name="price" placeholder="Price" defaultValue={prodtype === 'edit' ? alldata.price : ''} required />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" md="6" lg="4" xl="3">
@@ -301,7 +309,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                       <Col className="py-1" xs="12">
                         <FormGroup>
                           <Label htmlFor="about_item" className="required">About this item</Label>
-                          <Input type="textarea" id="about_item" name="about_item" placeholder="About this item" defaultValue={prodtype === 'edit' ? alldata.about_item : ''} required/>
+                          <Input type="textarea" id="about_item" name="about_item" placeholder="About this item" defaultValue={prodtype === 'edit' ? alldata.about_item : ''} required />
                         </FormGroup>
                       </Col>
                       <Col className="py-1" xs="12">
@@ -358,7 +366,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                         <FormGroup>
                           <FormGroup>
                             <Label className="required">Stock Quantity</Label>
-                            <Input type="text" id="qty" name="qty" placeholder="Quantity" defaultValue={prodtype === 'edit' ? alldata.qty : ''} required/>
+                            <Input type="text" id="qty" name="qty" placeholder="Quantity" defaultValue={prodtype === 'edit' ? alldata.qty : ''} required />
                           </FormGroup>
                         </FormGroup>
                       </Col>
@@ -371,6 +379,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
               <Col md="12">
                 <ComponentCard title="Media">
                   <FormGroup>
+                    {/* <FileDropZone prodImages={prodImagesChange} initialImages={JSON.parse(alldata.image_urls)} /> */}
                     <FileDropZone prodImages={prodImagesChange} initialImages={alldata?.image_urls ? JSON.parse(alldata.image_urls) : []} />
                     {images.length === 0 && (
                       <label className="mt-2 desc-xxs text-danger">No files selected, Please select a file!</label>
