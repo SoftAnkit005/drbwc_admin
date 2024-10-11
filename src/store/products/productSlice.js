@@ -8,11 +8,11 @@ const initialState = {
 };
 
 // Get token and API URL
-const token = localStorage.getItem("authAdminToken");
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Create an async thunk for fetching data
 export const fetchProducts = createAsyncThunk( 'products/fetchProducts', async (_, { rejectWithValue }) => {
+    const token = localStorage.getItem("authAdminToken");
     try {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", token);
@@ -42,6 +42,7 @@ export const fetchProducts = createAsyncThunk( 'products/fetchProducts', async (
 export const addProduct = createAsyncThunk(
   'products/createProduct',
   async (formData, { dispatch, rejectWithValue }) => {
+    const token = localStorage.getItem("authAdminToken");
     const myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
 
@@ -69,6 +70,7 @@ export const addProduct = createAsyncThunk(
 export const deleteProduct = createAsyncThunk(
   'products/deleteProduct',
   async (productId, { dispatch, rejectWithValue }) => {
+    const token = localStorage.getItem("authAdminToken");
     try {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", token);
@@ -93,6 +95,7 @@ export const deleteProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async (productData, { dispatch, rejectWithValue }) => {
+    const token = localStorage.getItem("authAdminToken");
     const { formData, productId } = productData;
 
     try {

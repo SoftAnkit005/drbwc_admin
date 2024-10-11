@@ -51,7 +51,7 @@ export const updateOrder = createAsyncThunk(
       }
 
       // const result = await response.json();
-      const result = await dispatch(getOrders()).unwrap();
+      const result = await dispatch(getOrders(token)).unwrap();
       return result;
     } catch (error) {
       return rejectWithValue(error.message);

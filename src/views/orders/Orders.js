@@ -10,14 +10,15 @@ const Orders = () => {
   const { orders, loading, error } = useSelector((state) => state.orders);
   const [ordersData, setordersData] = useState([]);
   const [orderCheck, setorderCheck] = useState(false);
-
+  const token = localStorage.getItem("authAdminToken");
+  
   const attrChanged = (e) => {
     setorderCheck(e);
   };
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(getOrders());
+    dispatch(getOrders(token));
     setorderCheck(false);
   }, [dispatch, orderCheck]);
 

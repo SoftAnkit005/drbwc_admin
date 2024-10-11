@@ -23,9 +23,10 @@ const OrderStatus = () => {
   const filteredProducts = products?.products?.filter(product => productIds?.includes(product.id)) || [];
   const currentStatus = ordersData?.status || 'pending';
   const apiUrl = process.env.REACT_APP_API_URL;
-
+  const token = localStorage.getItem("authAdminToken");
+  
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getOrders(token));
   }, [dispatch]);
 
   useEffect(() => {
