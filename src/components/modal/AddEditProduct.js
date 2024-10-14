@@ -20,6 +20,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   const [categoryData, setcategoryData] = useState([]);
   const [subCategoryData, setsubCategoryData] = useState([]);
   const [images, setImages] = useState([]);
+  const [prevImages, setPrevImages] = useState([]);
   const [description, setDescription] = useState(alldata ? alldata.product_description : '');
   const [variantImageFile, setVariantImageFile] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -29,9 +30,9 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
   const toggle = () => setModal(!modal);
 
-  // console.log('alldata', alldata);
+  console.log('allVarients', allVarients);
   // console.log('subcategories', subcategories);
-  // console.log('subCategoryData', subCategoryData);
+  console.log('prevImages', prevImages);
 
   useEffect(() => {
     if (prodtype === 'edit') {
@@ -72,6 +73,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     }
   }, [categories, subcategories, selectedCategory]);
 
+
   useEffect(() => {
     if (prodtype === 'edit' && alldata?.color_image_urls && alldata?.color_image_urls !== '{}') {
       const parsedData = alldata.color_image_urls;
@@ -79,26 +81,27 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
       // Iterate over the color keys
       const variantArray = Object.keys(parsedImagevariant).map(async (color) => {
-        const files = await Promise.all(
-          parsedImagevariant[color]?.map(async (url) => {
-            // Check if the URL is valid
-            if (typeof url === 'string' && url.startsWith('uploads/')) {
-              const fullUrl = `${apiUrl}/${url}`; // Construct full URL if necessary
-              try {
-                const response = await fetch(fullUrl);
-                const blob = await response.blob();
-                return new File([blob], url.split('/').pop(), { type: blob.type });
-              } catch (error) {
-                console.error('Error fetching file:', error);
-                return null;
-              }
-            } else {
-              console.warn('Invalid URL format:', url);
-              return null;
-            }
-          })
-        );
-        return { variant: color, imageFile: files.filter(Boolean), imageURLs: parsedImagevariant[color] };
+        // const files = await Promise.all(
+        //   parsedImagevariant[color]?.map(async (url) => {
+        //     // Check if the URL is valid
+        //     if (typeof url === 'string' && url.startsWith('uploads/')) {
+        //       const fullUrl = `${apiUrl}/${url}`; // Construct full URL if necessary
+        //       try {
+        //         const response = await fetch(fullUrl);
+        //         const blob = await response.blob();
+        //         return new File([blob], url.split('/').pop(), { type: blob.type });
+        //       } catch (error) {
+        //         console.error('Error fetching file:', error);
+        //         return null;
+        //       }
+        //     } else {
+        //       console.warn('Invalid URL format:', url);
+        //       return null;
+        //     }
+        //   })
+        // );
+        // console.log('files.filter(Boolean)', files.filter(Boolean));
+        return { variant: color, imageFile: [], imageURLs: parsedImagevariant[color] };
       });
 
       Promise.all(variantArray).then(setAllVarients);
@@ -108,12 +111,13 @@ function AddEditProduct({ changed, prodtype, alldata }) {
   }, [prodtype, alldata, apiUrl]);
 
 
+
   // console.log(categoryData, subCategoryData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (images.length === 0) {
+    if (images.length === 0 && prevImages.length === 0) {
       cogoToast.warn('Please upload at least one image', { position: 'top-right' });
       return;
     }
@@ -141,6 +145,10 @@ function AddEditProduct({ changed, prodtype, alldata }) {
 
     // Append description from CKEditor
     formData.append('product_description', description);
+    
+    if (prodtype === 'edit') {
+      formData.append('existing_image_urls', JSON.stringify(prevImages));
+    }
 
     // Append images from FileDropZone
     images.forEach((image) => {
@@ -148,14 +156,24 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     });
 
     // Append variants
+    const existingImageURLs = {}; // Initialize an empty object to hold all variant image URLs
     allVarients.forEach((variant) => {
       if (variant.imageFile) {
         // Loop through each file in the imageFile array
-        Array.from(variant.imageFile).forEach((file, fileIndex) => {
-          formData.append(`color_image_urls[${variant.variant}][${fileIndex}]`, file);
+        variant.imageFile.forEach(file => {
+          formData.append(`color_image_urls[${variant.variant}]`, file);
         });
       }
+
+      if (variant.imageURLs.length > 0 && prodtype === 'edit') {
+        existingImageURLs[variant.variant] = variant.imageURLs; // Add variant image URLs to the object
+      }
     });
+
+    // If there are existing image URLs, append them as a single JSON string
+    if (Object.keys(existingImageURLs).length > 0) {
+      formData.append('existing_color_image_urls', JSON.stringify(existingImageURLs));
+    }
 
 
     // Make an API request to submit the form data (replace the URL with the actual API)
@@ -217,20 +235,13 @@ function AddEditProduct({ changed, prodtype, alldata }) {
     setDescription(data.data);
   };
 
-  const prodImagesChange = useCallback((newImages) => {
-    setImages(newImages);
-    // Logic to update allVarients with new images
-    // setAllVarients((prevVariants) =>
-    //   prevVariants.map((variant, index) => {
-    //     if (index === 0) { // assuming the first variant is updated with the new images
-    //       return {
-    //         ...variant,
-    //         imageFile: newImages, // Update with new image files
-    //       };
-    //     }
-    //     return variant;
-    //   })
-    // );
+  const prodImagesChange = useCallback((newImages, previousImages) => {
+    // Extract previous image ids
+    // const previousImagesidsArray = previousImages?.map(image => image.id);
+
+    // Update states with new images and previous image ids
+    setImages(newImages || []);
+    setPrevImages(previousImages || []);
   }, [ setImages]);
 
 
@@ -380,7 +391,7 @@ function AddEditProduct({ changed, prodtype, alldata }) {
                   <FormGroup>
                     {/* <FileDropZone prodImages={prodImagesChange} initialImages={JSON.parse(alldata.image_urls)} /> */}
                     <FileDropZone prodImages={prodImagesChange} initialImages={alldata?.image_urls ? JSON.parse(alldata.image_urls) : []} />
-                    {images.length === 0 && (
+                    {images.length === 0 && prevImages.length === 0 && (
                       <label className="mt-2 desc-xxs text-danger">No files selected, Please select a file!</label>
                     )}
                   </FormGroup>

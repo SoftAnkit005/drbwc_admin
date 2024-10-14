@@ -170,6 +170,8 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
   const [isDragging, setIsDragging] = useState(false);
   const { error, uploadedFilesUrls } = useSelector((state) => state.fileUpload);
   const apiUrl = process.env.REACT_APP_API_URL;
+  const [previousImages, setPreviousImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
 
   // State to track if images have been initialized
   const [imagesInitialized, setImagesInitialized] = useState(false);
@@ -182,10 +184,26 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
   };
 
   // Initialize images from initialImages
+  // console.log('initialImages', initialImages);
+  // console.log('newImages', newImages);
+  
+  const separateImages = () => {
+    const prevImages = images?.filter(image => image.id.startsWith('https'));
+    const nImages = images?.filter(image => image.id.startsWith('blob'));
+    const previews = prevImages.map(image => image.preview)
+
+    // console.log('prevImages', prevImages);
+    // console.log('previews', previews);
+    // console.log('nImages', nImages);
+  
+    setPreviousImages(previews);
+    setNewImages(nImages);
+  };
+  
   useEffect(() => {
     const initializeImages = async () => {
       if (initialImages.length && images.length === 0 && !imagesInitialized) {
-        console.log('Initializing images...');
+        // console.log('Initializing images...');
         const imageUrlsArray = Array.isArray(initialImages)
           ? initialImages
           : JSON.parse(initialImages || '[]');
@@ -197,26 +215,27 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
           return {
             id: fullUrl, // Use full URL for remote images instead of object URL
             file,
-            preview: fullUrl, // Use full URL for preview as well
+            preview: url, // Use full URL for preview as well
           };
         }));
 
         setImages(files);
-        prodImages(files.map(image => image.file));
         setImagesInitialized(true); // Mark images as initialized
       }
     };
 
     initializeImages();
+    separateImages();
   }, [initialImages, images.length, prodImages, imagesInitialized]); // Include imagesInitialized in dependency array
 
   // Update prodImages prop with current images (but only if images actually change)
   useEffect(() => {
-    prodImages(images.map(image => image.file || image.preview));
-  }, [images, prodImages]);
+    prodImages(newImages.map(image => image.file || image.preview), previousImages);
+  }, [newImages.length, previousImages.length, prodImages]);
 
   const handleFile = (files) => {
     const selectedFiles = Array.from(files);
+    // prodImages(selectedFiles);
     const validFiles = selectedFiles.filter(file =>
       ['image/jpeg', 'image/png'].includes(file.type)
     );
@@ -260,7 +279,7 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
   };
 
   const handleRemove = (id) => {
-    console.log('Removing image:', id);
+    // console.log('Removing image:', id);
     setImages(prevImages => {
       if (!id.startsWith('http')) {
         URL.revokeObjectURL(id);
@@ -298,19 +317,8 @@ const FileDropZone = ({ prodImages, initialImages = [] }) => {
           <ListGroup className="flex-row gap-2 preview-images flex-wrap mt-3 mt-lg-0">
             {images.map((image, i) => (
               <ListGroupItem key={i} className="position-relative p-0">
-                <img
-                  src={image.preview}
-                  alt={image.file?.name || 'Preview'}
-                  className="img-thumbnail p-0 me-2"
-                />
-                <Button
-                  className="position-absolute p-0 close-button top-0 end-0"
-                  color="danger"
-                  size="sm"
-                  onClick={() => handleRemove(image.id)}
-                >
-                  <IoClose className='fs-6' />
-                </Button>
+                <img src={image.id} alt={image.file?.name || 'Preview'} className="img-thumbnail p-0 me-2" />
+                <Button className="position-absolute p-0 close-button top-0 end-0" color="danger" size="sm" onClick={() => handleRemove(image.id)} > <IoClose className='fs-6' /> </Button>
               </ListGroupItem>
             ))}
           </ListGroup>
